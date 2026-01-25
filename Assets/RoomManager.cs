@@ -4,18 +4,67 @@ using System.Linq;
 
 public class RoomManager : MonoBehaviour
 {
-    public List<RoomData> allRooms = new List<RoomData>();
+    public static RoomManager Instance { get; private set; }
 
-    // ฟังก์ชันช่วยหาห้องที่ว่างตามประเภท
-    public RoomData GetAvailableRoom(RoomType type)
+    [Header("All Rooms in Hotel")]
+    [SerializeField]
+    private List<Room> allRooms = new List<Room>();
+
+    private void Awake()
     {
-        return allRooms.FirstOrDefault(r => r.roomType == type && !r.isOccupied);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
-    // จัดเก็บห้องทั้งหมดที่มีใน Scene อัตโนมัติ (เลือกใช้ได้)
+    #region Public API
+
+    /// <summary>
+    /// หาห้องว่างตาม Type
+    /// </summary>
+    public Room GetAvailableRoom(RoomType type)
+    {
+        return allRooms.FirstOrDefault(r =>
+            !r.RoomData.isOccupied &&
+            r.RoomData.roomType == type
+        );
+    }
+
+    /// <summary>
+    /// หาห้องว่างตาม Type + Level
+    /// </summary>
+    public Room GetAvailableRoom(RoomType type, RoomLevel level)
+    {
+        return allRooms.FirstOrDefault(r =>
+            !r.RoomData.isOccupied &&
+            r.RoomData.roomType == type &&
+            r.RoomData.roomLevel == level
+        );
+    }
+
+    /// <summary>
+    /// คืน List ห้องว่างทั้งหมด (เอาไปสุ่ม / เลือกชั้น)
+    /// </summary>
+    public List<Room> GetAllAvailableRooms()
+    {
+        return allRooms
+            .Where(r => !r.RoomData.isOccupied)
+            .ToList();
+    }
+
+    #endregion
+
+    #region Editor Only
+
     [ContextMenu("Refresh Room List")]
-    public void RefreshRooms()
+    private void RefreshRooms()
     {
-        allRooms = FindObjectsOfType<RoomData>().ToList();
+        allRooms = FindObjectsOfType<Room>(true).ToList();
+        Debug.Log($"🏨 Found {allRooms.Count} rooms");
     }
+
+    #endregion
 }

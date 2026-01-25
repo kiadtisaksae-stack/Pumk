@@ -58,23 +58,34 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        if (hit.collider != null && hit.collider.TryGetComponent<RoomData>(out var room))
+        if (hit.collider != null &&
+            hit.collider.TryGetComponent<Room>(out var room))
         {
+            if (room.RoomData.isOccupied)
+            {
+                Debug.Log("❌ ห้องนี้มีแขกแล้ว");
+                transform.localPosition = _originalPosition;
+                return;
+            }
+
             if (targetGuest != null)
             {
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
-                targetGuest.StartTravel(room, hotelElevator);
+
+                targetGuest.StartTravel(
+                    room.RoomData,
+                    hotelElevator
+                );
+
+                room.AssignGuest(targetGuest);
                 gameObject.SetActive(false);
-            }
-            else
-            {
-                Debug.LogError("GuestRoomAssigner: targetGuest เป็น null!");
             }
         }
         else
         {
-            Debug.Log("GuestRoomAssigner: ลากไปตกนอกห้อง กลับสู่ตำแหน่งเดิม");
+            Debug.Log("ลากไปตกนอกห้อง");
             transform.localPosition = _originalPosition;
         }
     }
+
 }
