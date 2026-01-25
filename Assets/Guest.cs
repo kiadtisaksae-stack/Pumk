@@ -1,19 +1,46 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum GuestType
 {
-    A, B, C
+    FriendlyGhost,
+    Vampire,
+    Witch,
+    Werewolf,
+    Mummy,
+    Franken,
+    Reaper
 }
 
 public class GuestAI : MoveHandleAI
 {
-    public GuestType guestType = GuestType.A;
-    public Guestphase guestPhase = Guestphase.CheckingIn;
+    public Guestphase guestPhase;
 
-    // เพิ่ม Logic เฉพาะแขก เช่น ความพึงพอใจ หรือการจ่ายเงิน
-    public override void ExitElevator()
+    public ItemSO serviceRequest;
+
+    public ServiceManager serviceManager;
+
+
+    private void Start()
     {
-        base.ExitElevator();
-        Debug.Log($"<color=green>แขก {gameObject.name}: ถึงชั้นเป้าหมายแล้ว กำลังเดินไปห้อง</color>");
+        guestPhase = Guestphase.CheckingIn;
+        serviceManager = FindAnyObjectByType<ServiceManager>();
+    }
+    //Flow = TriggerEvent => SO => This
+    public void RequestService(ItemSO item)
+    {
+        serviceRequest = item;
+
+        
+    }
+    
+    public void SetGuestPhase(Guestphase guestPhase)
+    {
+        this.guestPhase = guestPhase;
+    }
+
+    public void TriggerEvents(Guestphase guestphase)
+    {
+        RequestService(this.serviceRequest);
     }
 }

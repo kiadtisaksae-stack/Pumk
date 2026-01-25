@@ -93,7 +93,7 @@ public abstract class MoveHandleAI : MonoBehaviour
             if (showDebugInfo)
                 Debug.Log($"<color=yellow>{gameObject.name}: เดินไปห้องโดยตรง (อยู่ชั้นเดียวกัน)</color>");
 
-            MoveTo(targetRoom.interactionPoint.position, TravelState.WalkingToTarget);
+            MoveTo(targetRoom.roomPosition.position, TravelState.WalkingToTarget);
         }
         else
         {
@@ -239,7 +239,7 @@ public abstract class MoveHandleAI : MonoBehaviour
         if (showDebugInfo)
             Debug.Log($"<color=green>{gameObject.name}: ออกจากลิฟต์ที่ชั้น {currentFloor}</color>");
 
-        MoveTo(targetRoom.interactionPoint.position, TravelState.WalkingToTarget);
+        MoveTo(targetRoom.roomPosition.position, TravelState.WalkingToTarget);
     }
 
     protected virtual void OnDrawGizmos()
