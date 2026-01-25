@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: New Vip Complaint Event
   m_EditorClassIdentifier: Assembly-CSharp::VipComplaintEvent
   eventName: 
-  triggerGuestPhase: 0
   chance: 0.3
   requiredItem: {fileID: 0}

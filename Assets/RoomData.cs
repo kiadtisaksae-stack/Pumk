@@ -10,9 +10,10 @@ public class RoomData
     public int floorNumber;
     public RoomType roomType;
     public RoomLevel roomLevel;
+    public int RoomID;
     public Transform roomPosition;
 
     [Header("Runtime")]
-    public bool isOccupied;
+    public bool isAvailable;
     public ItemSO currentServiceRequest;
 }

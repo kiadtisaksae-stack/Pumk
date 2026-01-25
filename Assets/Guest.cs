@@ -1,41 +1,46 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum GuestType
+{
+    FriendlyGhost,
+    Vampire,
+    Witch,
+    Werewolf,
+    Mummy,
+    Franken,
+    Reaper
+}
+
 public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
-    [SerializeField]
-    private ItemSO serviceRequest;
-    public ItemSO ServiceRequest => serviceRequest;
 
-    [Header("Special Events")]
-    [SerializeField]
-    private List<GuestEventSO> specialEvents;
+    public ItemSO serviceRequest;
 
+    public ServiceManager serviceManager;
+
+
+    private void Start()
+    {
+        guestPhase = Guestphase.CheckingIn;
+        serviceManager = FindAnyObjectByType<ServiceManager>();
+    }
+    //Flow = TriggerEvent => SO => This
     public void RequestService(ItemSO item)
     {
         serviceRequest = item;
-        SetGuestPhase(Guestphase.RequestingService);
 
-        Debug.Log($"🛎 แขก {name} ขอ {item.itemName}");
+        
     }
-    public void SetGuestPhase(Guestphase newPhase)
+    
+    public void SetGuestPhase(Guestphase guestPhase)
     {
-        if (guestPhase == newPhase) return;
-
-        guestPhase = newPhase;
-        TriggerEvents();
+        this.guestPhase = guestPhase;
     }
 
-
-    private void TriggerEvents()
+    public void TriggerEvents(Guestphase guestphase)
     {
-        foreach (var ev in specialEvents)
-        {
-            if (ev.triggerGuestPhase != guestPhase) continue;
-            if (Random.value > ev.chance) continue;
-
-            ev.Execute(this);
-        }
+        RequestService(this.serviceRequest);
     }
 }

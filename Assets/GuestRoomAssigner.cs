@@ -61,7 +61,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         if (hit.collider != null &&
             hit.collider.TryGetComponent<Room>(out var room))
         {
-            if (room.RoomData.isOccupied)
+            if (room.RoomData.isAvailable)
             {
                 Debug.Log("❌ ห้องนี้มีแขกแล้ว");
                 transform.localPosition = _originalPosition;
@@ -77,7 +77,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                     hotelElevator
                 );
 
-                room.AssignGuest(targetGuest);
                 gameObject.SetActive(false);
             }
         }

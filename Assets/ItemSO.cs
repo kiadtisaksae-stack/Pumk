@@ -3,8 +3,9 @@
 public enum ServiceRequestType
 {
     None,
-    Laundry,
+    DeliveryLuggage,
     RoomService,
+    Laundry,
     Cleaning
 }
 
@@ -20,4 +21,5 @@ public class ItemSO : ScriptableObject
     public ServiceRequestType requiredForService;
     public float pickupTime = 1f;
     public float deliverTime = 1f;
+
 }

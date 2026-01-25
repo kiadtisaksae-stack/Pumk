@@ -12,6 +12,9 @@ public class Room : MonoBehaviour
     public Button roomServiceButton;
     public Button upgradeRoomButton;
 
+    private GuestAI guestInRoom;
+    public ServiceManager serviceManager;
+
     private void Awake()
     {
         if (upgradeRoomButton != null)
@@ -22,33 +25,46 @@ public class Room : MonoBehaviour
 
         UpdateUpgradeButton();
     }
+    private void Start()
+    {
+        roomServiceButton.gameObject.SetActive(false);
+        serviceManager = FindAnyObjectByType<ServiceManager>();
+
+    }
+    private void Update()
+    {
+       
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.TryGetComponent(out GuestAI guest)) return;
-        
-        if (roomData.isOccupied)
+        if (roomData.isAvailable)
         {
             return;
         }
-        AssignGuest(guest);
+        roomData.isAvailable = true;
+        guestInRoom = guest;
+        roomServiceButton.gameObject.SetActive(true);
+        
+        
+        
+        
     }
 
-    public void AssignGuest(GuestAI guest)
+    public void AssignGuest()
     {
-        roomData.isOccupied = true;
         
-
-        Debug.Log($"🏨 {name} รับแขก {guest.name}");
+       
     }
 
     public void ClearRoom()
     {
-        roomData.isOccupied = false;
+        roomData.isAvailable = false;
         roomData.currentServiceRequest = null;
     }
     public void UpgradeRoom()
     {
-        if (roomData.isOccupied)
+        if (roomData.isAvailable)
         {
             Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก");
             return;
@@ -70,11 +86,12 @@ public class Room : MonoBehaviour
         if (upgradeRoomButton == null) return;
 
         upgradeRoomButton.interactable =
-            !roomData.isOccupied &&
+            !roomData.isAvailable &&
             roomData.roomLevel != RoomLevel.Suite;
     }
     public void StartService()
     {
+        guestInRoom.TriggerEvents(Guestphase.InRoom);
 
     }
 
