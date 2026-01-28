@@ -53,7 +53,7 @@ public class ElevatorController : MonoBehaviour
     public bool isDebugMode = true;
 
     // เปลี่ยนจาก private เป็น public หรือ internal
-    public List<int> fianalPoint = new List<int>();
+    public List<int> destinationQueue = new List<int>();
     public List<MoveHandleAI> passengers = new List<MoveHandleAI>();
     public Dictionary<int, List<MoveHandleAI>> floorWaitQueue = new Dictionary<int, List<MoveHandleAI>>();
     public ElevatorDirection currentDirection = ElevatorDirection.Idle;
@@ -123,7 +123,7 @@ public class ElevatorController : MonoBehaviour
 
         if (currentDirection == ElevatorDirection.Up || currentDirection == ElevatorDirection.Idle)
         {
-            var upperTargets = fianalPoint.Where(f => f >= currentFloor).OrderBy(f => f).ToList();
+            var upperTargets = destinationQueue.Where(f => f >= currentFloor).OrderBy(f => f).ToList();
             foreach (int f in upperTargets)
             {
                 if (dropOffFloors.Contains(f))
@@ -140,7 +140,7 @@ public class ElevatorController : MonoBehaviour
         }
 
         currentDirection = ElevatorDirection.Down;
-        var lowerTargets = fianalPoint.Where(f => f < currentFloor).OrderByDescending(f => f).ToList();
+        var lowerTargets = destinationQueue.Where(f => f < currentFloor).OrderByDescending(f => f).ToList();
         foreach (int f in lowerTargets)
         {
             if (dropOffFloors.Contains(f))
@@ -149,14 +149,14 @@ public class ElevatorController : MonoBehaviour
                 return f;
         }
 
-        return fianalPoint.Count > 0 ? fianalPoint[0] : -1;
+        return destinationQueue.Count > 0 ? destinationQueue[0] : -1;
     }
 
     // เปลี่ยนจาก private เป็น public
     public IEnumerator ProcessElevatorLoop()
     {
         // ตรวจสอบซ้ำว่ายังมีงานต้องทำหรือไม่
-        if (fianalPoint.Count == 0)
+        if (destinationQueue.Count == 0)
         {
             if (isDebugMode)
                 Debug.Log("<color=grey>ไม่มีงานในคิว ลิฟต์หยุด</color>");
@@ -166,9 +166,9 @@ public class ElevatorController : MonoBehaviour
         isMoving = true;
 
         if (isDebugMode)
-            Debug.Log($"<color=cyan>ลิฟต์เริ่มทำงาน! Queue: [{string.Join(", ", fianalPoint)}]</color>");
+            Debug.Log($"<color=cyan>ลิฟต์เริ่มทำงาน! Queue: [{string.Join(", ", destinationQueue)}]</color>");
 
-        while (fianalPoint.Count > 0)
+        while (destinationQueue.Count > 0)
         {
             int targetFloor = DetermineNextTargetSmart();
             if (targetFloor == -1) break;
@@ -318,12 +318,12 @@ public class ElevatorController : MonoBehaviour
                 if (isDebugMode)
                     Debug.Log($"<color=red>ยังมีคนรอ {waitingLine.Count} คนที่ชั้น {currentFloor}</color>");
 
-                if (!fianalPoint.Contains(currentFloor))
+                if (!destinationQueue.Contains(currentFloor))
                     AddDestination(currentFloor);
             }
         }
 
-        fianalPoint.Remove(currentFloor);
+        destinationQueue.Remove(currentFloor);
         yield return new WaitForSeconds(0.3f);
     }
 
@@ -373,13 +373,13 @@ public class ElevatorController : MonoBehaviour
             return;
         }
 
-        if (!fianalPoint.Contains(floor))
+        if (!destinationQueue.Contains(floor))
         {
-            fianalPoint.Add(floor);
-            fianalPoint.Sort();
+            destinationQueue.Add(floor);
+            destinationQueue.Sort();
 
             if (isDebugMode)
-                Debug.Log($"เพิ่มจุดหมาย: {floor}, Queue: [{string.Join(", ", fianalPoint)}]");
+                Debug.Log($"เพิ่มจุดหมาย: {floor}, Queue: [{string.Join(", ", destinationQueue)}]");
         }
 
         // ถ้ายังไม่เคลื่อนที่ก็เริ่มได้เลย
@@ -391,7 +391,7 @@ public class ElevatorController : MonoBehaviour
 
     private void DelayedStart()
     {
-        if (!isMoving && fianalPoint.Count > 0)
+        if (!isMoving && destinationQueue.Count > 0)
         {
             if (isDebugMode)
                 Debug.Log($"<color=green>เริ่มทำงานลิฟต์!</color>");
@@ -432,7 +432,7 @@ public class ElevatorController : MonoBehaviour
                 Debug.Log($"<color=cyan>พบคนรอ {floorWaitQueue[currentFloor].Count} คนที่ชั้น {currentFloor} ขณะลิฟต์อยู่ชั้นเดียวกัน</color>");
 
             // ถ้าลิฟต์อยู่ชั้นนี้และกำลังเปิดประตูอยู่ ให้เพิ่มจุดหมายใหม่
-            if (!fianalPoint.Contains(currentFloor))
+            if (!destinationQueue.Contains(currentFloor))
                 AddDestination(currentFloor);
         }
     }

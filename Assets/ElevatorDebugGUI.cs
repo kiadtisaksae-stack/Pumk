@@ -36,7 +36,7 @@ public class ElevatorDebugGUI : MonoBehaviour
         GUILayout.Label($"Passengers: {elevator.passengers.Count}/{elevator.maxCapacity}", labelStyle);
 
         GUILayout.Space(10);
-        GUILayout.Label($"Destination Queue: [{string.Join(", ", elevator.fianalPoint)}]", labelStyle);
+        GUILayout.Label($"Destination Queue: [{string.Join(", ", elevator.destinationQueue)}]", labelStyle);
 
         GUILayout.Space(10);
         GUILayout.Label("📊 Waiting Guests:", labelStyle);
