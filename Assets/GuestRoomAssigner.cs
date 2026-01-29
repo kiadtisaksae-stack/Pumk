@@ -73,7 +73,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
 
                 targetGuest.StartTravel(
-                    room.RoomData,
+                    room.interactObjData,
                     hotelElevator
                 );
 
