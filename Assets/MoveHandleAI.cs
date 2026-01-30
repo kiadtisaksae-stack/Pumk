@@ -8,7 +8,7 @@ public abstract class MoveHandleAI : MonoBehaviour
     public NavMeshAgent agent;
     public int currentFloor;
     public int targetFloor;
-    public RoomData targetRoom;
+    public InteractObjData targetIObj;
     public TravelState travelState = TravelState.Idle;
     public System.Action<MoveHandleAI> OnLeaveWalkInQueue;
 
@@ -64,16 +64,16 @@ public abstract class MoveHandleAI : MonoBehaviour
     }
 
 
-    public void StartTravel(RoomData room, ElevatorController elevator)
+    public void StartTravel(InteractObjData iObj, ElevatorController elevator)
     {
-        if (room == null)
+        if (iObj == null)
         {
-            Debug.LogError($"{gameObject.name}: ไม่มีห้องเป้าหมาย!");
+            Debug.LogError($"{gameObject.name}: ไม่มีเป้าหมาย!");
             return;
         }
 
-        targetRoom = room;
-        targetFloor = room.floorNumber;
+        targetIObj = iObj;
+        targetFloor = iObj.floorNumber;
         assignedElevator = elevator;
 
         if (showDebugInfo)
@@ -91,9 +91,9 @@ public abstract class MoveHandleAI : MonoBehaviour
         if (currentFloor == targetFloor)
         {
             if (showDebugInfo)
-                Debug.Log($"<color=yellow>{gameObject.name}: เดินไปห้องโดยตรง (อยู่ชั้นเดียวกัน)</color>");
+                Debug.Log($"<color=yellow>{gameObject.name}: เดินไปที่เป้าหมายโดยตรง (อยู่ชั้นเดียวกัน)</color>");
 
-            MoveTo(targetRoom.roomPosition.position, TravelState.WalkingToTarget);
+            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkingToTarget);
         }
         else
         {
@@ -239,7 +239,7 @@ public abstract class MoveHandleAI : MonoBehaviour
         if (showDebugInfo)
             Debug.Log($"<color=green>{gameObject.name}: ออกจากลิฟต์ที่ชั้น {currentFloor}</color>");
 
-        MoveTo(targetRoom.roomPosition.position, TravelState.WalkingToTarget);
+        MoveTo(targetIObj.ObjPosition.position, TravelState.WalkingToTarget);
     }
 
     protected virtual void OnDrawGizmos()

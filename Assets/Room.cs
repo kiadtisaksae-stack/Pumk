@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Room : MonoBehaviour
+public class Room : CanInteractObj
 {
     [SerializeField]
     private RoomData roomData;
-
     public RoomData RoomData => roomData;
 
     [Header("Interaction")]
@@ -47,8 +46,7 @@ public class Room : MonoBehaviour
         roomServiceButton.gameObject.SetActive(true);
         
         
-        
-        
+     
     }
 
     public void AssignGuest()
