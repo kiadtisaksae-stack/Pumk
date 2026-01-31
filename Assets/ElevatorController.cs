@@ -242,6 +242,9 @@ public class ElevatorController : MonoBehaviour
             Debug.Log($"<color=yellow>Request: {character.name} จองชั้น {fromFloor}->{toFloor}</color>");
     }
 
+    /// <summary>
+    /// ฟังก์ชันภายในสำหรับจัดการการเพิ่มเลขชั้นลงในคิวและทำการเรียงลำดับชั้น (Sort) ให้ถูกต้อง
+    /// </summary>
     private void AddDestination(int floor)
     {
         if (floor < 0 || floor >= floorTargets.Length) return;
