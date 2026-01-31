@@ -1,11 +1,11 @@
-public enum TravelState
-{
-    Idle,
-    WalkingToElevator,
-    WaitingForElevator,
-    InElevator,
-    WalkingToTarget
-}
+//public enum TravelState
+//{
+//    Idle,
+//    WalkingToElevator,
+//    WaitingForElevator,
+//    InElevator,
+//    WalkingToTarget
+//}
 
 public enum Guestphase
 {

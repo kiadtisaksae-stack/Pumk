@@ -2,6 +2,28 @@
 using UnityEngine.AI;
 using System.Collections;
 
+public enum TravelState
+{
+    Idle,
+    WalkToCallElevator,
+    CallElevator,
+    WaitAtSlot,
+    WalkToElevator,
+    InElevator,
+    OutElevator,
+    WalkToTarget
+}
+
+/*
+   TRAVEL STATE LOGIC:
+   1. Idle: ยืนนิ่งรอคำสั่ง
+   2. WalkToCallElevator: กำลังเดินไปที่จุด WaitSlot หน้าลิฟต์
+   3. CallElevator/WaitAtSlot: ถึงจุดรอแล้ว และทำการ Register ตัวเองกับลิฟต์
+   4. WalkToElevator: ลิฟต์อนุญาตให้เข้า จึงเดินเข้าไปกึ่งกลางลิฟต์
+   5. InElevator: อยู่ในลิฟต์ (Parent ถูกติดกับลิฟต์)
+   6. OutElevator/WalkToTarget: ออกจากลิฟต์และเดินไปเป้าหมายสุดท้าย
+*/
+
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class MoveHandleAI : MonoBehaviour
 {
@@ -16,122 +38,97 @@ public abstract class MoveHandleAI : MonoBehaviour
     public bool showDebugInfo = true;
     public Vector3 currentDestination;
 
-    private int currentSlotIndex = -1;
-    private ElevatorController assignedElevator;
+    protected int currentSlotIndex = -1;
+    protected ElevatorController assignedElevator;
 
     protected virtual void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.updateRotation = false;
+        agent.updateRotation = false; // ปิดการหมุนอัตโนมัติของ Agent (เหมาะกับ 2D)
         agent.updateUpAxis = false;
     }
-
-    private void Start()
+    /// <summary>
+    /// ตรวจสอบสถานะการเดินทางในทุกเฟรม โดยเฉพาะการเช็คระยะห่างว่าเดินถึงจุดรอหน้าลิฟต์หรือยัง
+    /// </summary>
+    protected virtual void Update()
     {
-        if (showDebugInfo)
-            Debug.Log($"<color=white>{gameObject.name}: เริ่มทำงานที่ชั้น {currentFloor}</color>");
-    }
+        if (!agent.isActiveAndEnabled) return;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // **เพิ่ม Debug:**
-        if (showDebugInfo)
-            Debug.Log($"{gameObject.name}: ชนกับ {collision.tag} - {collision.name}");
-
-        // เมื่อชนจุดรอหน้าลิฟต์
-        if (collision.CompareTag("WaitSlot") && travelState == TravelState.WalkingToElevator)
+        // ตรวจสอบระยะเมื่อกำลังเดินไปรอลิฟต์
+        if (travelState == TravelState.WalkToCallElevator)
         {
-            if (showDebugInfo)
-                Debug.Log($"<color=cyan>{gameObject.name}: ถึงจุดรอแล้ว เปลี่ยนเป็น WaitingForElevator</color>");
+            if (agent.pathPending) return;
 
-            travelState = TravelState.WaitingForElevator;
+            // ใช้ระยะทาง Vector2 เพื่อความแม่นยำของพิกัดราบ
+            float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y),
+                                          new Vector2(currentDestination.x, currentDestination.y));
 
-            // แจ้งลิฟต์ว่าถึงจุดรอแล้ว
-            if (assignedElevator != null)
+            // ตรวจสอบว่าถึงระยะ Stopping หรือค่าเผื่อปลอดภัย (0.3f) หรือยัง
+            if (dist <= agent.stoppingDistance + 0.3f || agent.remainingDistance <= agent.stoppingDistance + 0.3f)
             {
-                Debug.Log($"<color=magenta>แจ้งลิฟต์: {gameObject.name} ถึงจุดรอที่ชั้น {currentFloor}</color>");
-
-                // **เพิ่ม: แจ้งลิฟต์ให้รีเช็คคนรอ**
-                assignedElevator.CheckWaitingGuestsImmediately();
-            }
-
-            if (agent.isActiveAndEnabled)
-            {
-                agent.isStopped = true;
-                agent.velocity = Vector3.zero;
+                OnReachedWaitSlot();
             }
         }
     }
+    /// <summary>
+    /// ทำงานเมื่อ AI เดินมาถึงจุดรอหน้าลิฟต์ จะหยุดเดินและส่งสัญญาณไปที่ลิฟต์ (RegisterGuestReady)
+    /// </summary>
+    private void OnReachedWaitSlot()
+    {
+        if (travelState != TravelState.WalkToCallElevator && travelState != TravelState.CallElevator) return;
 
+        travelState = TravelState.CallElevator;
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
 
+        if (assignedElevator != null)
+        {
+            // ส่งสัญญาณบอกลิฟต์ว่า "ฉันพร้อมแล้ว"
+            assignedElevator.RegisterGuestReady(this);
+            travelState = TravelState.WaitAtSlot;
+
+            if (showDebugInfo)
+                Debug.Log($"<color=cyan>{gameObject.name}: ถึงจุดรอและ Register แล้ว</color>");
+        }
+    }
+
+    /// <summary>
+    /// จุดเริ่มต้นการเดินทางของ AI โดยรับข้อมูลเป้าหมายและตัวควบคุมลิฟต์มาประมวลผล
+    /// </summary>
     public void StartTravel(InteractObjData iObj, ElevatorController elevator)
     {
-        if (iObj == null)
-        {
-            Debug.LogError($"{gameObject.name}: ไม่มีเป้าหมาย!");
-            return;
-        }
-
         targetIObj = iObj;
         targetFloor = iObj.floorNumber;
         assignedElevator = elevator;
 
-        if (showDebugInfo)
-            Debug.Log($"<color=white>{gameObject.name}: เริ่มเดินทางจากชั้น {currentFloor} ไปชั้น {targetFloor}</color>");
-
         OnLeaveWalkInQueue?.Invoke(this);
         OnLeaveWalkInQueue = null;
 
-        if (agent.isActiveAndEnabled)
-        {
-            agent.isStopped = false;
-            agent.ResetPath();
-        }
-
+        // กรณีอยู่ชั้นเดียวกัน เดินไปได้เลย
         if (currentFloor == targetFloor)
         {
-            if (showDebugInfo)
-                Debug.Log($"<color=yellow>{gameObject.name}: เดินไปที่เป้าหมายโดยตรง (อยู่ชั้นเดียวกัน)</color>");
-
-            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkingToTarget);
+            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
         }
         else
         {
+            // กรณีต่างชั้น ต้องจองคิวหน้าลิฟต์ก่อน
             Transform slot = elevator.RequestWaitSlot(this, currentFloor, out currentSlotIndex);
             if (slot != null)
             {
-                if (showDebugInfo)
-                {
-                    Debug.Log($"<color=yellow>{gameObject.name}: เดินไปจุดรอที่ slot {currentSlotIndex}</color>");
-                    Debug.Log($"ตำแหน่งจุดรอ: {slot.position}");
-                    Debug.Log($"ตำแหน่งปัจจุบัน: {transform.position}");
-                }
-
-                MoveTo(slot.position, TravelState.WalkingToElevator);
-
-                // **เพิ่ม Debug:**
-                Debug.Log($"<color=magenta>เรียก RequestElevator: {gameObject.name} จากชั้น {currentFloor} ไปชั้น {targetFloor}</color>");
-
+                MoveTo(slot.position, TravelState.WalkToCallElevator);
                 elevator.RequestElevator(this, currentFloor, targetFloor);
-            }
-            else
-            {
-                Debug.LogError($"{gameObject.name}: ไม่มี slot ว่างที่ชั้น {currentFloor}!");
             }
         }
     }
+
+    /// <summary>
+    /// คำสั่งสั่งให้ NavMeshAgent เดินไปยังพิกัดที่กำหนด พร้อมเปลี่ยนสถานะการเดินทาง (TravelState)
+    /// </summary>
     public void MoveTo(Vector3 pos, TravelState newState)
     {
-        if (!agent.isActiveAndEnabled)
-        {
-            Debug.LogError($"{gameObject.name}: NavMeshAgent ไม่เปิดใช้งาน!");
-            return;
-        }
-
-        // บังคับพิกัด Z ให้เท่ากับ AI
+        if (!agent.isActiveAndEnabled) return;
         Vector3 cleanPos = new Vector3(pos.x, pos.y, transform.position.z);
         currentDestination = cleanPos;
-
         agent.isStopped = false;
 
         NavMeshHit hit;
@@ -139,83 +136,56 @@ public abstract class MoveHandleAI : MonoBehaviour
         {
             agent.SetDestination(hit.position);
             travelState = newState;
-
-            if (showDebugInfo && newState == TravelState.WalkingToElevator)
-                Debug.Log($"<color=cyan>{gameObject.name}: เดินไปจุดรอลิฟต์</color>");
-        }
-        else
-        {
-            Debug.LogError($"{gameObject.name}: หาทางไป {cleanPos} ไม่เจอ! (NavMesh ไม่อยู่ในจุดนี้)");
-
-            // Fallback: ใช้ transform.position โดยตรง
-            transform.position = cleanPos;
-            travelState = newState;
         }
     }
 
+    /// <summary>
+    /// ทำงานเมื่อลิฟต์เปิดประตูรับ AI จะทำการคืน Slot หน้าลิฟต์และเริ่มขั้นตอนการเดินเข้าข้างใน
+    /// </summary>
     public virtual void EnterElevator(Transform elevatorTransform)
     {
-        if (showDebugInfo)
-            Debug.Log($"{gameObject.name}: EnterElevator called. Current state: {travelState}");
-
+        // คืนค่า Slot หน้าลิฟต์เมื่อกำลังจะเข้า
         if (currentSlotIndex != -1 && assignedElevator != null)
         {
             assignedElevator.ReleaseSlot(currentFloor, currentSlotIndex);
             currentSlotIndex = -1;
         }
 
-        travelState = TravelState.InElevator;
+        travelState = TravelState.WalkToElevator;
         StartCoroutine(GoInsideElevatorRoutine(elevatorTransform));
     }
 
+    /// <summary>
+    /// ควบคุมการเดินเข้าสู่กึ่งกลางลิฟต์ เมื่อถึงที่แล้วจะทำการติด Parent ไปกับลิฟต์และปิดระบบเดินของตัวเอง
+    /// </summary>
     private IEnumerator GoInsideElevatorRoutine(Transform elevatorTransform)
     {
-        if (showDebugInfo)
-            Debug.Log($"{gameObject.name}: Starting GoInsideElevatorRoutine");
-
         agent.enabled = true;
+        agent.isStopped = false;
         yield return null;
 
         Vector3 targetPos = elevatorTransform.position;
         targetPos.z = transform.position.z;
+        agent.SetDestination(targetPos);
 
-        // ตรวจสอบว่าไปถึงจุดหมายได้ไหม
-        NavMeshPath path = new NavMeshPath();
-        if (agent.CalculatePath(targetPos, path) && path.status == NavMeshPathStatus.PathComplete)
-        {
-            agent.SetDestination(targetPos);
-
-            if (showDebugInfo)
-                Debug.Log($"{gameObject.name}: Path found to elevator");
-        }
-        else
-        {
-            if (showDebugInfo)
-                Debug.LogWarning($"{gameObject.name}: No path to elevator! Using direct movement");
-
-            agent.enabled = false;
-            transform.position = targetPos;
-        }
-
+        // รอจนกว่าจะเดินเข้าสู่ใจกลางลิฟต์
         float timeout = 2.0f;
-        while (Vector3.Distance(transform.position, elevatorTransform.position) > 0.15f && timeout > 0)
+        while (timeout > 0)
         {
-            timeout -= Time.deltaTime;
+            float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y),
+                                          new Vector2(targetPos.x, targetPos.y));
+            if (dist < 0.2f) break;
 
-            // ถ้าใกล้เกินไปแต่ NavMesh ไปไม่ได้
-            if (Vector3.Distance(transform.position, elevatorTransform.position) < 0.5f)
-            {
-                if (showDebugInfo)
-                    Debug.Log($"{gameObject.name}: Close enough, teleporting into elevator");
-                break;
-            }
+            timeout -= Time.deltaTime;
             yield return null;
         }
 
+        // สถานะอยู่ในลิฟต์: ปิด Agent และย้าย Parent ไปที่ลิฟต์
+        travelState = TravelState.InElevator;
         agent.enabled = false;
         transform.SetParent(elevatorTransform);
 
-        // Lerp เข้าตำแหน่งกลางเป๊ะๆ
+        // Lerp เพื่อจัดตำแหน่งให้กึ่งกลางเป๊ะๆ
         float t = 0;
         Vector3 startPos = transform.localPosition;
         while (t < 1f)
@@ -225,36 +195,16 @@ public abstract class MoveHandleAI : MonoBehaviour
             yield return null;
         }
         transform.localPosition = Vector3.zero;
-
-        if (showDebugInfo)
-            Debug.Log($"{gameObject.name}: อยู่ในลิฟต์เรียบร้อย");
     }
 
+    /// <summary>
+    /// ทำงานเมื่อลิฟต์ถึงชั้นเป้าหมาย จะทำการออกจาก Parent ของลิฟต์ และเดินไปยังจุดหมายสุดท้ายบนชั้นนั้น
+    /// </summary>
     public virtual void ExitElevator()
     {
-        transform.SetParent(null);
+        transform.SetParent(null); // ออกจากลิฟต์
         agent.enabled = true;
         currentFloor = targetFloor;
-
-        if (showDebugInfo)
-            Debug.Log($"<color=green>{gameObject.name}: ออกจากลิฟต์ที่ชั้น {currentFloor}</color>");
-
-        MoveTo(targetIObj.ObjPosition.position, TravelState.WalkingToTarget);
-    }
-
-    protected virtual void OnDrawGizmos()
-    {
-        if (!showDebugInfo || !Application.isPlaying) return;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, currentDestination);
-        Gizmos.DrawWireSphere(currentDestination, 0.2f);
-
-        if (agent != null && agent.hasPath)
-        {
-            Gizmos.color = Color.blue;
-            for (int i = 0; i < agent.path.corners.Length - 1; i++)
-                Gizmos.DrawLine(agent.path.corners[i], agent.path.corners[i + 1]);
-        }
+        MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
     }
 }
