@@ -138,6 +138,10 @@ public class ElevatorController : MonoBehaviour
         return destinationQueue.Count > 0 ? destinationQueue[0] : -1;
     }
 
+    /// <summary>
+    /// Coroutine หลักที่ควบคุมวงจรการทำงานของลิฟต์ตราบใดที่ยังมีชั้นอยู่ในคิว
+    /// จะสั่งให้ลิฟต์เคลื่อนที่ (Move) และ เปิดประตู (OpenDoors) วนไปเรื่อยๆ
+    /// </summary>
     public IEnumerator ProcessElevatorLoop()
     {
         if (isMoving || destinationQueue.Count == 0) yield break;
@@ -164,6 +168,9 @@ public class ElevatorController : MonoBehaviour
         currentDirection = ElevatorDirection.Idle;
     }
 
+    /// <summary>
+    /// ควบคุมการเคลื่อนที่ของตัวลิฟต์ในแนวตั้ง (Y-Axis) ไปยังตำแหน่งของชั้นเป้าหมาย
+    /// </summary>
     private IEnumerator MoveToFloor(int floor)
     {
         if (isDebugMode) Debug.Log($"<color=blue>Elevator: เคลื่อนที่ไปชั้น {floor}</color>");
@@ -178,6 +185,11 @@ public class ElevatorController : MonoBehaviour
         transform.position = targetPos;
     }
 
+    /// <summary>
+    /// จัดการเหตุการณ์เมื่อประตูลิฟต์เปิด: 
+    /// 1. ปล่อยผู้โดยสารที่ต้องการลงชั้นนี้ออก 
+    /// 2. ตรวจสอบระยะห่างของคนรอ และรับผู้โดยสารใหม่เข้าลิฟต์
+    /// </summary>
     private IEnumerator OpenDoors()
     {
         if (isDebugMode) Debug.Log($"<color=orange>Elevator: เปิดประตูชั้น {currentFloor}</color>");
