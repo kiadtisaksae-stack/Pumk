@@ -255,6 +255,9 @@ public class ElevatorController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ตรวจสอบและจองตำแหน่งจุดรอ (Wait Slot) หน้าลิฟต์สำหรับ AI แต่ละตัว
+    /// </summary>
     public Transform RequestWaitSlot(MoveHandleAI character, int floor, out int slotIndex)
     {
         if (floor >= 0 && floor < floorQueues.Length)
@@ -263,6 +266,9 @@ public class ElevatorController : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// คืนสิทธิ์การใช้งานจุดรอ (Wait Slot) เมื่อ AI ออกจากจุดนั้นหรือเข้าลิฟต์ไปแล้ว
+    /// </summary>
     public void ReleaseSlot(int floor, int index)
     {
         if (floor >= 0 && floor < floorQueues.Length)
