@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public enum ElevatorDirection { Idle, Up, Down }
-
+#region FloorQueue
 [System.Serializable]
 public class FloorQueue
 {
@@ -33,16 +33,20 @@ public class FloorQueue
             occupiedSlots.Remove(index);
     }
 }
+#endregion
 
-/* FLOW สรุปของระบบลิฟต์:
-   1. AI เรียก RequestElevator: ลิฟต์บันทึกเลขชั้นลง destinationQueue (ยังไม่เคลื่อนที่)
-   2. AI เดินถึงจุดรอ: เรียก RegisterGuestReady ลิฟต์จะบันทึกตัว AI ลง readyAIsOnFloor และเริ่ม ProcessElevatorLoop
-   3. ProcessElevatorLoop: ตัดสินใจว่าจะไปชั้นไหนต่อโดยใช้ DetermineNextTargetSmart
-   4. MoveToFloor: เคลื่อนย้าย Transform ไปยังชั้นเป้าหมาย
-   5. OpenDoors: 
-      - ส่ง AI ที่ถึงชั้นเป้าหมายออก (ExitElevator)
-      - **สำคัญ** รอเช็คระยะห่าง (Distance) ของ AI ที่รออยู่หน้าชั้นนั้นๆ 
-      - เมื่อ AI เข้าใกล้ลิฟต์ตามระยะที่กำหนด (0.8f) จึงจะสั่งให้ AI เดินเข้าลิฟต์ (EnterElevator)
+
+/* FLOW สรุปของระบบลิฟต์ (SCAN Algorithm):
+   1. Register: AI เดินถึงจุดรอเรียก RegisterGuestReady -> ลิฟต์บันทึกคนรอลง readyAIsOnFloor และเริ่ม Loop
+   2. Decision (SCAN): DetermineNextTargetSmart คำนวณเป้าหมายตามทิศทาง (Direction Priority)
+      - ขาขึ้น (UP): วิ่งขึ้นไปหาชั้นที่มีงาน รับเฉพาะคนที่ "จะขึ้น" (คนจะลงต้องรอขากลับ ยกเว้นเป็นจุดกลับรถ)
+      - ขาลง (DOWN): วิ่งลงไปเก็บคนที่ "จะลง"
+      - จุดกลับรถ (Turning Point): เมื่อสุดทางและไม่มีงานต่อในทิศเดิม จะรับทุกคนและเปลี่ยนทิศ
+   3. Movement: MoveToFloor เคลื่อนที่ไปชั้นเป้าหมาย
+   4. OpenDoors: 
+      - ส่งคนออก (ExitElevator)
+      - รับคนเข้า: เลือกรับเฉพาะคนที่ไปทิศเดียวกับลิฟต์ (หรือรับหมดถ้าลิฟต์ว่าง/กลับรถ)
+      - **Anti-Ghost & Distance**: รอจนกว่า AI จะเดินถึงหน้าลิฟต์ (Distance < 0.8f) และรอให้ AI ย้าย Parent เสร็จจริงก่อนปิดประตู
 */
 
 public class ElevatorController : MonoBehaviour
@@ -83,7 +87,7 @@ public class ElevatorController : MonoBehaviour
     public void RegisterGuestReady(MoveHandleAI character)
     {
         int floor = character.currentFloor;
-        AddDestination(floor); // มั่นใจว่าชั้นนี้อยู่ในคิว
+        //AddDestination(floor); // มั่นใจว่าชั้นนี้อยู่ในคิว
 
         if (!readyAIsOnFloor.ContainsKey(floor))
             readyAIsOnFloor[floor] = new List<MoveHandleAI>();
@@ -108,34 +112,137 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private int DetermineNextTargetSmart()
     {
-        bool isFull = passengers.Count >= maxCapacity;
-        var dropOffFloors = passengers.Select(p => p.targetFloor).ToList();
-
-        // ค้นหาเป้าหมายตามทิศทางปัจจุบัน (ขึ้นหรือหยุดนิ่ง)
-        if (currentDirection == ElevatorDirection.Up || currentDirection == ElevatorDirection.Idle)
+        // 1. ถ้าลิฟต์ว่างและไม่มีคิว ให้จบงาน
+        if (passengers.Count == 0 && !HasAnyWaitingGuests())
         {
-            var upperTargets = destinationQueue.Where(f => f >= currentFloor).OrderBy(f => f).ToList();
-            foreach (int f in upperTargets)
+            currentDirection = ElevatorDirection.Idle;
+            return -1;
+        }
+
+        // 2. ถ้าสถานะเป็น Idle ให้เลือกทิศทางตามคนที่ใกล้ที่สุด
+        if (currentDirection == ElevatorDirection.Idle)
+        {
+            int closestFloor = GetClosestRequestFloor();
+            if (closestFloor != -1)
             {
-                // ไปถ้ามีคนจะลง หรือมีคน Ready รออยู่ (และลิฟต์ไม่เต็ม)
-                if (dropOffFloors.Contains(f) || (!isFull && readyAIsOnFloor[f].Count > 0))
+                currentDirection = (closestFloor >= currentFloor) ? ElevatorDirection.Up : ElevatorDirection.Down;
+                return closestFloor;
+            }
+            return -1;
+        }
+
+        // 3. SCAN Logic: วิ่งไปตามทิศทางเดิมจนสุดทาง
+        if (currentDirection == ElevatorDirection.Up)
+        {
+            // หาชั้นที่ "สูงกว่าหรือเท่ากับ" ปัจจุบัน ที่จำเป็นต้องจอด
+            // ต้องจอดถ้า: 
+            // A. มีคนในลิฟต์จะลงชั้นนั้น
+            // B. มีคนรอที่ชั้นนั้น และต้องการจะ "ขึ้น" (ทิศเดียวกับลิฟต์)
+            // C. เป็นชั้นที่ไกลที่สุดที่มีคนรอ (แม้เขาจะลง) กรณีไม่มีงานอื่นที่สูงกว่านี้แล้ว (จุดวกกลับ)
+
+            for (int f = currentFloor; f < floorTargets.Length; f++)
+            {
+                if (f == currentFloor && IsDoorOpening()) continue; // ข้ามถ้ากำลังเปิดประตูอยู่แล้ว
+
+                bool someoneGettingOff = passengers.Any(p => p.targetFloor == f);
+                bool someoneWantingUp = HasGuestGoing(f, ElevatorDirection.Up);
+
+                if (someoneGettingOff || someoneWantingUp) return f;
+            }
+
+            // ถ้าไม่มีงานข้างบนแล้ว เช็คว่ามีใครรออยู่ข้างบนสุดไหม (จุดกลับรถ)
+            // หรือถ้าไม่มีเลย ให้กลับทิศ
+            if (HasAnyRequestAbove(currentFloor))
+            {
+                // วิ่งไปหาชั้นบนสุดที่มีคนรอ (แม้เขาจะลง)
+                for (int f = currentFloor + 1; f < floorTargets.Length; f++)
                 {
-                    currentDirection = ElevatorDirection.Up;
-                    return f;
+                    if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
                 }
             }
-        }
 
-        // ค้นหาเป้าหมายทิศทางลง
-        currentDirection = ElevatorDirection.Down;
-        var lowerTargets = destinationQueue.Where(f => f < currentFloor).OrderByDescending(f => f).ToList();
-        foreach (int f in lowerTargets)
+            // หมดงานขาขึ้น -> เปลี่ยนเป็นขาลง
+            currentDirection = ElevatorDirection.Down;
+            return DetermineNextTargetSmart(); // เรียกซ้ำด้วยทิศใหม่
+        }
+        else // ElevatorDirection.Down
         {
-            if (dropOffFloors.Contains(f) || (!isFull && readyAIsOnFloor[f].Count > 0))
-                return f;
-        }
+            for (int f = currentFloor; f >= 0; f--)
+            {
+                if (f == currentFloor && IsDoorOpening()) continue;
 
-        return destinationQueue.Count > 0 ? destinationQueue[0] : -1;
+                bool someoneGettingOff = passengers.Any(p => p.targetFloor == f);
+                bool someoneWantingDown = HasGuestGoing(f, ElevatorDirection.Down);
+
+                if (someoneGettingOff || someoneWantingDown) return f;
+            }
+
+            if (HasAnyRequestBelow(currentFloor))
+            {
+                for (int f = currentFloor - 1; f >= 0; f--)
+                {
+                    if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
+                }
+            }
+
+            currentDirection = ElevatorDirection.Up;
+            return DetermineNextTargetSmart();
+        }
+    }
+    // Helpers สำหรับ Logic ใหม่
+    private bool IsDoorOpening() => false; // ใช้เช็คสถานะละเอียดถ้าจำเป็น
+
+    private bool HasGuestGoing(int floor, ElevatorDirection dir)
+    {
+        if (!readyAIsOnFloor.ContainsKey(floor)) return false;
+        foreach (var g in readyAIsOnFloor[floor])
+        {
+            // คนที่รออยู่ ต้องการไปทิศเดียวกับที่เช็คหรือไม่
+            if (dir == ElevatorDirection.Up && g.targetFloor > floor) return true;
+            if (dir == ElevatorDirection.Down && g.targetFloor < floor) return true;
+        }
+        return false;
+    }
+
+    private bool HasAnyRequestAbove(int floor)
+    {
+        // มีคนรออยู่ชั้นที่สูงกว่านี้ไหม
+        for (int f = floor + 1; f < floorTargets.Length; f++)
+        {
+            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
+        }
+        return false;
+    }
+
+    private bool HasAnyRequestBelow(int floor)
+    {
+        for (int f = floor - 1; f >= 0; f--)
+        {
+            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
+        }
+        return false;
+    }
+
+    private bool HasAnyWaitingGuests()
+    {
+        foreach (var list in readyAIsOnFloor.Values) if (list.Count > 0) return true;
+        return false;
+    }
+    private int GetClosestRequestFloor()
+    {
+        int closest = -1;
+        int minDist = int.MaxValue;
+
+        // เช็คคนรอข้างนอก
+        for (int f = 0; f < floorTargets.Length; f++)
+        {
+            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0)
+            {
+                int dist = Mathf.Abs(currentFloor - f);
+                if (dist < minDist) { minDist = dist; closest = f; }
+            }
+        }
+        return closest;
     }
 
     /// <summary>
@@ -144,24 +251,31 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public IEnumerator ProcessElevatorLoop()
     {
-        if (isMoving || destinationQueue.Count == 0) yield break;
+        if (isMoving) yield break; // ป้องกันการรันซ้ำ
         isMoving = true;
 
-        while (destinationQueue.Count > 0)
+        // Loop ตราบใดที่มีคิว หรือ มีผู้โดยสารค้างอยู่
+        while (true)
         {
+            // Update Destination Queue for safety (กันเหนียว)
+            if (passengers.Count > 0)
+            {
+                foreach (var p in passengers) AddDestination(p.targetFloor);
+            }
+
             int targetFloor = DetermineNextTargetSmart();
+
+            // ถ้าไม่มีเป้าหมายแล้ว ให้จบการทำงาน
             if (targetFloor == -1) break;
 
-            // การเดินทางไปยังชั้นเป้าหมาย
             if (currentFloor != targetFloor)
             {
                 yield return StartCoroutine(MoveToFloor(targetFloor));
                 currentFloor = targetFloor;
             }
 
-            // เปิดประตูเพื่อรับ-ส่งคน
             yield return StartCoroutine(OpenDoors());
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
         }
 
         isMoving = false;
@@ -194,64 +308,82 @@ public class ElevatorController : MonoBehaviour
     {
         if (isDebugMode) Debug.Log($"<color=orange>Elevator: เปิดประตูชั้น {currentFloor}</color>");
 
-        // 1. กระบวนการส่งคนออก (เช็ค AI ในลิฟต์ที่ตั้งเป้าหมายไว้ชั้นนี้)
+        // 1. ส่งคนออก
         for (int i = passengers.Count - 1; i >= 0; i--)
         {
             if (passengers[i].targetFloor == currentFloor)
             {
                 passengers[i].ExitElevator();
                 passengers.RemoveAt(i);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.3f);
             }
         }
 
-        // 2. กระบวนการรับคนเข้า (เช็ค AI ที่ Register Ready ไว้)
+        // 2. รับคนเข้า (เฉพาะคนที่ไปทางเดียวกัน หรือถ้าลิฟต์ว่าง/เปลี่ยนทิศก็รับหมด)
         if (readyAIsOnFloor.ContainsKey(currentFloor))
         {
             List<MoveHandleAI> waitingList = readyAIsOnFloor[currentFloor];
 
+            // วนลูปย้อนหลังเพื่อความปลอดภัยในการ Remove
             for (int i = waitingList.Count - 1; i >= 0; i--)
             {
+                if (passengers.Count >= maxCapacity) break;
+
                 MoveHandleAI character = waitingList[i];
 
-                // ** Logic ป้องกันลิฟต์ดูด **: ลิฟต์จะรอจนกว่า AI จะเดินเข้าใกล้ตัวลิฟต์จริงๆ (0.8f)
-                float checkTimeout = 5.0f; // Timeout ป้องกันลิฟต์ค้างถ้า AI เดินติด
-                yield return new WaitUntil(() => {
-                    float dist = Vector2.Distance(
-                        new Vector2(transform.position.x, transform.position.y),
-                        new Vector2(character.transform.position.x, character.transform.position.y)
-                    );
-                    checkTimeout -= Time.deltaTime;
-                    return dist <= 0.8f || checkTimeout <= 0;
-                });
+                // --- Logic เลือกรับคน ---
+                bool shouldPickUp = false;
 
-                if (passengers.Count < maxCapacity)
+                // ถ้านี่คือจุดกลับรถ หรือลิฟต์ว่าง -> รับหมด
+                bool isTurningPoint = !HasAnyRequestAbove(currentFloor) && currentDirection == ElevatorDirection.Up;
+                if (currentDirection == ElevatorDirection.Down && !HasAnyRequestBelow(currentFloor)) isTurningPoint = true;
+
+                if (isTurningPoint || passengers.Count == 0)
                 {
-                    if (isDebugMode) Debug.Log($"<color=green>Elevator: รับ {character.name} เข้าลิฟต์</color>");
+                    shouldPickUp = true;
+                    // อัปเดตทิศทางลิฟต์ตามคนแรกที่รับถ้าลิฟต์ว่าง
+                    if (passengers.Count == 0)
+                    {
+                        currentDirection = (character.targetFloor > currentFloor) ? ElevatorDirection.Up : ElevatorDirection.Down;
+                    }
+                }
+                else
+                {
+                    // รับเฉพาะคนไปทางเดียวกัน
+                    if (currentDirection == ElevatorDirection.Up && character.targetFloor > currentFloor) shouldPickUp = true;
+                    else if (currentDirection == ElevatorDirection.Down && character.targetFloor < currentFloor) shouldPickUp = true;
+                }
 
+                if (shouldPickUp)
+                {
+                    // รอจนกว่า AI จะเดินมาถึงหน้าลิฟต์จริงๆ (แก้บัคตัวทิพย์)
+                    float waitTime = 3f;
+                    yield return new WaitUntil(() => {
+                        waitTime -= Time.deltaTime;
+                        float dist = Vector2.Distance(character.transform.position, transform.position);
+                        return dist < 0.8f || waitTime <= 0;
+                    });
+
+                    if (isDebugMode) Debug.Log($"<color=green>Elevator: รับ {character.name} (ไป {character.targetFloor})</color>");
+
+                    // สั่งเข้าลิฟต์และรอจนกว่าจะ Parent เสร็จ
                     character.EnterElevator(this.transform);
                     passengers.Add(character);
                     waitingList.RemoveAt(i);
 
-                    yield return new WaitForSeconds(0.5f);
+                    // *** สำคัญ: รอให้ AI ย้าย Parent เสร็จจริงๆ ***
+                    yield return new WaitForSeconds(0.4f);
                 }
             }
         }
 
-        destinationQueue.Remove(currentFloor);
         yield return new WaitForSeconds(0.5f);
     }
 
-    /// <summary>
-    /// สั่งจองชั้นจากภายนอก (พนักงาน/แขก กดเรียกจากระยะไกล)
-    /// </summary>
     public void RequestElevator(MoveHandleAI character, int fromFloor, int toFloor)
     {
-        if (!destinationQueue.Contains(fromFloor)) { destinationQueue.Add(fromFloor); destinationQueue.Sort(); }
-        if (!destinationQueue.Contains(toFloor)) { destinationQueue.Add(toFloor); destinationQueue.Sort(); }
-
-        if (isDebugMode)
-            Debug.Log($"<color=yellow>Request: {character.name} จองชั้น {fromFloor}->{toFloor}</color>");
+        // Function นี้ใช้แค่ Log ในระบบใหม่ เพราะ Logic อยู่ใน RegisterGuestReady และ DetermineNextTarget หมดแล้ว
+        if (isDebugMode) Debug.Log($"<color=yellow>Request: {character.name} {fromFloor}->{toFloor}</color>");
     }
 
     /// <summary>
