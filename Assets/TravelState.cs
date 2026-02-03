@@ -7,10 +7,10 @@
 //    WalkingToTarget
 //}
 
-public enum Guestphase
-{
-    CheckingIn,
-    InRoom,
-    RequestingService,
-    CheckingOut
-}
+// public enum Guestphase
+// {
+//     CheckingIn,
+//     InRoom,
+//     RequestingService,
+//     CheckingOut
+// }
