@@ -1,6 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum Guestphase
+{
+    CheckingIn,
+    InRoom,
+    RequestingService,
+    CheckingOut
+}
 public enum GuestType
 {
     FriendlyGhost,
