@@ -9,7 +9,7 @@ public class VipComplaintEvent : GuestEventSO
     {
         Debug.Log($"😡 VIP {guest.name} ร้องเรียน!");
 
-        guest.RequestService(requiredItem);
+        //guest.RequestService();
 
         // ลดความพึงพอใจ / เพิ่มค่าปรับ
     }

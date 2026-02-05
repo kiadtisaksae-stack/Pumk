@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class Room : CanInteractObj
 {
@@ -11,6 +12,7 @@ public class Room : CanInteractObj
     public Button roomServiceButton;
     public Button upgradeRoomButton;
 
+    [SerializeField]
     private GuestAI guestInRoom;
     public ServiceManager serviceManager;
 
@@ -27,32 +29,38 @@ public class Room : CanInteractObj
     private void Start()
     {
         roomServiceButton.gameObject.SetActive(false);
-        serviceManager = FindAnyObjectByType<ServiceManager>();
-
+        serviceManager = GetComponent<ServiceManager>();
     }
     private void Update()
     {
-       
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!collision.TryGetComponent(out GuestAI guest)) return;
-        if (roomData.isAvailable)
+       if (guestInRoom == null) return;
+       float distSqr = (guestInRoom.transform.position - transform.position).sqrMagnitude;
+
+        // เอาค่าระยะที่ต้องการมายกกำลังสองก่อนเทียบ
+        if (distSqr <= (0.2 * 0.2))
         {
+            Debug.Log("ถึงห้องแล้ววว");
+            roomData.isAvailable = true;
+            StartService();
             return;
         }
-        roomData.isAvailable = true;
-        guestInRoom = guest;
-        roomServiceButton.gameObject.SetActive(true);
-        
-        
-     
     }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (!collision.TryGetComponent(out GuestAI guest)) return;
+    //    if (roomData.isAvailable)
+    //    {
+    //        return;
+    //    }
+    //    roomData.isAvailable = true;
+    //    guestInRoom = guest;
+    //    roomServiceButton.gameObject.SetActive(true);
+          
+    //}
 
-    public void AssignGuest()
+    public void AssignGuest(GuestAI guest)
     {
-        
-       
+        guestInRoom = guest;
     }
 
     public void ClearRoom()
@@ -90,12 +98,11 @@ public class Room : CanInteractObj
     public void StartService()
     {
         guestInRoom.TriggerEvents(Guestphase.InRoom);
-
+        guestInRoom.RequestService(serviceManager);
     }
 
     private void OnDrawGizmos()
     {
-
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.3f);
         Gizmos.DrawLine(transform.position, transform.position);

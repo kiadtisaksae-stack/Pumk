@@ -76,6 +76,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                     room.interactObjData,
                     hotelElevator
                 );
+                room.AssignGuest(targetGuest);
 
                 gameObject.SetActive(false);
             }

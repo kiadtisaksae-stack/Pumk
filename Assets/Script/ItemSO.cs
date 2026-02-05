@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public enum ServiceRequestType
 {
@@ -16,6 +17,7 @@ public class ItemSO : ScriptableObject
     public string itemName;
     [TextArea] public string description;
     public GameObject prefabItem;
+    public Image itemIcon;
 
     [Header("Service")]
     public ServiceRequestType requiredForService;

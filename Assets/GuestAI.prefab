@@ -175,14 +175,18 @@ MonoBehaviour:
   agent: {fileID: 6700229716558844841}
   currentFloor: 0
   targetFloor: 0
-  targetRoom: {fileID: 0}
+  targetIObj:
+    floorNumber: 0
+    ObjPosition: {fileID: 0}
   travelState: 0
   showDebugInfo: 1
   currentDestination: {x: 0, y: 0, z: 0}
-  guestType: 0
   guestPhase: 0
-  currentRequestType: 2
-  lostItemInScene: {fileID: 0}
+  allService:
+  - {fileID: 11400000, guid: 70d848090c8db2f4589ee16f708a0747, type: 2}
+  serviceCooldown: 5
+  serviceImage: {fileID: 0}
+  serviceManager: {fileID: 0}
 --- !u!58 &3460122585557764002
 CircleCollider2D:
   m_ObjectHideFlags: 0
