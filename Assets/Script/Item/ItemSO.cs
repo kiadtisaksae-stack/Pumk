@@ -17,7 +17,7 @@ public class ItemSO : ScriptableObject
     public string itemName;
     [TextArea] public string description;
     public GameObject prefabItem;
-    public Image itemIcon;
+    public Sprite itemIcon;
 
     [Header("Service")]
     public ServiceRequestType requiredForService;
