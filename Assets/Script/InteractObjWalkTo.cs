@@ -1,16 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+[System.Serializable]
+public class EmplyeeEvent : UnityEvent<Emplyee> { }
 public class InteractObjWalkTo : MonoBehaviour , IPointerClickHandler
 {
     private ElevatorController hotelElevator;
     private Emplyee targetEmplyee;
 
+    public EmplyeeEvent onTravel;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        targetEmplyee = FindObjectOfType<Emplyee>();
-        hotelElevator = FindObjectOfType<ElevatorController>();
+        targetEmplyee = FindAnyObjectByType<Emplyee>();
+        hotelElevator = FindAnyObjectByType<ElevatorController>();
     }
 
     // Update is called once per frame
@@ -39,6 +45,7 @@ public class InteractObjWalkTo : MonoBehaviour , IPointerClickHandler
             {
                 Debug.Log($"<color=green>พนักงาน {targetEmplyee.name}</color> เดินทาง");
 
+                onTravel.Invoke(targetEmplyee);
                 targetEmplyee.StartTravel(obj.interactObjData, hotelElevator);
             }
         }

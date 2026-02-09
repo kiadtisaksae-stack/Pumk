@@ -9,35 +9,54 @@ public class Room : CanInteractObj
     public RoomData RoomData => roomData;
 
     [Header("Interaction")]
-    public Button roomServiceButton;
+
     public Button upgradeRoomButton;
 
     [SerializeField]
     private GuestAI guestInRoom;
     public ServiceManager serviceManager;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (upgradeRoomButton != null)
             upgradeRoomButton.onClick.AddListener(UpgradeRoom);
 
-        if (roomServiceButton != null)
-            roomServiceButton.onClick.AddListener(StartService);
+        ////if (roomServiceButton != null)
+        ////    roomServiceButton.onClick.AddListener(StartService);
 
         UpdateUpgradeButton();
     }
     private void Start()
     {
-        roomServiceButton.gameObject.SetActive(false);
         serviceManager = GetComponent<ServiceManager>();
     }
-    private void Update()
+    protected override void Update()
     {
-       if (guestInRoom == null) return;
-       float distSqr = (guestInRoom.transform.position - transform.position).sqrMagnitude;
+        GuestCheckDistance();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("Player entered the zone!");
+            Emplyee emplyee = collision.GetComponent<Emplyee>();
+            if (guestInRoom != null)
+            {
+                serviceManager.RequestCheck(guestInRoom.currentService, emplyee.inventory);
+            }
+            interactObjData.objCollider.isTrigger = false;
+        }
+    }
+
+    public void GuestCheckDistance()
+    {
+        if (guestInRoom == null) return;
+        float distSqr = (guestInRoom.transform.position - transform.position).sqrMagnitude;
 
         // เอาค่าระยะที่ต้องการมายกกำลังสองก่อนเทียบ
-        if (distSqr <= (0.2 * 0.2))
+        if (distSqr <= (0.2 * 0.2) && !roomData.isAvailable)
         {
             Debug.Log("ถึงห้องแล้ววว");
             roomData.isAvailable = true;
@@ -45,19 +64,6 @@ public class Room : CanInteractObj
             return;
         }
     }
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (!collision.TryGetComponent(out GuestAI guest)) return;
-    //    if (roomData.isAvailable)
-    //    {
-    //        return;
-    //    }
-    //    roomData.isAvailable = true;
-    //    guestInRoom = guest;
-    //    roomServiceButton.gameObject.SetActive(true);
-          
-    //}
-
     public void AssignGuest(GuestAI guest)
     {
         guestInRoom = guest;

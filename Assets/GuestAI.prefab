@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: 6700229716558844841}
   - component: {fileID: 6028295870743468438}
   - component: {fileID: 3460122585557764002}
+  - component: {fileID: 9064958387561804640}
   m_Layer: 0
   m_Name: GuestAI
   m_TagString: Untagged
@@ -184,9 +185,9 @@ MonoBehaviour:
   guestPhase: 0
   allService:
   - {fileID: 11400000, guid: 70d848090c8db2f4589ee16f708a0747, type: 2}
+  - {fileID: 11400000, guid: eac9c4fc987bd2f469cc2bb5c14ddab2, type: 2}
   serviceCooldown: 5
-  serviceImage: {fileID: 0}
-  serviceManager: {fileID: 0}
+  currentService: {fileID: 0}
 --- !u!58 &3460122585557764002
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -223,6 +224,33 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!50 &9064958387561804640
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013974049831768083}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &4259799965234403694
 GameObject:
   m_ObjectHideFlags: 0
