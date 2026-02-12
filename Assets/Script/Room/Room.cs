@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
-public class Room : CanInteractObj
+public class Room : CanInteractObj,IInteractable
 {
-    [SerializeField]
-    private RoomData roomData;
-    public RoomData RoomData => roomData;
+
+    public RoomData RoomData => interactObjData.roomData;
 
     [Header("Interaction")]
 
@@ -31,39 +29,43 @@ public class Room : CanInteractObj
     {
         serviceManager = GetComponent<ServiceManager>();
     }
-    protected override void Update()
-    {
-        GuestCheckDistance();
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("Player entered the zone!");
-            Emplyee emplyee = collision.GetComponent<Emplyee>();
+            Debug.Log("Actor Standing at the Door ");
+            Player player = collision.GetComponent<Player>();
+
+            if (player.finalRoomData != RoomData) return;
+
+            if (guestInRoom != null)
+            {
+                serviceManager.RequestCheck(guestInRoom.currentService, player.inventory);
+            }
+            
+        }
+        if( (collision.CompareTag("Employee")))
+        {
+            Debug.Log("Employee Standing at the Door ");
+            Employee emplyee = collision.GetComponent<Employee>();
+            if (emplyee.finalRoomData != RoomData) return;
             if (guestInRoom != null)
             {
                 serviceManager.RequestCheck(guestInRoom.currentService, emplyee.inventory);
             }
-            interactObjData.objCollider.isTrigger = false;
         }
-    }
-
-    public void GuestCheckDistance()
-    {
-        if (guestInRoom == null) return;
-        float distSqr = (guestInRoom.transform.position - transform.position).sqrMagnitude;
-
-        // เอาค่าระยะที่ต้องการมายกกำลังสองก่อนเทียบ
-        if (distSqr <= (0.2 * 0.2) && !roomData.isAvailable)
+        if (collision.CompareTag("Guest"))
         {
-            Debug.Log("ถึงห้องแล้ววว");
-            roomData.isAvailable = true;
+            Debug.Log("Guest entered the zone!");
+            GuestAI guest = collision.GetComponent<GuestAI>();
+            if(guest.guestPhase == Guestphase.CheckingOut) return;
+            if (guest.finalRoomData != RoomData) return;
+            RoomData.isAvailable = true;
             StartService();
-            return;
+
         }
     }
+
     public void AssignGuest(GuestAI guest)
     {
         guestInRoom = guest;
@@ -71,25 +73,25 @@ public class Room : CanInteractObj
 
     public void ClearRoom()
     {
-        roomData.isAvailable = false;
-        roomData.currentServiceRequest = null;
+        RoomData.isAvailable = false;
+        RoomData.currentServiceRequest = null;
     }
     public void UpgradeRoom()
     {
-        if (roomData.isAvailable)
+        if (RoomData.isAvailable)
         {
             Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก");
             return;
         }
 
-        if (roomData.roomLevel == RoomLevel.Suite)
+        if (RoomData.roomLevel == RoomLevel.Suite)
         {
             Debug.Log("❌ ห้องนี้เป็น Suite แล้ว");
             return;
         }
 
-        roomData.roomLevel++;
-        Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {roomData.roomLevel}");
+        RoomData.roomLevel++;
+        Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
 
         UpdateUpgradeButton();
     }
@@ -98,8 +100,8 @@ public class Room : CanInteractObj
         if (upgradeRoomButton == null) return;
 
         upgradeRoomButton.interactable =
-            !roomData.isAvailable &&
-            roomData.roomLevel != RoomLevel.Suite;
+            !RoomData.isAvailable &&
+            RoomData.roomLevel != RoomLevel.Suite;
     }
     public void StartService()
     {
@@ -112,5 +114,11 @@ public class Room : CanInteractObj
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.3f);
         Gizmos.DrawLine(transform.position, transform.position);
+    }
+
+    public override void Interact(MoveHandleAI actor)
+    {
+        actor.finalRoomData = RoomData;
+        actor.StartTravel(interactObjData);
     }
 }

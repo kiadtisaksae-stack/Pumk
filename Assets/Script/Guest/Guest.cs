@@ -30,7 +30,7 @@ public class GuestAI : MoveHandleAI
     public float serviceCooldown = 5f;
 
     public int rentNet;
-    public int serviceValue = 0;
+    public int servicePoint = 0;
 
     public ItemSO currentService;
 
@@ -57,9 +57,8 @@ public class GuestAI : MoveHandleAI
         guestPhase = Guestphase.CheckingOut;
         gameObject.SetActive(true);
         CalculateRentNET();
-        ElevatorController elevator = FindAnyObjectByType<ElevatorController>();
         targetIObj.objCollider.isTrigger = true;
-        StartTravel(targetObj, elevator);
+        StartTravel(targetObj);
     }
 
     public void SetGuestPhase(Guestphase guestPhase)
@@ -69,7 +68,7 @@ public class GuestAI : MoveHandleAI
 
     public void CalculateRentNET() //คำนวนรายจ่ายของแขก (เดี๋ยวมาทำต่อ)
     {
-        rentNet = serviceValue + 100;
+        rentNet = servicePoint + 100;
     }
 
     public void TriggerEvents(Guestphase guestphase)

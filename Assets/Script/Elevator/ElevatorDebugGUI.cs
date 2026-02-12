@@ -3,115 +3,101 @@ using System.Collections.Generic;
 
 public class ElevatorDebugGUI : MonoBehaviour
 {
-    public ElevatorController elevator;
+    // ไม่ต้องลากใส่แล้ว ระบบจะหาเองทุกตัวในฉาก
+    private ElevatorController[] allElevators;
     private GUIStyle boxStyle;
     private GUIStyle labelStyle;
     private GUIStyle headerStyle;
 
-    void Start()
+    void Update()
     {
-        if (elevator == null)
-            elevator = FindObjectOfType<ElevatorController>();
+        // ค้นหาลิฟต์ใหม่ทุกเฟรม (หรือจะทำเป็นปุ่ม Refresh ก็ได้ถ้าลิฟต์เยอะมาก)
+        allElevators = Object.FindObjectsByType<ElevatorController>(FindObjectsSortMode.None);
     }
 
     void OnGUI()
     {
-        if (elevator == null) return;
-
-        // Setup Styles
-        if (boxStyle == null)
+        if (allElevators == null || allElevators.Length == 0)
         {
-            boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.textColor = Color.white;
-            boxStyle.fontSize = 12;
-            boxStyle.alignment = TextAnchor.UpperLeft;
-            boxStyle.padding = new RectOffset(10, 10, 10, 10);
+            GUI.Label(new Rect(20, 20, 200, 20), "<color=red>No Elevators Found!</color>");
+            return;
+        }
 
-            labelStyle = new GUIStyle(GUI.skin.label);
-            labelStyle.fontSize = 12;
-            labelStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
+        // Setup Styles (ทำงานครั้งเดียว)
+        if (labelStyle == null)
+        {
+            labelStyle = new GUIStyle(GUI.skin.label) { fontSize = 12 };
+            labelStyle.normal.textColor = Color.white;
 
-            headerStyle = new GUIStyle(GUI.skin.label);
-            headerStyle.fontSize = 13;
-            headerStyle.fontStyle = FontStyle.Bold;
+            headerStyle = new GUIStyle(GUI.skin.label) { fontSize = 13, fontStyle = FontStyle.Bold };
             headerStyle.normal.textColor = Color.yellow;
         }
 
-        // เริ่มวาดกรอบ
-        GUILayout.BeginArea(new Rect(20, 20, 400, 700));
-
-        // --- 1. สถานะทั่วไป ---
-        GUILayout.BeginVertical("box");
-        GUILayout.Label("🚀 ELEVATOR STATUS", headerStyle);
-        GUILayout.Space(5);
-        GUILayout.Label($"Current Floor: <color=white>{elevator.currentFloor}</color>", labelStyle);
-        GUILayout.Label($"Direction: <color=white>{elevator.currentDirection}</color>", labelStyle);
-        GUILayout.Label($"Moving: {(elevator.isMoving ? "<color=green>YES</color>" : "<color=red>NO</color>")}", labelStyle);
-        GUILayout.Label($"Queue (Floors): [{string.Join(", ", elevator.destinationQueue)}]", labelStyle);
-        GUILayout.EndVertical();
-
-        GUILayout.Space(10);
-
-        // --- 2. คนที่ค้างอยู่ในจุดรอ (Waiting at Slots) ---
-        GUILayout.BeginVertical("box");
-        GUILayout.Label("📊 1. WAITING GUESTS (At WaitSlots)", headerStyle);
-        GUILayout.Space(5);
-
-        bool hasWaiting = false;
-        if (elevator.readyAIsOnFloor != null)
+        // วาดสถานะของลิฟต์แต่ละตัว
+        for (int idx = 0; idx < allElevators.Length; idx++)
         {
-            // วนลูปเช็คทุกชั้น
-            for (int i = 0; i < elevator.floorTargets.Length; i++)
-            {
-                if (elevator.readyAIsOnFloor.ContainsKey(i) && elevator.readyAIsOnFloor[i].Count > 0)
-                {
-                    hasWaiting = true;
-                    List<MoveHandleAI> guests = elevator.readyAIsOnFloor[i];
+            ElevatorController elevator = allElevators[idx];
+            if (elevator == null) continue;
 
-                    GUILayout.Label($"Floor {i}: <color=cyan>{guests.Count} People</color>", labelStyle);
-                    foreach (var g in guests)
+            // คำนวณตำแหน่งกรอบ (ขยับไปทางขวาตามจำนวนลิฟต์)
+            float xPos = 20 + (idx * 310);
+            GUILayout.BeginArea(new Rect(xPos, 20, 300, 800));
+
+            // --- 1. สถานะทั่วไป ---
+            GUILayout.BeginVertical("box");
+            GUILayout.Label($"🛗 ELEVATOR: {elevator.gameObject.name}", headerStyle);
+            GUILayout.Space(5);
+            GUILayout.Label($"Floor: <color=cyan>{elevator.currentFloor}</color>", labelStyle);
+            GUILayout.Label($"Dir: <color=white>{elevator.currentDirection}</color>", labelStyle);
+
+            // แก้ไข Error: ตรวจสอบตัวแปร isMoving
+            string movingText = elevator.isMoving ? "<color=green>MOVING</color>" : "<color=red>IDLE</color>";
+            GUILayout.Label($"Status: {movingText}", labelStyle);
+
+            // แสดงคิว (Floor Targets)
+            string queueStr = (elevator.destinationQueue != null) ? string.Join(", ", elevator.destinationQueue) : "Empty";
+            GUILayout.Label($"Queue: [{queueStr}]", labelStyle);
+            GUILayout.EndVertical();
+
+            // --- 2. คนรอที่ชั้น ---
+            GUILayout.BeginVertical("box");
+            GUILayout.Label("👥 WAITING AT SLOTS", headerStyle);
+            bool hasWaiting = false;
+            if (elevator.readyAIsOnFloor != null)
+            {
+                foreach (var floor in elevator.readyAIsOnFloor)
+                {
+                    if (floor.Value.Count > 0)
                     {
-                        GUILayout.Label($"   - {g.name} (Target: {g.targetFloor})", labelStyle);
+                        hasWaiting = true;
+                        GUILayout.Label($"Floor {floor.Key}: {floor.Value.Count} ppl", labelStyle);
                     }
                 }
             }
-        }
+            if (!hasWaiting) GUILayout.Label("<color=grey>None</color>", labelStyle);
+            GUILayout.EndVertical();
 
-        if (!hasWaiting)
-        {
-            GUILayout.Label("   <color=grey>No one waiting.</color>", labelStyle);
-        }
-        GUILayout.EndVertical();
-
-        GUILayout.Space(10);
-
-        // --- 3. คนที่ค้างอยู่ในลิฟต์ (Passengers Inside) ---
-        GUILayout.BeginVertical("box");
-        GUILayout.Label($"🛗 2. PASSENGERS INSIDE ({elevator.passengers.Count}/{elevator.maxCapacity})", headerStyle);
-        GUILayout.Space(5);
-
-        if (elevator.passengers.Count > 0)
-        {
-            foreach (var p in elevator.passengers)
+            // --- 3. คนในลิฟต์ ---
+            GUILayout.BeginVertical("box");
+            GUILayout.Label($"👨‍👩‍👧 PASSENGERS ({elevator.passengers.Count}/{elevator.maxCapacity})", headerStyle);
+            if (elevator.passengers.Count > 0)
             {
-                // แสดงชื่อและชั้นที่จะไป
-                GUILayout.Label($"   • <color=green>{p.name}</color> --> Going to Floor: <color=yellow>{p.targetFloor}</color>", labelStyle);
+                foreach (var p in elevator.passengers)
+                {
+                    if (p != null)
+                        GUILayout.Label($"• {p.name} -> F{p.targetFloor}", labelStyle);
+                }
             }
-        }
-        else
-        {
-            GUILayout.Label("   <color=grey>Elevator is empty.</color>", labelStyle);
-        }
-        GUILayout.EndVertical();
+            else GUILayout.Label("<color=grey>Empty</color>", labelStyle);
+            GUILayout.EndVertical();
 
-        GUILayout.Space(10);
+            // ปุ่ม Debug
+            if (GUILayout.Button("Force Loop"))
+            {
+                elevator.StartCoroutine(elevator.ProcessElevatorLoop());
+            }
 
-        // ปุ่มบังคับเริ่ม (เผื่อใช้ Test)
-        if (GUILayout.Button("Force Start Elevator", GUILayout.Height(30)) && !elevator.isMoving)
-        {
-            elevator.StartCoroutine(elevator.ProcessElevatorLoop());
+            GUILayout.EndArea();
         }
-
-        GUILayout.EndArea();
     }
 }

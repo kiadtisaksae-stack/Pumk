@@ -63,7 +63,7 @@ public class ServiceManager : MonoBehaviour
                 roomServiceButton.gameObject.SetActive(false);
                 guest.currentService = null;
                 Debug.Log(service.name + " หมดเวลา! (ลูกค้าโกรธ)");
-                guest.serviceValue--;
+                guest.servicePoint--;
             }
             else
             {
@@ -71,7 +71,7 @@ public class ServiceManager : MonoBehaviour
                 roomServiceButton.gameObject.SetActive(false);
                 guest.currentService = null;
                 Debug.Log(service.name + " ส่งสำเร็จ");
-                guest.serviceValue++;
+                guest.servicePoint++;
                 yield return service; // (ถ้าโค้ดเดิมของคุณต้องการ return ค่านี้)
             }
 

@@ -33,13 +33,17 @@ public abstract class MoveHandleAI : MonoBehaviour
     public InteractObjData targetIObj;
     public TravelState travelState = TravelState.Idle;
     public System.Action<MoveHandleAI> OnLeaveWalkInQueue;
+    [Header("Final Destination")]
+    public RoomData finalRoomData;
 
     [Header("Debug Settings")]
     public bool showDebugInfo = true;
     public Vector3 currentDestination;
 
     protected int currentSlotIndex = -1;
-    protected ElevatorController assignedElevator;
+    public ElevatorController assignedElevator;
+    private ElevatorManager _manager;
+
 
     protected virtual void Awake()
     {
@@ -95,29 +99,47 @@ public abstract class MoveHandleAI : MonoBehaviour
     /// <summary>
     /// จุดเริ่มต้นการเดินทางของ AI โดยรับข้อมูลเป้าหมายและตัวควบคุมลิฟต์มาประมวลผล
     /// </summary>
-    public void StartTravel(InteractObjData iObj, ElevatorController elevator)
+    public void StartTravel(InteractObjData iObj)
     {
         targetIObj = iObj;
         targetFloor = iObj.floorNumber;
-        assignedElevator = elevator;
 
-        OnLeaveWalkInQueue?.Invoke(this);
-        OnLeaveWalkInQueue = null;
-
-        // กรณีอยู่ชั้นเดียวกัน เดินไปได้เลย
         if (currentFloor == targetFloor)
         {
             MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
         }
         else
         {
-            // กรณีต่างชั้น ต้องจองคิวหน้าลิฟต์ก่อน
-            Transform slot = elevator.RequestWaitSlot(this, currentFloor, out currentSlotIndex);
-            if (slot != null)
+            // หา Manager ใน Scene ปัจจุบัน
+            if (_manager == null) _manager = Object.FindAnyObjectByType<ElevatorManager>();
+
+            if (_manager != null)
             {
-                MoveTo(slot.position, TravelState.WalkToCallElevator);
-                elevator.RequestElevator(this, currentFloor, targetFloor);
+                ElevatorController best = _manager.GetBestElevator(currentFloor, targetFloor);
+                if (best != null)
+                {
+                    AssignElevator(best);
+                }
             }
+            else
+            {
+                Debug.LogWarning("หา ElevatorManager ไม่เจอในด่านนี้!");
+            }
+        }
+    }
+    /// <summary>
+    /// ลงทะเบียนลิฟต์ที่ AI จะใช้เดินทาง และขอจุดรอหน้าลิฟต์ (WaitSlot)
+    /// </summary>
+    public void AssignElevator(ElevatorController elevator)
+    {
+        assignedElevator = elevator;
+        int slotIdx;
+        Transform slot = assignedElevator.RequestWaitSlot(this, currentFloor, out slotIdx);
+
+        if (slot != null)
+        {
+            currentSlotIndex = slotIdx;
+            MoveTo(slot.position, TravelState.WalkToCallElevator);
         }
     }
 
@@ -205,6 +227,13 @@ public abstract class MoveHandleAI : MonoBehaviour
         transform.SetParent(null); // ออกจากลิฟต์
         agent.enabled = true;
         currentFloor = targetFloor;
-        MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
+        assignedElevator = null;
+        currentSlotIndex = -1;
+        travelState = TravelState.WalkToTarget;
+
+        if (targetIObj != null)
+        {
+            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
+        }
     }
 }

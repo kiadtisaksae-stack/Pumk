@@ -1,4 +1,4 @@
-using UnityEngine;
+๏ปฟusing UnityEngine;
 
 public class ServiceObj : CanInteractObj
 {
@@ -11,34 +11,27 @@ public class ServiceObj : CanInteractObj
 
     }
 
-    // Update is called once per frame
-    protected override void Update()
-    {
-        if (targetEmplyee == null) return;
-        float distSqr = (targetEmplyee.transform.position - transform.position).sqrMagnitude;
-
-        // เอาค่าระยะที่ต้องการมายกกำลังสองก่อนเทียบ
-        if (distSqr <= (0.2 * 0.2) && checkDistance)
-        {
-            Debug.Log("ถึงเป้าหมาย");
-            PickUp(serviceItem);
-            checkDistance = false;
-            
-            return;
-        }
-    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
+            other.TryGetComponent<Player>(out var player);
+            player.AddItem(serviceItem);
             Debug.Log("Player entered the zone!");
-            interactObjData.objCollider.isTrigger = false;
         }
+        if(other.CompareTag("Employee"))
+        {
+            other.TryGetComponent<Employee>(out var employee);
+            employee.AddItem(serviceItem);
+            Debug.Log("NPC entered the zone!");
+        }
+
     }
 
-    public virtual void PickUp(ItemSO item)
+    public override void Interact(MoveHandleAI actor)
     {
-        targetEmplyee.AddItem(item);
+        actor.StartTravel(interactObjData);
+       
     }
 }
