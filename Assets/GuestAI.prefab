@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1058252928111375209}
   - component: {fileID: 2597580409967161290}
   - component: {fileID: 4079162904458962509}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,9 +115,9 @@ GameObject:
   - component: {fileID: 6028295870743468438}
   - component: {fileID: 3460122585557764002}
   - component: {fileID: 9064958387561804640}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GuestAI
-  m_TagString: Untagged
+  m_TagString: Guest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -160,7 +160,7 @@ NavMeshAgent:
   m_Height: 0.1
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &6028295870743468438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +180,20 @@ MonoBehaviour:
     floorNumber: 0
     ObjPosition: {fileID: 0}
     objCollider: {fileID: 0}
+    roomData:
+      roomType: 0
+      roomLevel: 0
+      RoomID: 0
+      isAvailable: 0
+      currentServiceRequest: {fileID: 0}
+    itemData: {fileID: 0}
   travelState: 0
+  finalRoomData:
+    roomType: 0
+    roomLevel: 0
+    RoomID: 0
+    isAvailable: 0
+    currentServiceRequest: {fileID: 0}
   showDebugInfo: 1
   currentDestination: {x: 0, y: 0, z: 0}
   guestPhase: 0
@@ -189,7 +202,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eac9c4fc987bd2f469cc2bb5c14ddab2, type: 2}
   serviceCooldown: 5
   rentNet: 0
-  serviceValue: 0
+  servicePoint: 0
   currentService: {fileID: 0}
 --- !u!58 &3460122585557764002
 CircleCollider2D:
@@ -264,7 +277,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8178648369598667431}
   - component: {fileID: 7580840304464922069}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: "\u0E2A\u0E01\u0E23\u0E35\u0E19\u0E0A\u0E47\u0E2D\u0E15 2026-02-10 022135-Photoroom_0"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +367,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3116676202892891753}
   - component: {fileID: 3772869818140515600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +461,7 @@ GameObject:
   - component: {fileID: 6277068789901062772}
   - component: {fileID: 2544515299476996307}
   - component: {fileID: 4969533170173457198}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

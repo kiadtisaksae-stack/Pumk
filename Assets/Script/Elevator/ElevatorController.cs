@@ -55,6 +55,7 @@ public class ElevatorController : MonoBehaviour
     public int maxCapacity = 4;        // จำนวนคนสูงสุดที่ลิฟต์รับได้
     public float speed = 3f;           // ความเร็วการเคลื่อนที่ของลิฟต์
     public int currentFloor = 0;       // ชั้นปัจจุบันที่ลิฟต์อยู่
+    public float distacneWaitslottolift = 3f; // ระยะห่างสูงสุดที่ AI จะยอมขึ้นลิฟต์ได้
 
     [Header("Floor Settings")]
     public Transform[] floorTargets;   // ตำแหน่งพิกัด Y ของแต่ละชั้น
@@ -70,6 +71,7 @@ public class ElevatorController : MonoBehaviour
 
     public ElevatorDirection currentDirection = ElevatorDirection.Idle;
     public bool isMoving = false;
+    private Coroutine elevatorRoutine;
 
     private void Awake()
     {
@@ -98,12 +100,12 @@ public class ElevatorController : MonoBehaviour
             if (isDebugMode)
                 Debug.Log($"<color=green>Register: {character.name} พร้อมที่ชั้น {floor}</color>");
         }
-
-        // เริ่มการทำงานถ้าลิฟต์ว่างอยู่
-        if (!isMoving)
+        // แก้ไขตรงนี้: ถ้ายังไม่มี Loop ทำงานอยู่ หรือ Loop เก่าจบไปแล้ว ให้เริ่มใหม่
+        if (elevatorRoutine == null)
         {
-            StartCoroutine(ProcessElevatorLoop());
+            elevatorRoutine = StartCoroutine(ProcessElevatorLoop());
         }
+        
     }
 
     /// <summary>
@@ -251,7 +253,12 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public IEnumerator ProcessElevatorLoop()
     {
-        if (isMoving) yield break; // ป้องกันการรันซ้ำ
+        // กันเหนียว: ถ้าเข้ามาแล้ว isMoving เป็น true อยู่แล้วให้จบ (ป้องกันซ้อน)
+        if (isMoving)
+        {
+            elevatorRoutine = null;
+            yield break;
+        }
         isMoving = true;
 
         // Loop ตราบใดที่มีคิว หรือ มีผู้โดยสารค้างอยู่
@@ -276,6 +283,7 @@ public class ElevatorController : MonoBehaviour
 
             yield return StartCoroutine(OpenDoors());
             yield return new WaitForSeconds(0.2f);
+            elevatorRoutine = null; // สำคัญมาก!
         }
 
         isMoving = false;
@@ -356,12 +364,16 @@ public class ElevatorController : MonoBehaviour
 
                 if (shouldPickUp)
                 {
+                    if (character.assignedElevator != this)
+                    {
+                        continue; // ถ้าไม่ใช่ลิฟต์ที่ชั้นส่งไปเรียก ห้ามรับ!
+                    }
                     // รอจนกว่า AI จะเดินมาถึงหน้าลิฟต์จริงๆ (แก้บัคตัวทิพย์)
                     float waitTime = 3f;
                     yield return new WaitUntil(() => {
                         waitTime -= Time.deltaTime;
                         float dist = Vector2.Distance(character.transform.position, transform.position);
-                        return dist < 0.8f || waitTime <= 0;
+                        return dist < distacneWaitslottolift || waitTime <= 0;
                     });
 
                     if (isDebugMode) Debug.Log($"<color=green>Elevator: รับ {character.name} (ไป {character.targetFloor})</color>");

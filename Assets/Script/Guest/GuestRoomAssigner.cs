@@ -5,7 +5,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
 {
     [Header("References")]
     [SerializeField] private GuestAI targetGuest;
-    private ElevatorController hotelElevator;
 
     [Header("Settings")]
     [SerializeField] private float dragAlpha = 0.6f;
@@ -17,7 +16,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private void Awake()
     {
         _originalPosition = transform.localPosition;
-        hotelElevator = FindObjectOfType<ElevatorController>();
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
 
         if (targetGuest == null)
@@ -71,10 +69,9 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
             if (targetGuest != null)
             {
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
-
+                targetGuest.finalRoomData = room.RoomData;
                 targetGuest.StartTravel(
-                    room.interactObjData,
-                    hotelElevator
+                room.interactObjData
                 );
                 room.AssignGuest(targetGuest);
 
