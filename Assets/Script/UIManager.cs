@@ -17,9 +17,14 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         SetupLevelButtons();
+        SetUpStart();
     }
 
     // Setup ปุ่มให้โหลด Scene อัตโนมัติ
+    public void SetUpStart()
+    {
+        UpdateGoldText(GameManager.Instance.Gold);
+    }
     public void SetupLevelButtons()
     {
         foreach (Button btn in levelButtons)

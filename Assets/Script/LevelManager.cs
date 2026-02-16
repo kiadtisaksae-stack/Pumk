@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour
     private RewardRank rank;
 
     private int gold;
+    private bool levelEnded = false;
 
 
 
@@ -22,15 +23,21 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         currentPoints = 0;
+        levelEnded = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         gameTime -= Time.deltaTime;
-        if (gameTime <= 0)
+        if (levelEnded == true)
+        {
+            return;
+        }
+        else if (gameTime <= 0)
         {
             EndLevel();
+            levelEnded = true;
         }
     }
     public void AddMoney(int amount)

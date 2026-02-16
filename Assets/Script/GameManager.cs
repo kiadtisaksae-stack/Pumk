@@ -33,17 +33,12 @@ public class GameManager : MonoBehaviour
     public void AddGold(int amount)
     {
         Gold += amount;
-        UIManager uIManager = FindAnyObjectByType<UIManager>();
-        uIManager.UpdateGoldText(Gold);
-
+        
     }
     public void OnSelectLevel(string levelName)
     {
         
     }
-    public void OnClickPlay()
-    {
-        SceneManager.LoadScene("");
-    }
+
 }
 
