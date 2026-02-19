@@ -30,20 +30,34 @@ public class ServiceManager : MonoBehaviour
     public void StartRequests(GuestAI guest)
     {
         StartCoroutine(ProcessRequests(guest));
+
     }
+
+
 
     IEnumerator ProcessRequests(GuestAI guest)
     {
-        foreach (ItemSO service in listService) 
+        foreach (ItemSO service in listService)
         {
             Debug.Log("ลูกค้าขอ: " + service.name);
-            ServicePopUp(service , roomServiceButton);
+            guest.enabled = true;
+            ServicePopUp(service, roomServiceButton);
             guest.currentService = service; //ใช้ service ตัวนี้
 
             float timer = 0f;
             isSuccess = false;
+            guest.isDecaying = true;
 
-            while (timer < service.deliverTime)
+            //if (isSuccess)
+            //{
+            //    guest.isDecaying = false;
+            //    roomServiceButton.gameObject.SetActive(false);
+            //    guest.currentService = null;
+            //    Debug.Log(service.name + " ส่งสำเร็จ");
+            //    guest.servicePoint++;
+            //}
+
+            while (true)
             {
                 timer += Time.deltaTime;
 
@@ -51,7 +65,17 @@ public class ServiceManager : MonoBehaviour
                 if (isSuccess == true)
                 {
                     Debug.Log("ส่งของสำเร็จ! (ใช้เวลา " + timer.ToString("F1") + " วิ)");
+                    guest.isDecaying = false;
+                    guest.enabled = false;
                     break; // <--- พระเอกของเรา! สั่งให้ออกจาก loop เวลาทันที (ไม่ต้องรอจนหมดเวลา)
+                }
+
+                if (guest.isExit)
+                {
+                    Debug.Log("หยุดการ Request ทั้งหมด!!!");
+                    roomServiceButton.gameObject.SetActive(false);
+                    StopAllCoroutines();
+                    break;
                 }
 
                 yield return null; // พัก 1 เฟรม แล้วกลับมาเช็คใหม่
@@ -72,14 +96,16 @@ public class ServiceManager : MonoBehaviour
                 guest.currentService = null;
                 Debug.Log(service.name + " ส่งสำเร็จ");
                 guest.servicePoint++;
-                yield return service; // (ถ้าโค้ดเดิมของคุณต้องการ return ค่านี้)
+                //yield return service; // (ถ้าโค้ดเดิมของคุณต้องการ return ค่านี้)
             }
 
             // 3. พัก Cooldown ก่อนไป service ต่อไป
             yield return new WaitForSeconds(serviceCooldown);
         }
         Debug.Log("Service หมดแล้ว! (Check Out All)");
+        guest.enabled = true;
         guest.CheckOut(counter.interactObjData);
+        StopAllCoroutines();
     }
 
     public bool RequestCheck(ItemSO service , List<ItemSO> inventory)

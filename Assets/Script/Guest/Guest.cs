@@ -24,6 +24,14 @@ public enum GuestType
 public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
+    [Header("Heart and Decaying to Exit")]
+    public float heart;
+    public float decaysHit;
+    public bool isDecaying = false;
+
+
+    private ExitDoor door;
+    public bool isExit = false;
 
     [Header("Service")]
     public List<ItemSO> allService = new List<ItemSO>();
@@ -37,20 +45,54 @@ public class GuestAI : MoveHandleAI
 
     private void Start()
     {
+        door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
+        StartCoroutine(StartDecay());
     }
     //Flow = TriggerEvent => SO => This
+
 
     public void RequestService(ServiceManager serviceManager)
     {
         guestPhase = Guestphase.RequestingService;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         serviceManager.listService.Clear();
         serviceManager.ServiceSetUp(allService);
         Debug.Log("เริ่มขอรายการ !!");
         serviceManager.StartRequests(this);
     }
 
+    IEnumerator StartDecay()
+    {
+        while (heart > 0)
+        {
+            yield return new WaitForSeconds(1f); // Delay กันค้าง
+            if (isDecaying)
+            {
+                yield return new WaitForSeconds(5f);
+                Decay(decaysHit);
+            }         
+        }
+    }
+
+    private void Decay(float decayAmount)
+    {
+        heart -= decayAmount;
+        Debug.Log("เหลือ" + heart);
+        if (heart <= 0)
+        {
+            QuitHotel(door.interactObjData);
+        }
+    }
+
+
+    public void QuitHotel(InteractObjData exit)
+    {
+        isExit = true;
+        StopAllCoroutines();
+        Debug.Log("ออกจากโรงเรมแล้ว ไม่พอใจ");
+        StartTravel(exit);
+    }
 
     public void CheckOut(InteractObjData targetObj)
     {
