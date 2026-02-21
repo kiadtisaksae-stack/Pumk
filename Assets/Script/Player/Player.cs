@@ -18,6 +18,7 @@ public class Player : MoveHandleAI
         base.Awake();
         mainCamera = Camera.main;
     }
+
     private void OnEnable()
     {
         gameInput.OnClickPosition += OnClickPosition;

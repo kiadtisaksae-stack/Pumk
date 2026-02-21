@@ -42,7 +42,8 @@ public class Room : CanInteractObj,IInteractable
             {
                 serviceManager.RequestCheck(guestInRoom.currentService, player.inventory);
             }
-            
+            player.travelState = TravelState.Idle;
+
         }
         if( (collision.CompareTag("Employee")))
         {
@@ -53,6 +54,7 @@ public class Room : CanInteractObj,IInteractable
             {
                 serviceManager.RequestCheck(guestInRoom.currentService, emplyee.inventory);
             }
+            
         }
         if (collision.CompareTag("Guest"))
         {
@@ -61,6 +63,7 @@ public class Room : CanInteractObj,IInteractable
             if(guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
             RoomData.isAvailable = true;
+            guest.travelState = TravelState.stayRoom;
             StartService();
 
         }

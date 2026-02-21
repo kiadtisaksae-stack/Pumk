@@ -18,12 +18,14 @@ public class ServiceObj : CanInteractObj
         {
             other.TryGetComponent<Player>(out var player);
             player.AddItem(serviceItem);
+            player.travelState = TravelState.Idle;
             Debug.Log("Player entered the zone!");
         }
         if(other.CompareTag("Employee"))
         {
             other.TryGetComponent<Employee>(out var employee);
             employee.AddItem(serviceItem);
+            employee.travelState = TravelState.Idle;
             Debug.Log("NPC entered the zone!");
         }
 
