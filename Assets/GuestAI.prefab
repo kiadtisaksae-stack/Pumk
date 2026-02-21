@@ -198,12 +198,12 @@ MonoBehaviour:
   currentDestination: {x: 0, y: 0, z: 0}
   assignedElevator: {fileID: 0}
   guestPhase: 0
-  heart: 3
-  decaysHit: 1
+  heart: 5
+  decaysHit: 0.5
   isDecaying: 0
-  allService:
-  - {fileID: 11400000, guid: 70d848090c8db2f4589ee16f708a0747, type: 2}
-  - {fileID: 11400000, guid: eac9c4fc987bd2f469cc2bb5c14ddab2, type: 2}
+  isExit: 0
+  serviceCount: 3
+  servicePool: []
   serviceCooldown: 5
   rentNet: 0
   servicePoint: 0

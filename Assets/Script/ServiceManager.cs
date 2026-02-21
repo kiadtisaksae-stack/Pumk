@@ -40,22 +40,14 @@ public class ServiceManager : MonoBehaviour
         foreach (ItemSO service in listService)
         {
             Debug.Log("ลูกค้าขอ: " + service.name);
-            guest.enabled = true;
+            guest.SetRendererActive(true);
             ServicePopUp(service, roomServiceButton);
             guest.currentService = service; //ใช้ service ตัวนี้
 
             float timer = 0f;
             isSuccess = false;
             guest.isDecaying = true;
-
-            //if (isSuccess)
-            //{
-            //    guest.isDecaying = false;
-            //    roomServiceButton.gameObject.SetActive(false);
-            //    guest.currentService = null;
-            //    Debug.Log(service.name + " ส่งสำเร็จ");
-            //    guest.servicePoint++;
-            //}
+            guest.StartDelay(guest.isDecaying);
 
             while (true)
             {
@@ -66,7 +58,9 @@ public class ServiceManager : MonoBehaviour
                 {
                     Debug.Log("ส่งของสำเร็จ! (ใช้เวลา " + timer.ToString("F1") + " วิ)");
                     guest.isDecaying = false;
-                    guest.enabled = false;
+                    guest.SetRendererActive(false);
+                    guest.StopAllCoroutines();
+                    guest.heart = 5f;
                     break; // <--- พระเอกของเรา! สั่งให้ออกจาก loop เวลาทันที (ไม่ต้องรอจนหมดเวลา)
                 }
 
@@ -103,7 +97,6 @@ public class ServiceManager : MonoBehaviour
             yield return new WaitForSeconds(serviceCooldown);
         }
         Debug.Log("Service หมดแล้ว! (Check Out All)");
-        guest.enabled = true;
         guest.CheckOut(counter.interactObjData);
         StopAllCoroutines();
     }
@@ -132,7 +125,7 @@ public class ServiceManager : MonoBehaviour
         serviceButton.image.sprite = service.itemIcon;
     }
 
-    public void ServiceSetUp(List<ItemSO> allService) //Set Up service ก่อนใช้งาน
+    public void ServiceSetUp(List<ItemSO> allService , int serviceCount) //Set Up service ก่อนใช้งาน
     {
         //หา Luggage ก่อน
         FindLuggageService(allService);
@@ -140,25 +133,29 @@ public class ServiceManager : MonoBehaviour
         List<ItemSO> randomService = new List<ItemSO>(allService);
         ShuffleList(randomService);
         listService.AddRange(randomService);
+        if (listService.Count > serviceCount)
+        {
+            listService.RemoveAt(serviceCount);
+        }
         Debug.Log($"<color=green>Set Up รายการService เรียบร้อย</color>");
     }
 
     void ShuffleList(List<ItemSO> allService) //สุ่มลำดับ service ที่เหลือ
     {
-        //for (int i = 0; i < allService.Count; i++)
-        //{
-        //    ItemSO service = allService[i];
-        //    int random = Random.Range(i, allService.Count);
-        //    allService[i] = allService[random];
-        //    allService[random] = service;
-        //}
+        for (int i = 0; i < allService.Count; i++)
+        {
+            ItemSO service = allService[i];
+            int random = Random.Range(i, allService.Count);
+            allService[i] = allService[random];
+            allService[random] = service;
+        }
     }
 
     public void FindLuggageService(List<ItemSO> allService) //หาสัมภาระเสมอ
     {
         foreach (ItemSO service in allService)
         {
-            if (service.requiredForService == ServiceRequestType.DeliveryLuggage && allService == null)
+            if (service.requiredForService == ServiceRequestType.DeliveryLuggage)
             {
                 listService.Add(service);
                 allService.Remove(service);

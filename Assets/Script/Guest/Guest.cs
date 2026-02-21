@@ -24,6 +24,7 @@ public enum GuestType
 public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
+
     [Header("Heart and Decaying to Exit")]
     public float heart;
     public float decaysHit;
@@ -34,7 +35,8 @@ public class GuestAI : MoveHandleAI
     public bool isExit = false;
 
     [Header("Service")]
-    public List<ItemSO> allService = new List<ItemSO>();
+    public int serviceCount;
+    public List<ItemSO> servicePool = new List<ItemSO>();
     public float serviceCooldown = 5f;
 
     public int rentNet;
@@ -47,31 +49,38 @@ public class GuestAI : MoveHandleAI
     {
         door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
-        StartCoroutine(StartDecay());
+ 
     }
     //Flow = TriggerEvent => SO => This
+
+
+
 
 
     public void RequestService(ServiceManager serviceManager)
     {
         guestPhase = Guestphase.RequestingService;
-        //gameObject.SetActive(false);
+        SetRendererActive(false);
         serviceManager.listService.Clear();
-        serviceManager.ServiceSetUp(allService);
+        serviceManager.ServiceSetUp(servicePool , serviceCount);
         Debug.Log("เริ่มขอรายการ !!");
         serviceManager.StartRequests(this);
     }
 
-    IEnumerator StartDecay()
+    public void StartDelay(bool isDecaying)
+    {
+        if (isDecaying)
+        {
+            StartCoroutine(DecayProgress());
+        }       
+    }
+
+    IEnumerator DecayProgress()
     {
         while (heart > 0)
         {
-            yield return new WaitForSeconds(1f); // Delay กันค้าง
-            if (isDecaying)
-            {
-                yield return new WaitForSeconds(5f);
-                Decay(decaysHit);
-            }         
+            yield return new WaitForSeconds(3f); 
+            Decay(decaysHit);         
         }
     }
 
@@ -97,10 +106,21 @@ public class GuestAI : MoveHandleAI
     public void CheckOut(InteractObjData targetObj)
     {
         guestPhase = Guestphase.CheckingOut;
-        gameObject.SetActive(true);
+        SetRendererActive(true);
         CalculateRentNET();
         targetIObj.objCollider.isTrigger = true;
         StartTravel(targetObj);
+    }
+
+
+
+    public void SetRendererActive(bool isEnable)
+    {
+        Renderer[] allRenderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in allRenderers)
+        {
+            r.enabled = isEnable;
+        }
     }
 
     public void SetGuestPhase(Guestphase guestPhase)

@@ -10,6 +10,7 @@ public class Counter : CanInteractObj
     {
         if (collision.TryGetComponent<GuestAI>(out var guest))
         {
+            if (guest.guestPhase != Guestphase.CheckingOut) return;
             Debug.Log(guest + " check out get Money " + guest.rentNet);
             LevelManager gameManager = FindAnyObjectByType<LevelManager>();
             ShowMoneyPopup(guest.rentNet);

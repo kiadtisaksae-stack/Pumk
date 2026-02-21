@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
+using UnityEngine;
 
 public class GuestSpawner : MonoBehaviour
 {
+    public List<ItemSO> servicePoolInLevel = new List<ItemSO>();
     public GameObject guestPrefab;
     [Header("Positions")]
     public Transform standPoint;    // นอกจอ (จุด Spawn)
@@ -16,6 +19,14 @@ public class GuestSpawner : MonoBehaviour
         InvokeRepeating("SpawnGuest", 1f, 5f);
     }
 
+
+    public void AddServiceToGuest(GuestAI guest)
+    {
+        guest.servicePool.AddRange(servicePoolInLevel);
+    }
+
+
+
     [ContextMenu("Spawn Guest")]
     public void SpawnGuest()
     {
@@ -28,7 +39,8 @@ public class GuestSpawner : MonoBehaviour
 
         // 2. สร้างแขกนอกจอ
         GameObject go = Instantiate(guestPrefab, standPoint.position, Quaternion.identity);
-        MoveHandleAI guest = go.GetComponent<MoveHandleAI>();
+        GuestAI guest = go.GetComponent<GuestAI>();
+        AddServiceToGuest(guest);
 
         if (guest == null)
         {

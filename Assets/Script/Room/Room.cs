@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
+[RequireComponent(typeof(ServiceManager))]
 public class Room : CanInteractObj,IInteractable
 {
 
