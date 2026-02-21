@@ -11,7 +11,8 @@ public enum TravelState
     WalkToElevator,
     InElevator,
     OutElevator,
-    WalkToTarget
+    WalkToTarget,
+    stayRoom
 }
 
 /*
@@ -44,12 +45,24 @@ public abstract class MoveHandleAI : MonoBehaviour
     public ElevatorController assignedElevator;
     private ElevatorManager _manager;
 
+    public Animator animator;
+
+
 
     protected virtual void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false; // ปิดการหมุนอัตโนมัติของ Agent (เหมาะกับ 2D)
         agent.updateUpAxis = false;
+    }
+    public virtual void Start()
+    {
+        animator = GetComponentInChildren<Animator>();
+        // เช็กเพื่อความชัวร์ว่าเจอไหม
+        if (animator == null)
+        {
+            Debug.LogError($"หา Animator ไม่เจอใน {gameObject.name} หรือลูกๆ ของมัน!");
+        }
     }
     /// <summary>
     /// ตรวจสอบสถานะการเดินทางในทุกเฟรม โดยเฉพาะการเช็คระยะห่างว่าเดินถึงจุดรอหน้าลิฟต์หรือยัง
@@ -73,6 +86,39 @@ public abstract class MoveHandleAI : MonoBehaviour
                 OnReachedWaitSlot();
             }
         }
+       
+        if (agent.velocity.magnitude > 0.1f)
+        {
+            
+            if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToTarget)
+            {
+                animator.SetBool("isIdle", false);
+                animator.SetBool("isWalk", true);
+            }
+        }
+        else
+        {
+            if (travelState == TravelState.Idle || travelState == TravelState.CallElevator ||
+            travelState == TravelState.WaitAtSlot || travelState == TravelState.InElevator
+            || travelState == TravelState.stayRoom)
+            {
+                animator.SetBool("isWalk", false);
+
+                animator.SetBool("isIdle", true);
+            }
+        }
+        if (agent.velocity.x > 0.1f)
+        {
+            // เดินไปทางขวา (บวก) -> หมุน 0 องศา
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (agent.velocity.x < -0.1f)
+        {
+            // เดินไปทางซ้าย (ลบ) -> หมุน 180 องศา (หันกลับหลัง)
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+
+
     }
     /// <summary>
     /// ทำงานเมื่อ AI เดินมาถึงจุดรอหน้าลิฟต์ จะหยุดเดินและส่งสัญญาณไปที่ลิฟต์ (RegisterGuestReady)
