@@ -1,6 +1,7 @@
 using NUnit.Framework.Interfaces;
 using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(InteractObjWalkTo))]
 
 public class CanInteractObj : MonoBehaviour ,IInteractable
 {

@@ -18,7 +18,7 @@ public class ShelfService : MonoBehaviour
     {
         if (!collision.TryGetComponent(out GuestAI guest))
         {
-            if (guest.allService != null)
+            if (guest.servicePool != null)
             {
 
             }

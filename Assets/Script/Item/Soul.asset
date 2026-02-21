@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdcc335c5716fd44d9e87ec46602cc46, type: 3}
-  m_Name: Food
+  m_Name: Soul
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  itemName: Food
+  itemName: Soul
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 4652237018244174470, guid: 564207e5a1216b2478e96cd91ae495b2, type: 3}
+  itemIcon: {fileID: -7028366481181212325, guid: 2ab0eb76403ea514a988e3e03119392f, type: 3}
   requiredForService: 2
   pickupTime: 1
-  deliverTime: 20
+  deliverTime: 1

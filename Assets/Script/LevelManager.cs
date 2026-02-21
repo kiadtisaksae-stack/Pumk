@@ -10,6 +10,7 @@ public enum RewardRank
 public class LevelManager : MonoBehaviour
 {
     public int money = 1000;
+    public bool infiniteGameTime;
     public float gameTime = 300f;
     public int currentPoints = 0;
     private RewardRank rank;
@@ -29,6 +30,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (infiniteGameTime) return;
         gameTime -= Time.deltaTime;
         if (levelEnded == true)
         {
