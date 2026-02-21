@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdcc335c5716fd44d9e87ec46602cc46, type: 3}
   m_Name: Laundry
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  itemName: 
+  itemName: Laundry
   description: 
   prefabItem: {fileID: 0}
   itemIcon: {fileID: 0}
-  requiredForService: 0
+  requiredForService: 3
   pickupTime: 1
   deliverTime: 1
