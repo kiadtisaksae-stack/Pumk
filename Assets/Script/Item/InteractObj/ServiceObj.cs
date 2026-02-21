@@ -6,11 +6,6 @@ public class ServiceObj : CanInteractObj
     public ItemSO serviceItem;
 
 
-    void Start()
-    {
-
-    }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,6 +28,7 @@ public class ServiceObj : CanInteractObj
 
     public override void Interact(MoveHandleAI actor)
     {
+        base.Interact(actor);
         actor.StartTravel(interactObjData);
        
     }

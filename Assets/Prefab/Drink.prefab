@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8000961478992322173}
   - component: {fileID: 744900301675007850}
   - component: {fileID: 1460336764324549711}
-  - component: {fileID: 8339090384085100359}
   m_Layer: 0
   m_Name: Drink
   m_TagString: Untagged
@@ -156,6 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e21150ee923b084286c0bd0509e0109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceObj
+  bounceAmount: 0.5
+  duration: 0.25
   _interactObjData:
     floorNumber: 2
     ObjPosition: {fileID: 0}
@@ -168,18 +169,3 @@ MonoBehaviour:
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
   serviceItem: {fileID: 11400000, guid: 6ce47619c54b4d34cb11a827afa37b51, type: 2}
-  isLuggage: 0
---- !u!114 &8339090384085100359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5641677487575070449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a388ac639d7ebb4eaff869a4d8ce47b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InteractObjWalkTo
-  bounceAmount: 0.5
-  duration: 0.25
