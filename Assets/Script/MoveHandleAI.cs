@@ -5,6 +5,7 @@ using System.Collections;
 public enum TravelState
 {
     Idle,
+    WalkToWaitSlot,
     WalkToCallElevator,
     CallElevator,
     WaitAtSlot,
@@ -71,26 +72,26 @@ public abstract class MoveHandleAI : MonoBehaviour
     {
         if (!agent.isActiveAndEnabled) return;
 
+
         // ตรวจสอบระยะเมื่อกำลังเดินไปรอลิฟต์
-        if (travelState == TravelState.WalkToCallElevator)
+        if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToWaitSlot)
         {
             if (agent.pathPending) return;
 
-            // ใช้ระยะทาง Vector2 เพื่อความแม่นยำของพิกัดราบ
             float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y),
                                           new Vector2(currentDestination.x, currentDestination.y));
 
-            // ตรวจสอบว่าถึงระยะ Stopping หรือค่าเผื่อปลอดภัย (0.3f) หรือยัง
             if (dist <= agent.stoppingDistance + 0.3f || agent.remainingDistance <= agent.stoppingDistance + 0.3f)
             {
-                OnReachedWaitSlot();
+                OnReachedWaitSlot(); // เมื่อถึงแล้วให้เรียกฟังก์ชันหยุด
             }
         }
-       
+
         if (agent.velocity.magnitude > 0.1f)
         {
             
-            if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToTarget)
+            if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToTarget
+                || travelState == TravelState.WalkToWaitSlot)
             {
                 animator.SetBool("isIdle", false);
                 animator.SetBool("isWalk", true);
@@ -125,20 +126,29 @@ public abstract class MoveHandleAI : MonoBehaviour
     /// </summary>
     private void OnReachedWaitSlot()
     {
-        if (travelState != TravelState.WalkToCallElevator && travelState != TravelState.CallElevator) return;
+        if (travelState != TravelState.WalkToCallElevator && travelState != TravelState.WalkToWaitSlot) return;
 
-        travelState = TravelState.CallElevator;
+        // หยุดการเคลื่อนที่ทันที
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
 
-        if (assignedElevator != null)
+        if (travelState == TravelState.WalkToCallElevator)
         {
-            // ส่งสัญญาณบอกลิฟต์ว่า "ฉันพร้อมแล้ว"
-            assignedElevator.RegisterGuestReady(this);
-            travelState = TravelState.WaitAtSlot;
+            // กรณีรอลิฟต์: ให้ทำการ Register กับลิฟต์
+            travelState = TravelState.CallElevator;
+            if (assignedElevator != null)
+            {
+                assignedElevator.RegisterGuestReady(this);
+                travelState = TravelState.WaitAtSlot;
+            }
+        }
+        else if (travelState == TravelState.WalkToWaitSlot)
+        {
+            // กรณีรอคิวหน้าร้าน: ให้เปลี่ยนเป็นสถานะ Idle เพื่อเล่นแอนิเมชันยืนนิ่ง
+            travelState = TravelState.Idle;
 
             if (showDebugInfo)
-                Debug.Log($"<color=cyan>{gameObject.name}: ถึงจุดรอและ Register แล้ว</color>");
+                Debug.Log($"<color=yellow>{gameObject.name}: ถึงจุดรอหน้าร้านแล้ว</color>");
         }
     }
 

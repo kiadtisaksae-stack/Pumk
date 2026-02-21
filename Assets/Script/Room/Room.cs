@@ -25,8 +25,9 @@ public class Room : CanInteractObj,IInteractable
 
         UpdateUpgradeButton();
     }
-    private void Start()
+    public override void Start()
     {
+        base.Start();
         serviceManager = GetComponent<ServiceManager>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -64,6 +65,7 @@ public class Room : CanInteractObj,IInteractable
             if (guest.finalRoomData != RoomData) return;
             RoomData.isAvailable = true;
             guest.travelState = TravelState.stayRoom;
+            guest.AnimateEnterRoom();
             StartService();
 
         }
@@ -121,6 +123,7 @@ public class Room : CanInteractObj,IInteractable
 
     public override void Interact(MoveHandleAI actor)
     {
+        base.Interact(actor);
         actor.finalRoomData = RoomData;
         actor.StartTravel(interactObjData);
     }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5206050764747824850}
   - component: {fileID: 1520720586793306523}
   - component: {fileID: 4514718338913226272}
-  - component: {fileID: 287404836382157912}
   - component: {fileID: 716012525286206154}
   m_Layer: 0
   m_Name: Food
@@ -139,20 +138,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &287404836382157912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1071023416489689448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a388ac639d7ebb4eaff869a4d8ce47b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InteractObjWalkTo
-  bounceAmount: 0.5
-  duration: 0.25
 --- !u!114 &716012525286206154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e21150ee923b084286c0bd0509e0109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceObj
+  bounceAmount: 0.5
+  duration: 0.25
   _interactObjData:
     floorNumber: 2
     ObjPosition: {fileID: 0}

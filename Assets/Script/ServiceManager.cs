@@ -40,7 +40,6 @@ public class ServiceManager : MonoBehaviour
         foreach (ItemSO service in listService)
         {
             Debug.Log("ลูกค้าขอ: " + service.name);
-            guest.SetRendererActive(true);
             ServicePopUp(service, roomServiceButton);
             guest.currentService = service; //ใช้ service ตัวนี้
 
@@ -58,7 +57,7 @@ public class ServiceManager : MonoBehaviour
                 {
                     Debug.Log("ส่งของสำเร็จ! (ใช้เวลา " + timer.ToString("F1") + " วิ)");
                     guest.isDecaying = false;
-                    guest.SetRendererActive(false);
+                    
                     guest.StopAllCoroutines();
                     guest.heart = 5f;
                     break; // <--- พระเอกของเรา! สั่งให้ออกจาก loop เวลาทันที (ไม่ต้องรอจนหมดเวลา)

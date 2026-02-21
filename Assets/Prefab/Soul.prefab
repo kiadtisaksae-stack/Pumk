@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4945631962473227298}
   - component: {fileID: 255619500838146882}
   - component: {fileID: 4484422574239646851}
-  - component: {fileID: 145844284424024923}
   m_Layer: 0
   m_Name: Soul
   m_TagString: Untagged
@@ -156,6 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e21150ee923b084286c0bd0509e0109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceObj
+  bounceAmount: 0.5
+  duration: 0.25
   _interactObjData:
     floorNumber: 2
     ObjPosition: {fileID: 0}
@@ -168,18 +169,3 @@ MonoBehaviour:
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
   serviceItem: {fileID: 11400000, guid: 09a62c77c80ef5e4ea403be06614c3e1, type: 2}
-  isLuggage: 0
---- !u!114 &145844284424024923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1166998222137053510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a388ac639d7ebb4eaff869a4d8ce47b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InteractObjWalkTo
-  bounceAmount: 0.5
-  duration: 0.25

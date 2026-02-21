@@ -66,7 +66,7 @@ public class GuestSpawner : MonoBehaviour
     private void MoveToSlot1(MoveHandleAI guest)
     {
         guestInSlot1 = guest;
-        guest.MoveTo(slot1.position, TravelState.Idle);
+        guest.MoveTo(slot1.position, TravelState.WalkToWaitSlot);
 
         guest.OnLeaveWalkInQueue = (g) => {
             guestInSlot1 = null;
@@ -77,7 +77,7 @@ public class GuestSpawner : MonoBehaviour
     private void MoveToSlot2(MoveHandleAI guest)
     {
         guestInSlot2 = guest;
-        guest.MoveTo(slot2.position, TravelState.Idle);
+        guest.MoveTo(slot2.position, TravelState.WalkToWaitSlot);
 
         guest.OnLeaveWalkInQueue = (g) => {
             guestInSlot2 = null;

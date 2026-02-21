@@ -73,6 +73,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 targetGuest.StartTravel(
                 room.interactObjData
                 );
+                
                 room.AssignGuest(targetGuest);
 
                 gameObject.SetActive(false);
