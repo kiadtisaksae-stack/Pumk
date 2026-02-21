@@ -45,8 +45,9 @@ public class GuestAI : MoveHandleAI
     public ItemSO currentService;
 
 
-    private void Start()
+    public override void Start()
     {
+        base.Start();
         door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
  

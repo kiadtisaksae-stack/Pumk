@@ -2396,6 +2396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 023ce9923ae5723449502da85198ab66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuestSpawner
+  servicePoolInLevel: []
   guestPrefab: {fileID: 1013974049831768083, guid: 681e5085d5ad8b44a92d024aa2e1fa92, type: 3}
   standPoint: {fileID: 1894098023}
   slot1: {fileID: 1902315987}
