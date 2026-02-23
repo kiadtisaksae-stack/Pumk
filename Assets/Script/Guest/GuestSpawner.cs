@@ -5,7 +5,7 @@ using UnityEngine;
 public class GuestSpawner : MonoBehaviour
 {
     public List<ItemSO> servicePoolInLevel = new List<ItemSO>();
-    public GameObject guestPrefab;
+    public List<GameObject> guestPrefabs;
     [Header("Positions")]
     public Transform standPoint;    // นอกจอ (จุด Spawn)
     public Transform slot1;         // หน้าร้าน จุดที่ 1 (คนแรก)
@@ -30,36 +30,38 @@ public class GuestSpawner : MonoBehaviour
     [ContextMenu("Spawn Guest")]
     public void SpawnGuest()
     {
-        // 1. ตรวจสอบก่อนว่าคิวเต็มไหม
+        // ตรวจสอบว่าใน List ยังมีแขกเหลืออยู่ไหม
+        if (guestPrefabs == null || guestPrefabs.Count == 0)
+        {
+            Debug.Log("แขกใน List หมดแล้ว! หยุดการ Spawn");
+            CancelInvoke("SpawnGuest"); // ยกเลิกการเรียกซ้ำเพราะไม่มีแขกให้สร้างแล้ว
+            return;
+        }
+        // ตรวจสอบคิวหน้าร้าน (ถ้าเต็มให้รอ Invoke รอบหน้าค่อยมาเช็คใหม่)
         if (guestInSlot1 != null && guestInSlot2 != null)
         {
-            Debug.Log("คิวหน้าร้านเต็มแล้ว!");
             return;
         }
 
-        // 2. สร้างแขกนอกจอ
-        GameObject go = Instantiate(guestPrefab, standPoint.position, Quaternion.identity);
+        GameObject selectedPrefab = guestPrefabs[0];
+        guestPrefabs.RemoveAt(0);
+        GameObject go = Instantiate(selectedPrefab, standPoint.position, Quaternion.identity);
         GuestAI guest = go.GetComponent<GuestAI>();
-        AddServiceToGuest(guest);
-
-        if (guest == null)
+        if (guest != null)
         {
-            Debug.LogError("GuestPrefab ไม่มี component MoveHandleAI!");
-            Destroy(go);
-            return;
-        }
+            AddServiceToGuest(guest);
+            guest.currentFloor = 0;
+            guest.name = $"Guest_Remaining_{guestPrefabs.Count}";
 
-        guest.currentFloor = 0;
-        guest.name = $"Guest_{Random.Range(1000, 9999)}";
-
-        // 3. ส่งแขกเข้าจุดหน้าร้านที่ว่างอยู่
-        if (guestInSlot1 == null)
-        {
-            MoveToSlot1(guest);
+            // 6. จัดเข้าคิวหน้าร้าน
+            if (guestInSlot1 == null)
+                MoveToSlot1(guest);
+            else
+                MoveToSlot2(guest);
         }
         else
         {
-            MoveToSlot2(guest);
+            Destroy(go);
         }
     }
 
