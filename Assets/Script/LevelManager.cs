@@ -72,6 +72,7 @@ public class LevelManager : MonoBehaviour
 
     public void EndLevel()
     {
+        levelEnded = true;
         CulculateRank();
         gold = (int)rank;
         LevelUI levelUI = FindAnyObjectByType<LevelUI>();

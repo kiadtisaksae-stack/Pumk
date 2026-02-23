@@ -4,6 +4,9 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
 
+    [Header("Background Song")]
+    public AudioClip audioBG;
+
     [Header("Audio Sources")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
@@ -20,6 +23,11 @@ public class SoundManager : MonoBehaviour
 
         // ทำให้ Object นี้อยู่ข้าม Scene (ไม่ถูกลบเมื่อโหลดฉากใหม่)
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        PlayMusic(audioBG);
     }
 
     // ฟังก์ชันสำหรับเล่นเพลง (Music)

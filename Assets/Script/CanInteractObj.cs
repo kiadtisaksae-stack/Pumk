@@ -13,6 +13,8 @@ public class CanInteractObj : MonoBehaviour ,IInteractable
     private InteractObjData _interactObjData;
     public InteractObjData interactObjData => _interactObjData;
 
+    public AudioClip objSFX;
+
     protected virtual void Awake()
     {
         interactObjData.ObjPosition = this.transform;
@@ -40,7 +42,7 @@ public class CanInteractObj : MonoBehaviour ,IInteractable
     }
     public virtual void Interact(MoveHandleAI actor)
     {
-        
+        SoundManager.Instance.PlaySFX(objSFX);
         Tweening();
     }
 
