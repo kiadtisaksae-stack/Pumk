@@ -10245,7 +10245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: gameTime
-      value: 20
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: currentPoints
