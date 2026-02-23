@@ -59,7 +59,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         if (hit.collider != null &&
             hit.collider.TryGetComponent<Room>(out var room))
         {
-            if (room.RoomData.isAvailable)
+            if (room.RoomData.isUnAvailable)
             {
                 Debug.Log("❌ ห้องนี้มีแขกแล้ว");
                 transform.localPosition = _originalPosition;

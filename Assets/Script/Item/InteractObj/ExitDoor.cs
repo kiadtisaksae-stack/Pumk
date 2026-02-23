@@ -6,8 +6,11 @@ public class ExitDoor : CanInteractObj
     {
         if (collision.TryGetComponent<GuestAI>(out var guest))
         {
-            Debug.Log(guest + " ออกไปแบบไม่จ่ายตัง" );
-            Destroy(guest.gameObject);
+            if (guest.guestPhase == Guestphase.CheckingOut) 
+            {
+                Debug.Log(guest + " ออกไปแบบไม่จ่ายตัง");
+                Destroy(guest.gameObject);
+            }
         }
     }
 }

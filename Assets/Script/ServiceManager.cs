@@ -11,14 +11,17 @@ public class ServiceManager : MonoBehaviour
 
 
     public bool isPlayerinRange;
+    public bool isSuccess;
     public Counter counter;
 
-    public bool isSuccess;
+    
+    private Room room;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         roomServiceButton.gameObject.SetActive(false);
         counter = FindAnyObjectByType<Counter>();
+        room = GetComponent<Room>();
     }
 
     // Update is called once per frame
@@ -97,6 +100,7 @@ public class ServiceManager : MonoBehaviour
         }
         Debug.Log("Service หมดแล้ว! (Check Out All)");
         guest.CheckOut(counter.interactObjData);
+        room.DirtyRoom();
         StopAllCoroutines();
     }
 
