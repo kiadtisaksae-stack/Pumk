@@ -100,22 +100,33 @@ public class ServiceManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public bool RequestCheck(ItemSO service , List<ItemSO> inventory)
+    public bool RequestCheck(ItemSO service , MoveHandleAI actor)
     {
-        //ฟังก์ชันสำหรับ check ของใน inven ที่มาถึงห้องแล้วว่ามีของที่ลูกค้า request ไหม
-        foreach (var item in inventory)
+        List<ItemSO> actorInventory = null;
+        Player playerActor = actor as Player;
+        Employee employeeActor = actor as Employee;
+
+        if (playerActor != null) actorInventory = playerActor.inventory;
+        else if (employeeActor != null) actorInventory = employeeActor.inventory;
+
+        if (actorInventory == null || service == null) return false;
+
+        // ค้นหาไอเทม
+        ItemSO itemToDeliver = actorInventory.Find(x => x == service);
+
+        if (itemToDeliver != null)
         {
-            if (item == service)
-            {
-                inventory.Remove(item);
-                Debug.Log("ลบไอเท็ม");
-                isSuccess = true;
-                break;
-            }
+            // ส่งสำเร็จ! ให้ลบผ่าน Method ของ Actor เพื่ออัปเดต UI
+            if (playerActor != null) playerActor.RemoveItem(itemToDeliver);
+            else if (employeeActor != null) employeeActor.RemoveItem(itemToDeliver);
+
+            isSuccess = true;
+            Debug.Log($"<color=cyan>ส่ง {itemToDeliver.itemName} สำเร็จและอัปเดต UI แล้ว</color>");
+            return true;
         }
 
-        return isSuccess;
-        // ใช้ไปก่อน
+        Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการในตัว!</color>");
+        return false;
     }
 
     public void ServicePopUp(ItemSO service , Button serviceButton)

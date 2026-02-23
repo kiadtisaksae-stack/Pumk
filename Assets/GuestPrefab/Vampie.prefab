@@ -303,7 +303,7 @@ MonoBehaviour:
   currentDestination: {x: 0, y: 0, z: 0}
   assignedElevator: {fileID: 0}
   animator: {fileID: 0}
-  characterVisual: {fileID: 0}
+  characterVisual: {fileID: 9181728219238303176}
   guestPhase: 0
   heart: 0
   decaysHit: 0

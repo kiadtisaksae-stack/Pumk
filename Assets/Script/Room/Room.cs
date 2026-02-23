@@ -34,28 +34,25 @@ public class Room : CanInteractObj,IInteractable
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("Actor Standing at the Door ");
             Player player = collision.GetComponent<Player>();
-
             if (player.finalRoomData != RoomData) return;
 
-            if (guestInRoom != null)
+            if (guestInRoom != null && guestInRoom.currentService != null)
             {
-                serviceManager.RequestCheck(guestInRoom.currentService, player.inventory);
+                serviceManager.RequestCheck(guestInRoom.currentService, player);
             }
             player.travelState = TravelState.Idle;
-
         }
-        if( (collision.CompareTag("Employee")))
+
+        if (collision.CompareTag("Employee"))
         {
-            Debug.Log("Employee Standing at the Door ");
-            Employee emplyee = collision.GetComponent<Employee>();
-            if (emplyee.finalRoomData != RoomData) return;
-            if (guestInRoom != null)
+            Employee employee = collision.GetComponent<Employee>();
+            if (employee.finalRoomData != RoomData) return;
+
+            if (guestInRoom != null && guestInRoom.currentService != null)
             {
-                serviceManager.RequestCheck(guestInRoom.currentService, emplyee.inventory);
+                serviceManager.RequestCheck(guestInRoom.currentService, employee);
             }
-            
         }
         if (collision.CompareTag("Guest"))
         {

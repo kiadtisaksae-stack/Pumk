@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MoveHandleAI
 {
@@ -9,7 +10,10 @@ public class Player : MoveHandleAI
     [Header("Inventory")]
     public int maxSlots = 3;
     public List<ItemSO> inventory = new List<ItemSO>();
-
+    [Header("Inventory UI")]
+    // ลาก Image ที่อยู่ใน UI Canvas มาใส่ที่นี่ตามจำนวน Max Slots
+    public List<Image> inventorySlotImages = new List<Image>();
+    public Sprite emptySlotSprite; // (Optional) รูปช่องว่าง
     public bool isbusy = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -22,6 +26,7 @@ public class Player : MoveHandleAI
     private void OnEnable()
     {
         gameInput.OnClickPosition += OnClickPosition;
+        RefreshInventoryUI();
     }
     private void OnDisable()
     {
@@ -71,11 +76,11 @@ public class Player : MoveHandleAI
         inventory.Add(newItem);
         Debug.Log($"เก็บ {newItem.itemName} เรียบร้อย. ช่องว่างเหลือ: {maxSlots - inventory.Count}");
 
-        // (Optional) เรียกอัปเดต UI ตรงนี้
-        // UpdateUI(); 
+        RefreshInventoryUI();
 
         return true; // เพิ่มสำเร็จ
     }
+    
 
     /// <summary>
     /// ลบไอเทมออกจากกระเป๋า
@@ -86,11 +91,38 @@ public class Player : MoveHandleAI
         if (inventory.Contains(itemToRemove))
         {
             inventory.Remove(itemToRemove);
+            RefreshInventoryUI();
             Debug.Log($"นำ {itemToRemove.itemName} ออกจากกระเป๋าแล้ว");
         }
         else
         {
             Debug.LogWarning($"ไม่พบไอเทม {itemToRemove.itemName} ในกระเป๋า");
+        }
+    }
+    public void RefreshInventoryUI()
+    {
+        for (int i = 0; i < inventorySlotImages.Count; i++)
+        {
+            if (i < inventory.Count)
+            {
+                // มีไอเทม: แสดงรูป Icon
+                inventorySlotImages[i].sprite = inventory[i].itemIcon;
+                inventorySlotImages[i].enabled = true;
+                inventorySlotImages[i].color = Color.white; // ให้สีชัดเจน
+            }
+            else
+            {
+                // ช่องว่าง
+                if (emptySlotSprite != null)
+                {
+                    inventorySlotImages[i].sprite = emptySlotSprite;
+                    inventorySlotImages[i].enabled = true;
+                }
+                else
+                {
+                    inventorySlotImages[i].enabled = false; // ถ้าไม่มีรูปว่างให้ปิด Image ไปเลย
+                }
+            }
         }
     }
 }
