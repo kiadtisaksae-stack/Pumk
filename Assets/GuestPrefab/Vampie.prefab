@@ -194,6 +194,8 @@ MonoBehaviour:
   targetGuest: {fileID: 5015793330667181214}
   dragAlpha: 0.6
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
+  onBeginDrag: {fileID: 8300000, guid: 11bc18888ca947e4288aa60221be1deb, type: 3}
+  onDragtoRoom: {fileID: 8300000, guid: e1c9a2edee3bfd64fb5935e23feb2a82, type: 3}
 --- !u!225 &7488191913487892795
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -289,7 +291,7 @@ MonoBehaviour:
       roomType: 0
       roomLevel: 0
       RoomID: 0
-      isAvailable: 0
+      isUnAvailable: 0
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
   travelState: 0
@@ -297,7 +299,7 @@ MonoBehaviour:
     roomType: 0
     roomLevel: 0
     RoomID: 0
-    isAvailable: 0
+    isUnAvailable: 0
     currentServiceRequest: {fileID: 0}
   showDebugInfo: 1
   currentDestination: {x: 0, y: 0, z: 0}

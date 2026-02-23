@@ -10,6 +10,11 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
     [SerializeField] private float dragAlpha = 0.6f;
     [SerializeField] private Vector3 hoverScale = new Vector3(1.1f, 1.1f, 1.1f);
 
+
+    [Header("Sound")]
+    public AudioClip onBeginDrag;
+    public AudioClip onDragtoRoom;
+
     private Vector3 _originalPosition;
     private CanvasGroup _canvasGroup;
 
@@ -24,6 +29,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        SoundManager.Instance.PlaySFX(onBeginDrag);
         _canvasGroup.alpha = dragAlpha;
         _canvasGroup.blocksRaycasts = false;
         transform.localScale = hoverScale;
@@ -68,6 +74,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
             if (targetGuest != null)
             {
+                SoundManager.Instance.PlaySFX(onDragtoRoom);
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
                 targetGuest.finalRoomData = room.RoomData;
                 targetGuest.StartTravel(

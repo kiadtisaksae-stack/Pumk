@@ -70,6 +70,7 @@ public class ServiceManager : MonoBehaviour
                 {
                     Debug.Log("หยุดการ Request ทั้งหมด!!!");
                     roomServiceButton.gameObject.SetActive(false);
+                    room.RoomData.isUnAvailable = false;
                     StopAllCoroutines();
                     break;
                 }

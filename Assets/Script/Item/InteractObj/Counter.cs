@@ -3,8 +3,20 @@ using UnityEngine;
 using DG.Tweening;
 public class Counter : CanInteractObj
 {
+    [Header("Game State")]
+    public int CheckOutCount;
+    private int currentCheckOutCount;
+
     public TextMeshProUGUI BounceText;
 
+    public AudioClip cashOutSound;
+    private LevelManager levelManager;
+
+    public override void Start()
+    {
+        base.Start();
+        levelManager = FindAnyObjectByType<LevelManager>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,14 +24,27 @@ public class Counter : CanInteractObj
         {
             if (guest.guestPhase != Guestphase.CheckingOut) return;
             Debug.Log(guest + " check out get Money " + guest.rentNet);
+            SoundManager.Instance.PlaySFX(cashOutSound);
             LevelManager gameManager = FindAnyObjectByType<LevelManager>();
             ShowMoneyPopup(guest.rentNet);
             // เพิ่มเงิน
             gameManager.AddMoney(guest.rentNet);
             gameManager.AddServicePoint(guest.servicePoint);
+            RefreshCheckOutCount();
+           
             // แสดง popup
             
             Destroy(guest.gameObject);
+        }
+    }
+
+
+    public void RefreshCheckOutCount()
+    {
+        currentCheckOutCount++;
+        if (currentCheckOutCount == CheckOutCount)
+        {
+            levelManager.EndLevel();
         }
     }
 

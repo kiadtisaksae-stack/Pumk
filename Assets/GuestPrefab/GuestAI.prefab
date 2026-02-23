@@ -413,8 +413,8 @@ MonoBehaviour:
   animator: {fileID: 3999053579658524628}
   characterVisual: {fileID: 8310211819587438159}
   guestPhase: 0
-  heart: 3
-  decaysHit: 1
+  heart: 5
+  decaysHit: 0.5
   isDecaying: 0
   isExit: 0
   serviceCount: 3
@@ -1125,6 +1125,8 @@ MonoBehaviour:
   targetGuest: {fileID: 6028295870743468438}
   dragAlpha: 0.6
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
+  onBeginDrag: {fileID: 8300000, guid: 11bc18888ca947e4288aa60221be1deb, type: 3}
+  onDragtoRoom: {fileID: 8300000, guid: e1c9a2edee3bfd64fb5935e23feb2a82, type: 3}
 --- !u!225 &4969533170173457198
 CanvasGroup:
   m_ObjectHideFlags: 0
