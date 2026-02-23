@@ -28,7 +28,7 @@ public class RoomManager : MonoBehaviour
     public Room GetAvailableRoom(RoomType type)
     {
         return allRooms.FirstOrDefault(r =>
-            !r.RoomData.isAvailable &&
+            !r.RoomData.isUnAvailable &&
             r.RoomData.roomType == type
         );
     }
@@ -39,7 +39,7 @@ public class RoomManager : MonoBehaviour
     public Room GetAvailableRoom(RoomType type, RoomLevel level)
     {
         return allRooms.FirstOrDefault(r =>
-            !r.RoomData.isAvailable &&
+            !r.RoomData.isUnAvailable &&
             r.RoomData.roomType == type &&
             r.RoomData.roomLevel == level
         );
@@ -51,7 +51,7 @@ public class RoomManager : MonoBehaviour
     public List<Room> GetAllAvailableRooms()
     {
         return allRooms
-            .Where(r => !r.RoomData.isAvailable)
+            .Where(r => !r.RoomData.isUnAvailable)
             .ToList();
     }
 

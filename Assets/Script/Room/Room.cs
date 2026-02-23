@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(ServiceManager))]
 public class Room : CanInteractObj,IInteractable
 {
 
     public RoomData RoomData => interactObjData.roomData;
+    public RoomState roomState;
 
     [Header("Interaction")]
 
@@ -12,6 +14,8 @@ public class Room : CanInteractObj,IInteractable
 
     [SerializeField]
     private GuestAI guestInRoom;
+
+    public GameObject unCleanObj;
     public ServiceManager serviceManager;
 
     protected override void Awake()
@@ -28,6 +32,8 @@ public class Room : CanInteractObj,IInteractable
     public override void Start()
     {
         base.Start();
+        roomState = RoomState.Available;
+        unCleanObj.SetActive(false);
         serviceManager = GetComponent<ServiceManager>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -41,6 +47,13 @@ public class Room : CanInteractObj,IInteractable
             {
                 serviceManager.RequestCheck(guestInRoom.currentService, player);
             }
+            if (roomState == RoomState.Dirty)
+            {
+                //เช็คของและเคลียร์
+                ClearRoom(player);
+                roomState = RoomState.Available;
+            }
+
             player.travelState = TravelState.Idle;
         }
 
@@ -60,7 +73,8 @@ public class Room : CanInteractObj,IInteractable
             GuestAI guest = collision.GetComponent<GuestAI>();
             if(guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
-            RoomData.isAvailable = true;
+            RoomData.isUnAvailable = true;
+            roomState = RoomState.OnUse;
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
             StartService();
@@ -73,14 +87,43 @@ public class Room : CanInteractObj,IInteractable
         guestInRoom = guest;
     }
 
-    public void ClearRoom()
+    public void ClearRoom(MoveHandleAI actor)
     {
-        RoomData.isAvailable = false;
-        RoomData.currentServiceRequest = null;
+        List<ItemSO> actorInventory = null;
+        Player playerActor = actor as Player;
+        Employee employeeActor = actor as Employee;
+
+        if (playerActor != null) actorInventory = playerActor.inventory;
+        else if (employeeActor != null) actorInventory = employeeActor.inventory;
+
+        foreach (ItemSO item in actorInventory)
+        {
+            if (item.requiredForService == ServiceRequestType.Laundry)
+            {
+                if (playerActor != null) playerActor.RemoveItem(item);
+                else if (employeeActor != null) employeeActor.RemoveItem(item);
+
+                guestInRoom = null;
+                RoomData.isUnAvailable = false;
+                unCleanObj.SetActive(false);
+                RoomData.currentServiceRequest = null;
+                break;
+            }
+        }
     }
+
+
+    public void DirtyRoom()
+    {
+        roomState = RoomState.Dirty;
+        unCleanObj.SetActive(true);
+    }
+
+
+
     public void UpgradeRoom()
     {
-        if (RoomData.isAvailable)
+        if (RoomData.isUnAvailable)
         {
             Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก");
             return;
@@ -102,7 +145,7 @@ public class Room : CanInteractObj,IInteractable
         if (upgradeRoomButton == null) return;
 
         upgradeRoomButton.interactable =
-            !RoomData.isAvailable &&
+            !RoomData.isUnAvailable &&
             RoomData.roomLevel != RoomLevel.Suite;
     }
     public void StartService()

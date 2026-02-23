@@ -102,6 +102,7 @@ public class GuestAI : MoveHandleAI
 
     public void QuitHotel(InteractObjData exit)
     {
+        guestPhase = Guestphase.CheckingOut;
         isExit = true;
         AnimateExitRoom();
         StopAllCoroutines();
