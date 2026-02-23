@@ -48,6 +48,8 @@ public abstract class MoveHandleAI : MonoBehaviour
 
     public Animator animator;
 
+    [Header("Visual Settings")]
+    public GameObject characterVisual;
 
 
     protected virtual void Awake()
@@ -262,7 +264,7 @@ public abstract class MoveHandleAI : MonoBehaviour
         travelState = TravelState.InElevator;
         agent.enabled = false;
         transform.SetParent(elevatorTransform);
-
+        if (characterVisual != null) characterVisual.SetActive(false);
         // Lerp เพื่อจัดตำแหน่งให้กึ่งกลางเป๊ะๆ
         float t = 0;
         Vector3 startPos = transform.localPosition;
@@ -282,6 +284,7 @@ public abstract class MoveHandleAI : MonoBehaviour
     {
         transform.SetParent(null); // ออกจากลิฟต์
         agent.enabled = true;
+        if (characterVisual != null) characterVisual.SetActive(true);
         currentFloor = targetFloor;
         assignedElevator = null;
         currentSlotIndex = -1;

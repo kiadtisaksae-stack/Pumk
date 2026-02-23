@@ -60,7 +60,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!114 &2597580409967161290
 MonoBehaviour:
@@ -411,6 +411,7 @@ MonoBehaviour:
   currentDestination: {x: 0, y: 0, z: 0}
   assignedElevator: {fileID: 0}
   animator: {fileID: 3999053579658524628}
+  characterVisual: {fileID: 8310211819587438159}
   guestPhase: 0
   heart: 0
   decaysHit: 0

@@ -173,6 +173,7 @@ MonoBehaviour:
   currentDestination: {x: 0, y: 0, z: 0}
   assignedElevator: {fileID: 0}
   animator: {fileID: 6867628325331292268}
+  characterVisual: {fileID: 1622151760343634303}
   gameInput: {fileID: 5493368107408770838}
   mainCamera: {fileID: 0}
   maxSlots: 3
