@@ -59,6 +59,9 @@ public class ElevatorController : MonoBehaviour
 
     [Header("Floor Settings")]
     public Transform[] floorTargets;   // ตำแหน่งพิกัด Y ของแต่ละชั้น
+    public List<GameObject> imagelift;
+    public List<GameObject> floorLights; // ลาก GameObject ลูกไฟของแต่ละชั้นใส่ที่นี่ (Index 0 = ชั้น 0)
+    public float lightThreshold = 0.5f;
     public FloorQueue[] floorQueues;   // ระบบจัดการคิว Slot หน้าลิฟต์แต่ละชั้น
 
     [Header("Debug")]
@@ -81,7 +84,38 @@ public class ElevatorController : MonoBehaviour
             readyAIsOnFloor[i] = new List<MoveHandleAI>();
         }
     }
+    private void Update()
+    {
+        UpdateFloorLights();
+    }
+    private void UpdateFloorLights()
+    {
+        if (floorLights == null || floorLights.Count == 0) return;
 
+        for (int i = 0; i < floorTargets.Length; i++)
+        {
+            if (floorLights[i] == null) continue;
+
+            // คำนวณระยะห่างระหว่างลิฟต์กับจุดเป้าหมายของแต่ละชั้นในแนวตั้ง (Y)
+            float distanceToFloor = Mathf.Abs(transform.position.y - floorTargets[i].position.y);
+
+            // ถ้าลิฟต์จอดอยู่ที่ชั้นนี้ (isMoving เป็น false) ให้ไฟติดค้าง
+            if (!isMoving && currentFloor == i)
+            {
+                floorLights[i].SetActive(true);
+            }
+            // ถ้าลิฟต์กำลังวิ่งผ่าน (Distance น้อยกว่าค่าที่กำหนด) ให้ไฟสว่าง
+            else if (distanceToFloor < lightThreshold)
+            {
+                floorLights[i].SetActive(true);
+            }
+            // ถ้าเลยไปแล้ว ให้ไฟดับ
+            else
+            {
+                floorLights[i].SetActive(false);
+            }
+        }
+    }
     /// <summary>
     /// AI จะเรียกฟังก์ชันนี้เมื่อเดินถึงระยะที่กำหนดหน้าลิฟต์ (WaitSlot)
     /// เป็นตัวจุดชนวนให้ลิฟต์เริ่มทำงาน (Process)
@@ -314,6 +348,11 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private IEnumerator OpenDoors()
     {
+        if (imagelift != null && currentFloor < imagelift.Count)
+        {
+            if (imagelift[currentFloor] != null)
+                imagelift[currentFloor].SetActive(false);
+        }
         if (isDebugMode) Debug.Log($"<color=orange>Elevator: เปิดประตูชั้น {currentFloor}</color>");
 
         // 1. ส่งคนออก
@@ -390,6 +429,11 @@ public class ElevatorController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.5f);
+        if (imagelift != null && currentFloor < imagelift.Count)
+        {
+            if (imagelift[currentFloor] != null)
+                imagelift[currentFloor].SetActive(true);
+        }
     }
 
     public void RequestElevator(MoveHandleAI character, int fromFloor, int toFloor)
