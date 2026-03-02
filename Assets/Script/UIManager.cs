@@ -7,11 +7,10 @@ using System.Collections.Generic;
 public class UIManager : MonoBehaviour
 {
 
-    [Header("UI")]
-    public TextMeshProUGUI goldText;
-
     [Header("Level Buttons")]
     public List<Button> levelButtons = new List<Button>();
+
+    public List<GameObject> hideOnStartObj;
 
 
     void Start()
@@ -23,7 +22,11 @@ public class UIManager : MonoBehaviour
     // Setup ปุ่มให้โหลด Scene อัตโนมัติ
     public void SetUpStart()
     {
-        UpdateGoldText(GameManager.Instance.Gold);
+        foreach (GameObject gameObject in hideOnStartObj)
+        {
+            gameObject.SetActive(false);
+
+        }
     }
     public void SetupLevelButtons()
     {
@@ -53,6 +56,6 @@ public class UIManager : MonoBehaviour
 
     public void UpdateGoldText(int goldAmount)
     {
-        goldText.text = "Gold: " + goldAmount;
+        
     }
 }
