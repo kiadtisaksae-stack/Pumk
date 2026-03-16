@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(ServiceManager))]
-public class Room : CanInteractObj,IInteractable
+public class Room : CanInteractObj, IInteractable
 {
 
     public RoomData RoomData => interactObjData.roomData;
@@ -17,6 +17,7 @@ public class Room : CanInteractObj,IInteractable
 
     public GameObject unCleanObj;
     public ServiceManager serviceManager;
+    public int roomCost = 100;
 
     protected override void Awake()
     {
@@ -71,13 +72,13 @@ public class Room : CanInteractObj,IInteractable
         {
             Debug.Log("Guest entered the zone!");
             GuestAI guest = collision.GetComponent<GuestAI>();
-            if(guest.guestPhase == Guestphase.CheckingOut) return;
+            if (guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
-            StartService();
+            StartService(guest);
 
         }
     }
@@ -136,6 +137,7 @@ public class Room : CanInteractObj,IInteractable
         }
 
         RoomData.roomLevel++;
+        roomCost = roomCost + 100;
         Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
 
         UpdateUpgradeButton();
@@ -148,10 +150,10 @@ public class Room : CanInteractObj,IInteractable
             !RoomData.isUnAvailable &&
             RoomData.roomLevel != RoomLevel.Suite;
     }
-    public void StartService()
+    public void StartService(GuestAI guest)
     {
-        guestInRoom.TriggerEvents(Guestphase.InRoom);
-        guestInRoom.RequestService(serviceManager);
+        guest.OnCheckIn();
+        guest.RequestService(serviceManager);
     }
 
     private void OnDrawGizmos()

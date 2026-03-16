@@ -22,7 +22,7 @@ public class GuestSpawner : MonoBehaviour
 
     public void AddServiceToGuest(GuestAI guest)
     {
-        guest.servicePool.AddRange(servicePoolInLevel);
+        guest.serviceRequest_All.AddRange(servicePoolInLevel);
     }
 
 

@@ -99,6 +99,10 @@ public class Player : MoveHandleAI
             Debug.LogWarning($"ไม่พบไอเทม {itemToRemove.itemName} ในกระเป๋า");
         }
     }
+    public void ClearItem()
+    {
+        inventory.Clear();
+    }
     public void RefreshInventoryUI()
     {
         for (int i = 0; i < inventorySlotImages.Count; i++)

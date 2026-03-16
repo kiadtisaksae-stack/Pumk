@@ -91,7 +91,7 @@ public abstract class MoveHandleAI : MonoBehaviour
 
         if (agent.velocity.magnitude > 0.1f)
         {
-            
+            if(animator == null) return;
             if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToTarget
                 || travelState == TravelState.WalkToWaitSlot)
             {
@@ -101,6 +101,8 @@ public abstract class MoveHandleAI : MonoBehaviour
         }
         else
         {
+            if (animator == null) return;
+
             if (travelState == TravelState.Idle || travelState == TravelState.CallElevator ||
             travelState == TravelState.WaitAtSlot || travelState == TravelState.InElevator
             || travelState == TravelState.stayRoom)

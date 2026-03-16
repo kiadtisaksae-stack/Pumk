@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 
 public enum Guestphase
@@ -11,151 +10,169 @@ public enum Guestphase
     RequestingService,
     CheckingOut
 }
-public enum GuestType
-{
-    FriendlyGhost,
-    Vampire,
-    Witch,
-    Werewolf,
-    Mummy,
-    Franken,
-    Reaper
-}
 
+/// <summary>
+/// Base class สำหรับแขกทุกประเภท
+/// type ถูกกำหนดโดย subclass — ไม่มี GuestType enum
+/// ServiceManager เรียกผ่าน virtual hooks เท่านั้น
+/// </summary>
 public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
 
-    [Header("Heart and Decaying to Exit")]
-    public float heart;
-    public float decaysHit;
+    [Header("Heart and Decaying")]
+    public float heart = 5f;
+    public float decaysHit = 1f;
     public bool isDecaying = false;
-
 
     private ExitDoor door;
     public bool isExit = false;
 
+    [Header("Hide On Check-in")]
+    public List<Transform> hideOnCheckIn = new List<Transform>();
+    public float hideScaleDuration = 0.25f;
+
     [Header("Service")]
     public int serviceCount;
-    public List<ItemSO> servicePool = new List<ItemSO>();
-    public float serviceCooldown = 5f;
+    public List<ItemSO> serviceRequest_All = new List<ItemSO>();
 
     public int rentNet;
     public int servicePoint = 0;
-
     public ItemSO currentService;
 
-    private Vector3 originalScale;
+    private Vector3 _originalScale;
+    private int _roomCost;
 
+    // ─────────────────────────────────────────────
+    //  Unity Lifecycle
+    // ─────────────────────────────────────────────
 
     public override void Start()
     {
         base.Start();
-        originalScale = transform.localScale;
+        _originalScale = transform.localScale;
         door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
- 
-    }
-    //Flow = TriggerEvent => SO => This
-
-
-
-
-
-    public void RequestService(ServiceManager serviceManager)
-    {
-        guestPhase = Guestphase.RequestingService;
-        //SetRendererActive(false);
-        serviceManager.listService.Clear();
-        serviceManager.ServiceSetUp(servicePool , serviceCount);
-        Debug.Log("เริ่มขอรายการ !!");
-        serviceManager.StartRequests(this);
     }
 
-    public void StartDelay(bool isDecaying)
+    // ─────────────────────────────────────────────
+    //  Service Hooks  (ServiceManager เรียกผ่านนี้เท่านั้น)
+    // ─────────────────────────────────────────────
+
+    /// <summary>ก่อนเริ่ม service แต่ละรายการ</summary>
+    public virtual void OnServiceStart(ItemSO service) { }
+
+    /// <summary>ส่งของสำเร็จ</summary>
+    public virtual void OnServiceSuccess(ItemSO service)
     {
-        if (isDecaying)
-        {
-            StartCoroutine(DecayProgress());
-        }       
+        servicePoint++;
+        heart = 5f;
+    }
+
+    /// <summary>หมดเวลา / ส่งของไม่ได้</summary>
+    public virtual void OnServiceFail(ItemSO service)
+    {
+        servicePoint--;
+    }
+
+    /// <summary>Service ครบทุกรายการ → checkout</summary>
+    public virtual void OnAllServicesComplete(Counter counter)
+    {
+        CheckOut(counter.interactObjData);
+    }
+
+    // ─────────────────────────────────────────────
+    //  Phase Events (Room.cs เรียกหลัง trigger)
+    // ─────────────────────────────────────────────
+
+    /// <summary>แขก Check-in เข้าห้องสำเร็จ</summary>
+    public virtual void OnCheckIn()
+    {
+        foreach (var t in hideOnCheckIn)
+            if (t != null) t.DOScale(Vector3.zero, hideScaleDuration).SetEase(Ease.InBack);
+    }
+
+    /// <summary>แขกกำลังจะ Check-out (ทั้งปกติและโกรธ)</summary>
+    public virtual void OnCheckOut(bool isAnger) { }
+
+    // ─────────────────────────────────────────────
+    //  Decay
+    // ─────────────────────────────────────────────
+
+    /// <summary>
+    /// เริ่ม decay และคืน Coroutine reference กลับให้ ServiceManager
+    /// เพื่อให้ stop ได้เฉพาะตัว ไม่กระทบ coroutine อื่นของ subclass
+    /// </summary>
+    public Coroutine StartDecayCoroutine()
+    {
+        isDecaying = true;
+        return StartCoroutine(DecayProgress());
     }
 
     IEnumerator DecayProgress()
     {
         while (heart > 0)
         {
-            yield return new WaitForSeconds(3f); 
-            Decay(decaysHit);         
+            yield return new WaitForSeconds(3f);
+            Decay(decaysHit);
         }
     }
 
-    private void Decay(float decayAmount)
+    private void Decay(float amount)
     {
-        heart -= decayAmount;
-        Debug.Log("เหลือ" + heart);
-        if (heart <= 0)
-        {
-            QuitHotel(door.interactObjData);
-        }
+        heart -= amount;
+        if (heart <= 0) QuitHotel(door.interactObjData);
     }
 
+    // ─────────────────────────────────────────────
+    //  Check-in / Check-out
+    // ─────────────────────────────────────────────
+
+    public void RequestService(ServiceManager serviceManager)
+    {
+        guestPhase = Guestphase.RequestingService;
+        serviceManager.listService.Clear();
+        serviceManager.ServiceSetUp(serviceRequest_All, serviceCount);
+        serviceManager.StartRequests(this);
+    }
 
     public void QuitHotel(InteractObjData exit)
     {
+        if (isExit) return;
         guestPhase = Guestphase.CheckingOut;
         isExit = true;
+        OnCheckOut(isAnger: true);
         AnimateExitRoom();
         StopAllCoroutines();
-        Debug.Log("ออกจากโรงเรมแล้ว ไม่พอใจ");
         StartTravel(exit);
     }
 
     public void CheckOut(InteractObjData targetObj)
     {
         guestPhase = Guestphase.CheckingOut;
+        OnCheckOut(isAnger: false);
         AnimateExitRoom();
         CalculateRentNET();
         targetIObj.objCollider.isTrigger = true;
         StartTravel(targetObj);
     }
 
+    public void CheckRoomCost(int cost) => _roomCost = cost;
 
+    public void CalculateRentNET() => rentNet = servicePoint * _roomCost;
 
-    //public void SetRendererActive(bool isEnable)
-    //{
-    //    Renderer[] allRenderers = GetComponentsInChildren<Renderer>();
-    //    foreach (Renderer r in allRenderers)
-    //    {
-    //        r.enabled = isEnable;
-    //    }
-    //}
+    // ─────────────────────────────────────────────
+    //  Animation
+    // ─────────────────────────────────────────────
 
-    public void SetGuestPhase(Guestphase guestPhase)
-    {
-        this.guestPhase = guestPhase;
-    }  
-
-    public void CalculateRentNET() //คำนวนรายจ่ายของแขก (เดี๋ยวมาทำต่อ)
-    {
-        rentNet = servicePoint + 100;
-    }
-
-    public void TriggerEvents(Guestphase guestphase)
-    {
-        //RequestService(serviceManager);
-    }
     public void AnimateEnterRoom()
     {
-        // 1. เด้ง (Punch) โดยอิงจาก Scale ปัจจุบัน
-        // 2. หดตัวลงเหลือ 0
-        transform.DOPunchScale(originalScale * 0.2f, 0.3f, 5, 1f)
-            .OnComplete(() => {
-                transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
-            });
+        transform.DOPunchScale(_originalScale * 0.2f, 0.3f, 5, 1f)
+            .OnComplete(() => transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack));
     }
+
     public void AnimateExitRoom()
     {
-        // ขยายกลับมาเท่ากับค่าดั้งเดิมที่เก็บไว้ตอน Start
-        transform.DOScale(originalScale, 0.5f).SetEase(Ease.OutBack);
+        transform.DOScale(_originalScale, 0.5f).SetEase(Ease.OutBack);
     }
 }
