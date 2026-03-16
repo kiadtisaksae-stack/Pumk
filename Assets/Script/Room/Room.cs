@@ -17,6 +17,7 @@ public class Room : CanInteractObj,IInteractable
 
     public GameObject unCleanObj;
     public ServiceManager serviceManager;
+    public int roomCost = 100;
 
     protected override void Awake()
     {
@@ -136,6 +137,7 @@ public class Room : CanInteractObj,IInteractable
         }
 
         RoomData.roomLevel++;
+        roomCost = roomCost + 100;
         Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
 
         UpdateUpgradeButton();

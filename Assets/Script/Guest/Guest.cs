@@ -46,6 +46,7 @@ public class GuestAI : MoveHandleAI
     public ItemSO currentService;
 
     private Vector3 originalScale;
+    private int _roomCost;
 
 
     public override void Start()
@@ -118,7 +119,10 @@ public class GuestAI : MoveHandleAI
         targetIObj.objCollider.isTrigger = true;
         StartTravel(targetObj);
     }
-
+    public void CheckRoomCost(int roomCost)
+    {
+        _roomCost = roomCost;
+    }
 
 
     //public void SetRendererActive(bool isEnable)
@@ -137,7 +141,7 @@ public class GuestAI : MoveHandleAI
 
     public void CalculateRentNET() //คำนวนรายจ่ายของแขก (เดี๋ยวมาทำต่อ)
     {
-        rentNet = servicePoint + 100;
+        rentNet = servicePoint * _roomCost;
     }
 
     public void TriggerEvents(Guestphase guestphase)
