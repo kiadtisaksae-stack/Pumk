@@ -9,14 +9,12 @@ public class ServiceManager : MonoBehaviour
     public Button roomServiceButton;
     public float serviceCooldown = 5f;
 
-
     public bool isPlayerinRange;
     public bool isSuccess;
     public Counter counter;
 
-    
     private Room room;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         roomServiceButton.gameObject.SetActive(false);
@@ -24,88 +22,94 @@ public class ServiceManager : MonoBehaviour
         room = GetComponent<Room>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    // ─────────────────────────────────────────────
+    //  Entry Point
+    // ─────────────────────────────────────────────
 
     public void StartRequests(GuestAI guest)
     {
         StartCoroutine(ProcessRequests(guest));
-
     }
 
-
+    // ─────────────────────────────────────────────
+    //  ทุก behavior ส่งผ่าน hooks ของ GuestAI
+    // ─────────────────────────────────────────────
 
     IEnumerator ProcessRequests(GuestAI guest)
     {
-        foreach (ItemSO service in listService)
-        {
-            Debug.Log("ลูกค้าขอ: " + service.name);
-            ServicePopUp(service, roomServiceButton);
-            guest.currentService = service; //ใช้ service ตัวนี้
+        FrankenGuest franken = guest as FrankenGuest;
+        MummyGuest mummy = guest as MummyGuest;
 
-            float timer = 0f;
+        for (int slotIndex = 0; slotIndex < listService.Count; slotIndex++)
+        {
+            // Mummy: เช็กว่า slot นี้มี forced service หรือเปล่า
+            ItemSO service = listService[slotIndex];
+            if (mummy != null)
+            {
+                ItemSO forced = mummy.GetForcedServiceForSlot(slotIndex);
+                if (forced != null) service = forced;
+            }
+
             isSuccess = false;
-            guest.isDecaying = true;
-            guest.StartDelay(guest.isDecaying);
+            guest.OnServiceStart(service);
+            ServicePopUp(service, roomServiceButton);
+            guest.currentService = service;
+
+            Coroutine decayCoroutine = guest.StartDecayCoroutine();
 
             while (true)
             {
-                timer += Time.deltaTime;
-
-                // เช็คเงื่อนไข (ต้องเช็คทุกเฟรม)
-                if (isSuccess == true)
+                if (isSuccess)
                 {
-                    Debug.Log("ส่งของสำเร็จ! (ใช้เวลา " + timer.ToString("F1") + " วิ)");
                     guest.isDecaying = false;
-                    
-                    guest.StopAllCoroutines();
-                    guest.heart = 5f;
-                    break; // <--- พระเอกของเรา! สั่งให้ออกจาก loop เวลาทันที (ไม่ต้องรอจนหมดเวลา)
+                    if (decayCoroutine != null) guest.StopCoroutine(decayCoroutine);
+                    break;
                 }
 
                 if (guest.isExit)
                 {
-                    Debug.Log("หยุดการ Request ทั้งหมด!!!");
                     roomServiceButton.gameObject.SetActive(false);
                     room.RoomData.isUnAvailable = false;
+                    if (decayCoroutine != null) guest.StopCoroutine(decayCoroutine);
                     StopAllCoroutines();
-                    break;
+                    yield break;
                 }
 
-                yield return null; // พัก 1 เฟรม แล้วกลับมาเช็คใหม่
+                yield return null;
             }
+
+            roomServiceButton.gameObject.SetActive(false);
+            guest.currentService = null;
 
             if (!isSuccess)
-            {
-                // ถ้าหลุด loop มาโดยที่ isSuccess ยังเป็น false แปลว่าหมดเวลา
-                roomServiceButton.gameObject.SetActive(false);
-                guest.currentService = null;
-                Debug.Log(service.name + " หมดเวลา! (ลูกค้าโกรธ)");
-                guest.servicePoint--;
-            }
+                guest.OnServiceFail(service);
             else
+                guest.OnServiceSuccess(service);
+
+            // ── Cooldown + Franken sleepwalk window ──
+            // Franken สุ่ม sleepwalk ระหว่าง cooldown ก่อน service ถัดไป
+            if (franken != null && slotIndex < listService.Count - 1)
             {
-                // ถ้าสำเร็จ (อาจจะให้คะแนน หรือเล่นเสียงตรงนี้)
-                roomServiceButton.gameObject.SetActive(false);
-                guest.currentService = null;
-                Debug.Log(service.name + " ส่งสำเร็จ");
-                guest.servicePoint++;
-                //yield return service; // (ถ้าโค้ดเดิมของคุณต้องการ return ค่านี้)
+                bool sleeping = franken.TrySleepwalk();
+                if (sleeping)
+                {
+                    // รอให้ตื่นก่อนค่อยนับ cooldown
+                    yield return new WaitUntil(() => !franken.IsSleepwalking);
+                }
             }
 
-            // 3. พัก Cooldown ก่อนไป service ต่อไป
             yield return new WaitForSeconds(serviceCooldown);
         }
-        Debug.Log("Service หมดแล้ว! (Check Out All)");
-        guest.CheckOut(counter.interactObjData);
+
+        guest.OnAllServicesComplete(counter);
         room.DirtyRoom();
-        StopAllCoroutines();
     }
 
-    public bool RequestCheck(ItemSO service , MoveHandleAI actor)
+    // ─────────────────────────────────────────────
+    //  Request Validation
+    // ─────────────────────────────────────────────
+
+    public bool RequestCheck(ItemSO service, MoveHandleAI actor)
     {
         List<ItemSO> actorInventory = null;
         Player playerActor = actor as Player;
@@ -116,64 +120,62 @@ public class ServiceManager : MonoBehaviour
 
         if (actorInventory == null || service == null) return false;
 
-        // ค้นหาไอเทม
-        ItemSO itemToDeliver = actorInventory.Find(x => x == service);
-
-        if (itemToDeliver != null)
+        ItemSO found = actorInventory.Find(x => x == service);
+        if (found == null)
         {
-            // ส่งสำเร็จ! ให้ลบผ่าน Method ของ Actor เพื่ออัปเดต UI
-            if (playerActor != null) playerActor.RemoveItem(itemToDeliver);
-            else if (employeeActor != null) employeeActor.RemoveItem(itemToDeliver);
-
-            isSuccess = true;
-            Debug.Log($"<color=cyan>ส่ง {itemToDeliver.itemName} สำเร็จและอัปเดต UI แล้ว</color>");
-            return true;
+            Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการ</color>");
+            return false;
         }
 
-        Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการในตัว!</color>");
-        return false;
+        if (playerActor != null) playerActor.RemoveItem(found);
+        else if (employeeActor != null) employeeActor.RemoveItem(found);
+
+        isSuccess = true;
+        Debug.Log($"<color=cyan>ส่ง {found.itemName} สำเร็จ</color>");
+        return true;
     }
 
-    public void ServicePopUp(ItemSO service , Button serviceButton)
+    // ─────────────────────────────────────────────
+    //  Setup Helpers
+    // ─────────────────────────────────────────────
+
+    public void ServicePopUp(ItemSO service, Button serviceButton)
     {
         serviceButton.gameObject.SetActive(true);
         serviceButton.image.sprite = service.itemIcon;
     }
 
-    public void ServiceSetUp(List<ItemSO> allService , int serviceCount) //Set Up service ก่อนใช้งาน
+    public void ServiceSetUp(List<ItemSO> allService, int serviceCount)
     {
-        //หา Luggage ก่อน
         FindLuggageService(allService);
 
         List<ItemSO> randomService = new List<ItemSO>(allService);
         ShuffleList(randomService);
         listService.AddRange(randomService);
+
         if (listService.Count > serviceCount)
-        {
-            listService.RemoveAt(serviceCount);
-        }
-        Debug.Log($"<color=green>Set Up รายการService เรียบร้อย</color>");
+            listService.RemoveRange(serviceCount, listService.Count - serviceCount);
+
+        Debug.Log($"<color=green>Set Up Service เรียบร้อย ({listService.Count} รายการ)</color>");
     }
 
-    void ShuffleList(List<ItemSO> allService) //สุ่มลำดับ service ที่เหลือ
+    void ShuffleList(List<ItemSO> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int r = Random.Range(i, list.Count);
+            (list[i], list[r]) = (list[r], list[i]);
+        }
+    }
+
+    public void FindLuggageService(List<ItemSO> allService)
     {
         for (int i = 0; i < allService.Count; i++)
         {
-            ItemSO service = allService[i];
-            int random = Random.Range(i, allService.Count);
-            allService[i] = allService[random];
-            allService[random] = service;
-        }
-    }
-
-    public void FindLuggageService(List<ItemSO> allService) //หาสัมภาระเสมอ
-    {
-        foreach (ItemSO service in allService)
-        {
-            if (service.requiredForService == ServiceRequestType.DeliveryLuggage)
+            if (allService[i].requiredForService == ServiceRequestType.DeliveryLuggage)
             {
-                listService.Add(service);
-                allService.Remove(service);
+                listService.Add(allService[i]);
+                allService.RemoveAt(i);
                 break;
             }
         }

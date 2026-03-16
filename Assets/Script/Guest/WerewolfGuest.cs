@@ -1,0 +1,92 @@
+using System.Collections;
+using UnityEngine;
+
+/// <summary>
+/// Werewolf — The Furious Customer
+/// - Requests 3 items (Luggage fixed + 2 random from Food/Drink/Soul)
+/// - Heart: 5, decays -1.0 every 3s
+/// - EVENT: Anger Stack — 3 bars, หายทีละ 1 ทุก 2.5s
+///   ถ้าหมดทุก bar ก่อนได้รับ service = ClearItem() บน player
+///   Stack reset ทุก request ใหม่
+/// - Reward: ~105 coins
+/// </summary>
+public class WerewolfGuest : GuestAI
+{
+    [Header("Anger Stack Settings")]
+    public int maxAngerBars = 3;
+    public float barDrainInterval = 2.5f;
+
+    // expose ให้ UI อ่านได้
+    public int CurrentAngerBars { get; private set; }
+
+    private Coroutine _angerCoroutine;
+    private Player _player;
+
+    public override void Start()
+    {
+        base.Start();
+        serviceCount = 3;
+        decaysHit = 1.0f;
+        _player = FindAnyObjectByType<Player>();
+    }
+
+    public override void OnServiceStart(ItemSO service)
+    {
+        // reset และเริ่ม anger stack ใหม่ทุก request
+        StopAngerStack();
+        CurrentAngerBars = maxAngerBars;
+        _angerCoroutine = StartCoroutine(AngerStackRoutine());
+        Debug.Log($"<color=orange>Werewolf: Anger Stack เริ่ม ({maxAngerBars} bars)</color>");
+    }
+
+    public override void OnServiceSuccess(ItemSO service)
+    {
+        base.OnServiceSuccess(service);
+        StopAngerStack();
+    }
+
+    public override void OnServiceFail(ItemSO service)
+    {
+        base.OnServiceFail(service);
+        StopAngerStack();
+    }
+
+    public override void OnCheckOut(bool isAnger)
+    {
+        StopAngerStack();
+    }
+
+    private IEnumerator AngerStackRoutine()
+    {
+        while (CurrentAngerBars > 0)
+        {
+            yield return new WaitForSeconds(barDrainInterval);
+            CurrentAngerBars--;
+            Debug.Log($"<color=orange>Werewolf Anger: {CurrentAngerBars}/{maxAngerBars}</color>");
+
+            if (CurrentAngerBars <= 0)
+            {
+                TriggerAngerPunish();
+            }
+        }
+    }
+
+    private void TriggerAngerPunish()
+    {
+        if (_player != null)
+        {
+            _player.ClearItem();
+            Debug.Log("<color=orange>Werewolf โกรธ! ล้าง inventory ของ Player</color>");
+        }
+    }
+
+    private void StopAngerStack()
+    {
+        if (_angerCoroutine != null)
+        {
+            StopCoroutine(_angerCoroutine);
+            _angerCoroutine = null;
+        }
+        CurrentAngerBars = 0;
+    }
+}

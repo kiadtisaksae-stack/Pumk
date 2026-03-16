@@ -10,7 +10,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
     [SerializeField] private float dragAlpha = 0.6f;
     [SerializeField] private Vector3 hoverScale = new Vector3(1.1f, 1.1f, 1.1f);
 
-
     [Header("Sound")]
     public AudioClip onBeginDrag;
     public AudioClip onDragtoRoom;
@@ -23,8 +22,12 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _originalPosition = transform.localPosition;
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
 
+        // หา GuestAI จาก parent ขึ้นไปเรื่อยๆ จนเจอ
         if (targetGuest == null)
-            Debug.LogError("GuestRoomAssigner: ไม่ได้กำหนด targetGuest!");
+            targetGuest = GetComponentInParent<GuestAI>();
+
+        if (targetGuest == null)
+            Debug.LogError("GuestRoomAssigner: หา GuestAI ใน parent ไม่เจอ!");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -44,7 +47,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
             eventData.pressEventCamera,
             out worldPoint
         );
-
         transform.position = worldPoint;
     }
 
@@ -53,7 +55,6 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _canvasGroup.alpha = 1f;
         _canvasGroup.blocksRaycasts = true;
         transform.localScale = Vector3.one;
-
         ProcessAssignment(eventData);
     }
 
@@ -62,8 +63,7 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        if (hit.collider != null &&
-            hit.collider.TryGetComponent<Room>(out var room))
+        if (hit.collider != null && hit.collider.TryGetComponent<Room>(out var room))
         {
             if (room.RoomData.isUnAvailable)
             {
@@ -77,12 +77,8 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 SoundManager.Instance.PlaySFX(onDragtoRoom);
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
                 targetGuest.finalRoomData = room.RoomData;
-                targetGuest.StartTravel(
-                room.interactObjData
-                );
-                
+                targetGuest.StartTravel(room.interactObjData);
                 room.AssignGuest(targetGuest);
-
                 gameObject.SetActive(false);
             }
         }
@@ -92,5 +88,4 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
             transform.localPosition = _originalPosition;
         }
     }
-
 }
