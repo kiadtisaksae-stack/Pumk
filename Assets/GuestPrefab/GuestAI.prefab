@@ -417,11 +417,14 @@ MonoBehaviour:
   decaysHit: 0.5
   isDecaying: 0
   isExit: 0
+  hideOnCheckIn: []
+  hideScaleDuration: 0.25
   serviceCount: 3
-  servicePool: []
-  serviceCooldown: 5
-  rentNet: 100
-  servicePoint: 10
+  serviceRequest_All: []
+  roomPayment: 90
+  tip: 0
+  servicePayment: 0
+  totalIncome: 0
   currentService: {fileID: 0}
 --- !u!58 &3460122585557764002
 CircleCollider2D:

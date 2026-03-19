@@ -36,8 +36,14 @@ public class GuestAI : MoveHandleAI
     public int serviceCount;
     public List<ItemSO> serviceRequest_All = new List<ItemSO>();
 
-    public int rentNet;
-    public int servicePoint = 0;
+    [Header("Economy")]
+    public int roomPayment;
+    public int tip = 0;
+    public int servicePayment = 0;
+
+    public int totalIncome;
+
+
     public ItemSO currentService;
 
     private Vector3 _originalScale;
@@ -65,14 +71,15 @@ public class GuestAI : MoveHandleAI
     /// <summary>ส่งของสำเร็จ</summary>
     public virtual void OnServiceSuccess(ItemSO service)
     {
-        servicePoint++;
+        servicePayment += 35;
+        tip += 10;
         heart = 5f;
     }
 
     /// <summary>หมดเวลา / ส่งของไม่ได้</summary>
     public virtual void OnServiceFail(ItemSO service)
     {
-        servicePoint--;
+        servicePayment--;
     }
 
     /// <summary>Service ครบทุกรายการ → checkout</summary>
@@ -159,7 +166,7 @@ public class GuestAI : MoveHandleAI
 
     public void CheckRoomCost(int cost) => _roomCost = cost;
 
-    public void CalculateRentNET() => rentNet = servicePoint * _roomCost;
+    public void CalculateRentNET() => totalIncome = tip + servicePayment + roomPayment;
 
     // ─────────────────────────────────────────────
     //  Animation

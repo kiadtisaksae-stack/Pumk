@@ -74,10 +74,24 @@ public class Room : CanInteractObj, IInteractable
             GuestAI guest = collision.GetComponent<GuestAI>();
             if (guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
+            if (guest != null) //อันนี้ทำเทสเฉยๆ จริงๆต้องทำ combo จากสีห้องที่ตรงกับแขก
+            {
+                LevelManager levelManager = FindAnyObjectByType<LevelManager>();
+                levelManager.AddCombo(1);
+            }
+            else
+            {
+                LevelManager levelManager = FindAnyObjectByType<LevelManager>();
+                LevelUI levelUI = FindAnyObjectByType<LevelUI>();
+                levelManager.streakCount = 0;
+                levelUI.comboText.text = "Combo: 0 ";
+
+            }
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
+            guest.tip += 10;
             StartService(guest);
 
         }
