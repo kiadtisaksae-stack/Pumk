@@ -23,13 +23,13 @@ public class Counter : CanInteractObj
         if (collision.TryGetComponent<GuestAI>(out var guest))
         {
             if (guest.guestPhase != Guestphase.CheckingOut) return;
-            Debug.Log(guest + " check out get Money " + guest.rentNet);
+            Debug.Log(guest + " check out get Money " + guest.totalIncome);
             SoundManager.Instance.PlaySFX(cashOutSound);
             LevelManager gameManager = FindAnyObjectByType<LevelManager>();
-            ShowMoneyPopup(guest.rentNet);
+            ShowMoneyPopup(guest.totalIncome);
             // เพิ่มเงิน
-            gameManager.AddMoney(guest.rentNet);
-            gameManager.AddServicePoint(guest.servicePoint);
+            gameManager.AddMoney(guest.totalIncome);
+            gameManager.guestServed++;
             RefreshCheckOutCount();
            
             // แสดง popup
