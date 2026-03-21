@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -35,12 +36,15 @@ public class LevelUI : MonoBehaviour
     public TextMeshProUGUI expertGoalText;
     public Button goToHome;
 
+    [Header("NotifyUI")]
+    public TextMeshProUGUI notifyText;
+    public float notifyLife = 2.5f;
+    private Coroutine notifyCoroutine;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        UpdateMoney(0);
         UpdateCombo(0);
-        
+        notifyText.text = "";
         forceBackHome.onClick.AddListener(() =>
         {
             forceback.gameObject.SetActive(true);
@@ -151,6 +155,25 @@ public class LevelUI : MonoBehaviour
         Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("GameHub");
         
+    }
+    public void Notify(string message)
+    {
+ 
+        if (notifyCoroutine != null)
+        {
+            StopCoroutine(notifyCoroutine);
+        }
+
+        notifyText.text = message;
+        notifyCoroutine = StartCoroutine(ClearNotify());
+    }
+
+    IEnumerator ClearNotify()
+    {
+        yield return new WaitForSecondsRealtime(notifyLife);
+
+        notifyText.text = "";
+        notifyCoroutine = null;
     }
 }
 

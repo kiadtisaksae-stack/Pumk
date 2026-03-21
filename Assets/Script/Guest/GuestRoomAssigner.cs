@@ -83,6 +83,8 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                     {
                         Debug.Log("<color=red>❌ Reaper ต้องการห้อง Big เท่านั้น!</color>");
                         transform.localPosition = _originalPosition; // ส่งกลับที่เดิม
+                        LevelUI levelUI = FindAnyObjectByType<LevelUI>();
+                        levelUI.Notify("Need a Big Room Only");
                         return; // หยุดการทำงาน ไม่ให้เข้าห้องนี้
                     }
                 }

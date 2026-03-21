@@ -39,24 +39,26 @@ public class LevelManager : MonoBehaviour
     private int gold;
     private bool levelEnded = false;
     private bool isWin = false;
-    private LevelUI uiManager;
+    private LevelUI uiLevelManager;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
-        uiManager = FindAnyObjectByType<LevelUI>();
-        uiManager.UpdateLevel(lv);
-        uiManager.UpdateProgressBar(moneyGetInLevel,requireMoneyToNext);
+        uiLevelManager = FindAnyObjectByType<LevelUI>();
+        uiLevelManager.UpdateLevel(lv);
+        uiLevelManager.UpdateProgressBar(moneyGetInLevel,requireMoneyToNext);
         currentPoints = 0;
         levelEnded = false;
+        uiLevelManager.UpdateMoney(currentMoney);//ทดสอบเฉยๆ
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        uiManager.DisplayTime(infiniteGameTime, gameTime);
+        uiLevelManager.DisplayTime(infiniteGameTime, gameTime);
         if (infiniteGameTime) return;
 
         gameTime -= Time.deltaTime;
@@ -75,8 +77,15 @@ public class LevelManager : MonoBehaviour
     {
         currentMoney += amount;
         moneyGetInLevel += amount;
-        uiManager.UpdateMoney(currentMoney);
-        uiManager.UpdateProgressBar(moneyGetInLevel, requireMoneyToNext);
+        uiLevelManager.UpdateMoney(currentMoney);
+        uiLevelManager.UpdateProgressBar(moneyGetInLevel, requireMoneyToNext);
+    }
+    public void PriceItem(int amount)
+    {
+        currentMoney -= amount;
+        moneyGetInLevel -= amount;
+        uiLevelManager.UpdateMoney(currentMoney);
+        uiLevelManager.UpdateProgressBar(moneyGetInLevel, requireMoneyToNext);
     }
     public void AddCombo(int streak)
     {
@@ -91,8 +100,8 @@ public class LevelManager : MonoBehaviour
         bonusNet += bonus;
 
         currentMoney += bonus;
-        uiManager.UpdateMoney(currentMoney);
-        uiManager.UpdateCombo(streakCount);
+        uiLevelManager.UpdateMoney(currentMoney);
+        uiLevelManager.UpdateCombo(streakCount);
     }
     public void CulculateRank()
     {
@@ -120,7 +129,7 @@ public class LevelManager : MonoBehaviour
         {
             isWin = true;
         }
-        uiManager.ShowEndLevelScreen(isWin, guestServed , maxSteakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);
+        uiLevelManager.ShowEndLevelScreen(isWin, guestServed , maxSteakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);
 
         GameManager.Instance.AddGold(currentMoney);
     }

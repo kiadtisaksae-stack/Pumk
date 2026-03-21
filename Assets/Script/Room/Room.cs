@@ -24,7 +24,8 @@ public class Room : CanInteractObj, IInteractable
 
     [SerializeField] private GuestAI guestInRoom;
     public GameObject unCleanObj;
-    public int roomCost = 100;
+    public int upgradeRoomCost = 100;
+    public int roomServiceBonusCost = 100;
 
     [HideInInspector] public List<ItemSO> serviceQueue = new List<ItemSO>();
 
@@ -211,9 +212,19 @@ public class Room : CanInteractObj, IInteractable
     {
         if (RoomData.isUnAvailable) { Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก"); return; }
         if (RoomData.roomLevel == RoomLevel.Suite) { Debug.Log("❌ Suite แล้ว"); return; }
-
+        LevelManager levelManager = FindAnyObjectByType<LevelManager>();
+        if (levelManager == null) return ;
+        if (levelManager.currentMoney < upgradeRoomCost)
+        {
+            LevelUI levelUI = FindAnyObjectByType< LevelUI>();
+            if (levelUI == null) return ;
+            levelUI.Notify("Enough Money");
+            return ;
+        }
+        levelManager.PriceItem(upgradeRoomCost);
         RoomData.roomLevel++;
-        roomCost += 100;
+        roomServiceBonusCost += 100;
+        upgradeRoomCost *= 2;
         Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
         UpdateUpgradeButton();
     }
