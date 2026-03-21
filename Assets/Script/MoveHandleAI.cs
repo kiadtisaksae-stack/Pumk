@@ -180,7 +180,7 @@ public abstract class MoveHandleAI : MonoBehaviour
 
             if (_manager != null)
             {
-                ElevatorController best = _manager.GetBestElevator(currentFloor, targetFloor);
+                ElevatorController best = _manager.GetBestElevator(currentFloor, targetFloor, transform.position);
                 if (best != null)
                 {
                     AssignElevator(best);

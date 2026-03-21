@@ -17,32 +17,51 @@ public class ElevatorManager : MonoBehaviour
         elevators = Object.FindObjectsByType<ElevatorController>(FindObjectsSortMode.None).ToList();
     }
 
-    public ElevatorController GetBestElevator(int fromFloor, int toFloor)
+    /// <summary>
+    /// หาลิฟต์ที่เหมาะสม:
+    /// 1. เรียงตาม physical distance จาก actor ไปหาลิฟต์ (ใกล้สุดก่อน)
+    /// 2. ลิฟต์ใกล้สุด → ถ้ามี slot ว่างที่ชั้นนั้น ใช้เลย
+    /// 3. ถ้าไม่มี slot ว่าง → ไปตัวถัดไปตามระยะ
+    /// 4. ถ้าทุกตัวไม่ว่าง → ใช้ตัวที่ใกล้สุดแล้วรอ (RegisterGuestReady จะจัดการ)
+    /// </summary>
+    public ElevatorController GetBestElevator(int fromFloor, int toFloor, Vector3 actorPosition)
     {
         if (elevators.Count == 0) return null;
 
-        ElevatorController bestElevator = null;
-        float bestScore = float.MaxValue;
+        // เรียงลิฟต์จากใกล้สุด → ไกลสุด ตาม physical distance
+        var sorted = elevators
+            .Where(e => e != null)
+            .OrderBy(e => Vector2.Distance(
+                new Vector2(actorPosition.x, actorPosition.y),
+                new Vector2(e.transform.position.x, e.transform.position.y)))
+            .ToList();
 
-        foreach (var elevator in elevators)
+        // รอบแรก: หาลิฟต์ที่ใกล้และมี slot ว่างที่ชั้น fromFloor
+        foreach (var elevator in sorted)
         {
-            // คำนวณคะแนน: ระยะทาง + ความหนาแน่นของคน
-            float score = Mathf.Abs(elevator.currentFloor - fromFloor);
+            if (elevator.passengers.Count >= elevator.maxCapacity) continue;
+            if (elevator.floorQueues == null) continue;
 
-            // ถ้าลิฟต์เต็ม ให้คะแนนติดลบหนักๆ (Score สูง)
-            if (elevator.passengers.Count >= elevator.maxCapacity) score += 100;
+            // แปลง world floor → local array index
+            // ลิฟต์ตัวที่ 2 (minFloor=1): ชั้น 1 → index 0, ชั้น 2 → index 1
+            int localIndex = fromFloor - elevator.minFloor;
+            if (localIndex < 0 || localIndex >= elevator.floorQueues.Length) continue;
 
-            // ถ้าลิฟต์กำลังไปทิศเดียวกับเรา ให้โบนัสนิดหน่อย (Score ต่ำลง)
-            bool isUp = (toFloor > fromFloor);
-            if (elevator.currentDirection == ElevatorDirection.Up && isUp) score -= 1;
-            if (elevator.currentDirection == ElevatorDirection.Down && !isUp) score -= 1;
-
-            if (score < bestScore)
+            // เช็กว่ามี slot ว่างไหม (ไม่จองยัง ให้ AssignElevator จอง)
+            int dummy;
+            Transform slot = elevator.floorQueues[localIndex].GetAvailableSlot(null, out dummy);
+            if (slot != null)
             {
-                bestScore = score;
-                bestElevator = elevator;
+                elevator.floorQueues[localIndex].ReleaseSlot(dummy);
+                return elevator;
             }
         }
-        return bestElevator;
+
+        // รอบสอง: ทุกตัวไม่มี slot ว่าง → ใช้ตัวที่ใกล้สุด ปล่อยให้รอ
+        return sorted.FirstOrDefault();
     }
+
+    /// <summary>Overload เดิม — ใช้ actorPosition = Vector3.zero (fallback)</summary>
+    public ElevatorController GetBestElevator(int fromFloor, int toFloor)
+        => GetBestElevator(fromFloor, toFloor, Vector3.zero);
 }

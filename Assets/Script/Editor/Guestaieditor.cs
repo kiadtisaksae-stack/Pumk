@@ -1,271 +1,261 @@
-﻿//#if UNITY_EDITOR
-//using UnityEditor;
-//using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
+using UnityEditor;
 
-//[CustomEditor(typeof(GuestAI), true)]
-//public class GuestAIEditor : Editor
-//{
-//    // foldout แยกกันทุก section — ไม่ซ้อนกัน
-//    private bool _foldSetup = true;
-//    private bool _foldHide = true;
-//    private bool _foldPool = true;
-//    private bool _foldSub = true;
-//    private bool _foldOther = false; // ปิดเริ่มต้น — เปิดเมื่อต้องการ
+[CustomEditor(typeof(GuestAI), true)]
+public class GuestAIEditor : Editor
+{
+    bool _foldService = true;
+    bool _foldEconomy = false;
+    bool _foldUI = false;
+    bool _foldVisual = false;
 
-//    static readonly Color C1 = new Color(0.22f, 0.24f, 0.28f);
-//    static readonly Color C2 = new Color(0.16f, 0.20f, 0.32f);
-//    static readonly Color CR = new Color(0.12f, 0.22f, 0.14f);
-//    static readonly Color C_Other = new Color(0.20f, 0.20f, 0.20f); // เทาเข้ม
+    static GUIStyle _headerStyle;
+    static GUIStyle _badgeStyle;
+    static GUIStyle _boxStyle;
 
-//    static readonly Color C3_Wolf = new Color(0.28f, 0.16f, 0.10f);
-//    static readonly Color C3_Franken = new Color(0.10f, 0.20f, 0.30f);
-//    static readonly Color C3_Mummy = new Color(0.24f, 0.20f, 0.08f);
-//    static readonly Color C3_Witch = new Color(0.20f, 0.10f, 0.28f);
+    void InitStyles()
+    {
+        if (_headerStyle != null) return;
 
-//    public override void OnInspectorGUI()
-//    {
-//        serializedObject.Update();
-//        GuestAI g = (GuestAI)target;
+        _headerStyle = new GUIStyle(EditorStyles.boldLabel)
+        {
+            fontSize = 12,
+            alignment = TextAnchor.MiddleCenter
+        };
 
-//        DrawHeader(g);
-//        EditorGUILayout.Space(6);
+        _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
+            normal = { textColor = Color.white }
+        };
 
-//        DrawSection(C1, () => DrawSetup());
-//        EditorGUILayout.Space(3);
-//        DrawSection(C1, () => DrawHide());
-//        EditorGUILayout.Space(3);
-//        DrawSection(C1, () => DrawPool(g));
-//        EditorGUILayout.Space(3);
-//        DrawSubclass(g);
-//        EditorGUILayout.Space(3);
-//        DrawSection(C_Other, () => DrawOther());
+        _boxStyle = new GUIStyle(EditorStyles.helpBox) { padding = new RectOffset(8, 8, 6, 6) };
+    }
 
-//        if (Application.isPlaying)
-//        {
-//            EditorGUILayout.Space(3);
-//            DrawSection(CR, () => DrawRuntime(g));
-//            Repaint();
-//        }
+    public override void OnInspectorGUI()
+    {
+        InitStyles();
+        GuestAI guest = (GuestAI)target;
+        serializedObject.Update();
 
-//        serializedObject.ApplyModifiedProperties();
-//    }
+        // ── Type badge ───────────────────────────
+        string typeName = target.GetType().Name.Replace("Guest", "");
+        Color typeColor = typeName switch
+        {
+            "Ghost" => new Color(0.5f, 0.8f, 1f),
+            "Vampire" => new Color(0.6f, 0.2f, 0.8f),
+            "Werewolf" => new Color(0.9f, 0.5f, 0.1f),
+            "Mummy" => new Color(0.9f, 0.85f, 0.5f),
+            "Franken" => new Color(0.3f, 0.9f, 0.5f),
+            "Reaper" => new Color(0.5f, 0.5f, 0.5f),
+            "Witch" => new Color(0.8f, 0.3f, 0.8f),
+            _ => new Color(0.7f, 0.7f, 0.7f)
+        };
 
-//    // ── Colored box ──────────────────────────────
+        EditorGUILayout.Space(4);
+        Rect typeRect = GUILayoutUtility.GetRect(0, 26, GUILayout.ExpandWidth(true));
+        EditorGUI.DrawRect(typeRect, typeColor * 0.7f);
+        EditorGUI.LabelField(typeRect, target.GetType().Name, _headerStyle);
+        EditorGUILayout.Space(4);
 
-//    void DrawSection(Color bg, System.Action draw)
-//    {
-//        Color prev = GUI.backgroundColor;
-//        GUI.backgroundColor = bg;
-//        using (new GUILayout.VerticalScope(EditorStyles.helpBox))
-//        {
-//            GUI.backgroundColor = prev;
-//            draw();
-//        }
-//        GUI.backgroundColor = prev;
-//    }
+        // ── Heart bar (always visible) ───────────
+        EditorGUILayout.BeginVertical(_boxStyle);
 
-//    // ── Header ───────────────────────────────────
+        float maxHeart = 5f;
+        float ratio = Application.isPlaying ? Mathf.Clamp01(guest.heart / maxHeart) : 1f;
+        Color barColor = ratio > 0.5f
+            ? Color.Lerp(Color.yellow, Color.green, (ratio - 0.5f) * 2f)
+            : Color.Lerp(Color.red, Color.yellow, ratio * 2f);
 
-//    void DrawHeader(GuestAI g)
-//    {
-//        string n = g.GetType().Name.Replace("Guest", "");
-//        string tag = n switch
-//        {
-//            "Ghost" => "👻  Ghost       |  2 req  |  decay -0.5",
-//            "Vampire" => "🧛  Vampire     |  3 req  |  decay -1.0",
-//            "Witch" => "🧙  Witch+Cat   |  2+2 req|  decay -0.5",
-//            "Werewolf" => "🐺  Werewolf    |  3 req  |  decay -1.0  |  Anger Stack",
-//            "Franken" => "⚡  Franken     |  2 req  |  decay -0.5  |  Sleepwalk",
-//            "Mummy" => "🪦  Mummy       |  3 req  |  decay -1.0  |  Cloth forced",
-//            "Reaper" => "💀  Reaper      |  3 req  |  decay -0.5  |  Large Room",
-//            _ => "🏨  GuestAI",
-//        };
-//        EditorGUILayout.HelpBox(tag, MessageType.None);
-//    }
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Heart", GUILayout.Width(80));
+        Rect barRect = GUILayoutUtility.GetRect(0, 16, GUILayout.ExpandWidth(true));
+        EditorGUI.DrawRect(barRect, new Color(0.2f, 0.2f, 0.2f));
+        EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width * ratio, barRect.height), barColor);
+        string heartText = Application.isPlaying ? $"{guest.heart:0.0} / {maxHeart}" : "edit in Prefab";
+        EditorGUI.LabelField(barRect, heartText, _badgeStyle);
+        EditorGUILayout.EndHorizontal();
 
-//    // ── Setup ────────────────────────────────────
+        // Phase badge (play mode only)
+        if (Application.isPlaying)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Phase", GUILayout.Width(80));
+            Color phaseColor = guest.guestPhase switch
+            {
+                Guestphase.CheckingIn => new Color(0.3f, 0.7f, 1f),
+                Guestphase.InRoom => new Color(0.3f, 0.9f, 0.4f),
+                Guestphase.RequestingService => new Color(1f, 0.8f, 0.1f),
+                Guestphase.CheckingOut => new Color(1f, 0.3f, 0.3f),
+                _ => Color.gray
+            };
+            Rect phaseRect = GUILayoutUtility.GetRect(0, 18, GUILayout.ExpandWidth(true));
+            EditorGUI.DrawRect(phaseRect, phaseColor * 0.6f);
+            EditorGUI.LabelField(phaseRect, guest.guestPhase.ToString(), _badgeStyle);
+            EditorGUILayout.EndHorizontal();
+        }
 
-//    void DrawSetup()
-//    {
-//        _foldSetup = EditorGUILayout.Foldout(_foldSetup, "Setup", true, EditorStyles.foldoutHeader);
-//        if (!_foldSetup) return;
-//        EditorGUI.indentLevel++;
-//        EditorGUILayout.PropertyField(serializedObject.FindProperty("serviceCount"), new GUIContent("Service Count"));
-//        EditorGUILayout.PropertyField(serializedObject.FindProperty("heart"), new GUIContent("Heart (max)"));
-//        EditorGUILayout.PropertyField(serializedObject.FindProperty("decaysHit"), new GUIContent("Decay Per Tick"));
-//        EditorGUI.indentLevel--;
-//    }
+        // Decay
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Decay per tick", GUILayout.Width(108));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("decaysHit"), GUIContent.none);
+        EditorGUILayout.EndHorizontal();
 
-//    // ── Hide On Check-in ─────────────────────────
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space(2);
 
-//    void DrawHide()
-//    {
-//        _foldHide = EditorGUILayout.Foldout(_foldHide, "Hide On Check-in", true, EditorStyles.foldoutHeader);
-//        if (!_foldHide) return;
-//        EditorGUI.indentLevel++;
-//        EditorGUILayout.PropertyField(serializedObject.FindProperty("hideScaleDuration"), new GUIContent("Duration (s)"));
-//        EditorGUI.indentLevel--;
-//    }
+        // ── Service ─────────────────────────────
+        _foldService = DrawSection("Service", _foldService, () =>
+        {
+            DrawField("servicePool", "Pool (drag ItemSOs)");
+            DrawField("serviceCount", "Items per stay");
+            DrawField("deliveryPerSlot", "Deliveries per slot");
 
-//    // ── Service Pool ─────────────────────────────
+            if (Application.isPlaying && guest.currentService != null)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Current Request", GUILayout.Width(120));
+                EditorGUILayout.LabelField(guest.currentService.itemName, EditorStyles.boldLabel);
+                EditorGUILayout.EndHorizontal();
+            }
+        });
 
-//    void DrawPool(GuestAI g)
-//    {
-//        _foldPool = EditorGUILayout.Foldout(_foldPool, "Service Pool", true, EditorStyles.foldoutHeader);
-//        if (!_foldPool) return;
-//        EditorGUI.indentLevel++;
-//        bool hasLuggage = g.serviceRequest_All.Exists(
-//            i => i != null && i.requiredForService == ServiceRequestType.DeliveryLuggage);
-//        if (!hasLuggage && g.serviceRequest_All.Count > 0)
-//            EditorGUILayout.HelpBox("ไม่พบ Luggage ใน Pool", MessageType.Warning);
-//        EditorGUILayout.PropertyField(serializedObject.FindProperty("serviceRequest_All"), new GUIContent("Items"), true);
-//        EditorGUI.indentLevel--;
-//    }
+        // ── Subclass-specific ────────────────────
+        DrawSubclassSection(guest);
 
-//    // ── Subclass ─────────────────────────────────
+        // ── Economy ─────────────────────────────
+        _foldEconomy = DrawSection("Economy", _foldEconomy, () =>
+        {
+            DrawField("roomPayment", "Room Payment");
+            DrawField("tip", "Tip");
+            DrawField("servicePayment", "Service Payment");
+            if (Application.isPlaying)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUILayout.IntField("Total Income", guest.totalIncome);
+                EditorGUI.EndDisabledGroup();
+            }
+        });
 
-//    void DrawSubclass(GuestAI g)
-//    {
-//        switch (g)
-//        {
-//            case WerewolfGuest:
-//                DrawSection(C2, () =>
-//                {
-//                    _foldSub = EditorGUILayout.Foldout(_foldSub, "Anger Stack", true, EditorStyles.foldoutHeader);
-//                    if (!_foldSub) return;
-//                    EditorGUILayout.Space(2);
-//                    DrawSection(C3_Wolf, () =>
-//                    {
-//                        EditorGUI.indentLevel++;
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("maxAngerBars"), new GUIContent("Bars"));
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("barDrainInterval"), new GUIContent("Drain (s)"));
-//                        EditorGUI.indentLevel--;
-//                    });
-//                });
-//                break;
+        // ── UI & Visual ─────────────────────────
+        _foldUI = DrawSection("UI & Visual", _foldUI, () =>
+        {
+            DrawField("characterVisual", "Character Visual");
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.ObjectField("Guest UI (auto)", guest.guestUI, typeof(GuestUIController), true);
+            EditorGUI.EndDisabledGroup();
+        });
 
-//            case FrankenGuest:
-//                DrawSection(C2, () =>
-//                {
-//                    _foldSub = EditorGUILayout.Foldout(_foldSub, "Sleepwalk", true, EditorStyles.foldoutHeader);
-//                    if (!_foldSub) return;
-//                    EditorGUILayout.Space(2);
-//                    DrawSection(C3_Franken, () =>
-//                    {
-//                        EditorGUI.indentLevel++;
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("sleepwalkTarget"), new GUIContent("Walk Target"));
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("heartLossPerSecond"), new GUIContent("Heart Loss /s"));
-//                        EditorGUI.indentLevel--;
-//                    });
-//                });
-//                break;
+        serializedObject.ApplyModifiedProperties();
 
-//            case MummyGuest:
-//                DrawSection(C2, () =>
-//                {
-//                    _foldSub = EditorGUILayout.Foldout(_foldSub, "Cloth Event", true, EditorStyles.foldoutHeader);
-//                    if (!_foldSub) return;
-//                    EditorGUILayout.Space(2);
-//                    DrawSection(C3_Mummy, () =>
-//                    {
-//                        EditorGUI.indentLevel++;
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("clothItem"), new GUIContent("Cloth Item"));
-//                        EditorGUI.indentLevel--;
-//                    });
-//                });
-//                break;
+        if (Application.isPlaying) Repaint();
+    }
 
-//            case WitchGuest:
-//                DrawSection(C2, () =>
-//                {
-//                    _foldSub = EditorGUILayout.Foldout(_foldSub, "Cat", true, EditorStyles.foldoutHeader);
-//                    if (!_foldSub) return;
-//                    EditorGUILayout.Space(2);
-//                    DrawSection(C3_Witch, () =>
-//                    {
-//                        EditorGUI.indentLevel++;
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("catServicePool"), new GUIContent("Cat Pool"), true);
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("catServiceCount"), new GUIContent("Cat Count"));
-//                        EditorGUILayout.PropertyField(serializedObject.FindProperty("catServiceButton"), new GUIContent("Cat Button"));
-//                        EditorGUI.indentLevel--;
-//                    });
-//                });
-//                break;
-//        }
-//    }
+    // ─────────────────────────────────────────────
+    //  Subclass sections
+    // ─────────────────────────────────────────────
 
-//    // ── Other — field ที่เหลือ / เพิ่มใหม่ในอนาคต ──
+    void DrawSubclassSection(GuestAI guest)
+    {
+        if (guest is WerewolfGuest wolf)
+        {
+            DrawSection("Werewolf — Anger Stack", true, () =>
+            {
+                DrawField("maxAngerBars", "Max Bars");
+                DrawField("barDrainInterval", "Drain Interval (s)");
 
-//    // field ที่ draw ไปแล้วใน section อื่น — blacklist ไม่ให้ซ้ำ
-//    static readonly string[] _drawnFields = new[]
-//    {
-//        "m_Script",
-//        // Setup
-//        "serviceCount", "heart", "decaysHit",
-//        // Hide On Check-in
-//        "hideOnCheckIn", "hideScaleDuration",
-//        // Service Pool
-//        "serviceRequest_All",
-//        // Subclass — Werewolf
-//        "maxAngerBars", "barDrainInterval",
-//        // Subclass — Franken
-//        "sleepwalkTarget", "heartLossPerSecond",
-//        // Subclass — Mummy
-//        "clothItem",
-//        // Subclass — Witch
-//        "catServicePool", "catServiceCount", "catServiceButton",
-//        // Runtime (read-only, ไม่ต้อง draw ซ้ำ)
-//        "guestPhase", "isDecaying", "isExit", "currentService",
-//        "servicePoint", "rentNet",
-//    };
+                if (Application.isPlaying)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Anger", GUILayout.Width(80));
+                    Rect r = GUILayoutUtility.GetRect(0, 16, GUILayout.ExpandWidth(true));
+                    float ratio = wolf.maxAngerBars > 0 ? (float)wolf.CurrentAngerBars / wolf.maxAngerBars : 0f;
+                    EditorGUI.DrawRect(r, new Color(0.2f, 0.2f, 0.2f));
+                    EditorGUI.DrawRect(new Rect(r.x, r.y, r.width * ratio, r.height), new Color(1f, 0.4f, 0f));
+                    EditorGUI.LabelField(r, $"{wolf.CurrentAngerBars} / {wolf.maxAngerBars}", _badgeStyle);
+                    EditorGUILayout.EndHorizontal();
+                }
+            }, true);
+        }
+        else if (guest is FrankenGuest franken)
+        {
+            DrawSection("Franken — Sleepwalk", true, () =>
+            {
+                DrawField("heartLossPerSecond", "Heart Loss / sec");
+                DrawField("maxExtraDelay", "Max Extra Delay (s)");
+                DrawField("sleepwalkPoints", "Sleepwalk Points");
 
-//    void DrawOther()
-//    {
-//        _foldOther = EditorGUILayout.Foldout(_foldOther, "Other", true, EditorStyles.foldoutHeader);
-//        if (!_foldOther) return;
-//        EditorGUI.indentLevel++;
-//        DrawPropertiesExcluding(serializedObject, _drawnFields);
-//        EditorGUI.indentLevel--;
-//    }
+                if (Application.isPlaying)
+                {
+                    EditorGUI.BeginDisabledGroup(true);
+                    EditorGUILayout.Toggle("Is Sleepwalking", franken.IsSleepwalking);
+                    EditorGUI.EndDisabledGroup();
+                }
+            }, true);
+        }
+        else if (guest is MummyGuest)
+        {
+            DrawSection("Mummy — Cloth Event", true, () =>
+            {
+                DrawField("clothItem", "Cloth ItemSO");
+                EditorGUILayout.HelpBox("servicePool → Food/Drink/Soul เท่านั้น อย่าใส่ Cloth", MessageType.Info);
+            }, true);
+        }
+        else if (guest is WitchGuest)
+        {
+            EditorGUILayout.BeginVertical(_boxStyle);
+            EditorGUILayout.HelpBox("Witch: deliveryPerSlot = 2 (ส่งของ 2 ชิ้นต่อ 1 slot)\nตั้งค่าใน Service section ด้านบน", MessageType.Info);
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.Space(2);
+        }
+        else if (guest is ReaperGuest)
+        {
+            EditorGUILayout.BeginVertical(_boxStyle);
+            EditorGUILayout.HelpBox("Reaper: ต้องการ RoomType.Big เท่านั้น\nGuestRoomAssigner เช็กให้อัตโนมัติ", MessageType.Info);
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.Space(2);
+        }
+    }
 
-//    // ── Runtime ──────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  Helpers
+    // ─────────────────────────────────────────────
 
-//    void DrawRuntime(GuestAI g)
-//    {
-//        EditorGUILayout.LabelField("Runtime", EditorStyles.boldLabel);
-//        EditorGUILayout.LabelField("Phase", g.guestPhase.ToString());
+    bool DrawSection(string title, bool foldout, System.Action content, bool alwaysOpen = false)
+    {
+        if (alwaysOpen)
+        {
+            EditorGUILayout.BeginVertical(_boxStyle);
+            EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            content();
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.Space(2);
+            return true;
+        }
 
-//        float ratio = Mathf.Clamp01(g.heart / 5f);
-//        Color hc = ratio > 0.6f ? new Color(0.2f, 0.8f, 0.3f)
-//                 : ratio > 0.3f ? new Color(0.9f, 0.7f, 0.1f)
-//                 : new Color(0.9f, 0.2f, 0.2f);
-//        DrawBar($"Heart  {g.heart:F1} / 5", ratio, hc);
+        // ใช้ Foldout แทน BeginFoldoutHeaderGroup เพื่อป้องกัน nesting error
+        EditorGUILayout.BeginVertical(_boxStyle);
+        foldout = EditorGUILayout.Foldout(foldout, title, true, EditorStyles.foldoutHeader);
+        if (foldout)
+        {
+            EditorGUI.indentLevel++;
+            content();
+            EditorGUI.indentLevel--;
+        }
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space(1);
+        return foldout;
+    }
 
-//        string svc = g.currentService != null ? g.currentService.itemName : "—";
-//        EditorGUILayout.LabelField("Service", svc);
-
-//        if (g is WerewolfGuest wolf)
-//            DrawBar($"Anger  {wolf.CurrentAngerBars} / {wolf.maxAngerBars}",
-//                (float)wolf.CurrentAngerBars / wolf.maxAngerBars,
-//                new Color(0.9f, 0.4f, 0.1f));
-
-//        if (g is FrankenGuest fr && fr.IsSleepwalking)
-//            EditorGUILayout.HelpBox("💤 Sleepwalking", MessageType.Warning);
-
-//        if (g is WitchGuest wt && wt.catCurrentService != null)
-//            EditorGUILayout.LabelField("Cat Service", wt.catCurrentService.itemName);
-//    }
-
-//    // ── Bar ──────────────────────────────────────
-
-//    void DrawBar(string label, float ratio, Color col)
-//    {
-//        Rect r = GUILayoutUtility.GetRect(0, 16, GUILayout.ExpandWidth(true));
-//        r.x += 16; r.width -= 20;
-//        EditorGUI.DrawRect(r, new Color(0.1f, 0.1f, 0.1f));
-//        Rect fill = r; fill.width = r.width * ratio;
-//        EditorGUI.DrawRect(fill, col);
-//        GUI.Label(r, "  " + label, EditorStyles.miniLabel);
-//    }
-//}
-//#endif
+    void DrawField(string propName, string label)
+    {
+        var prop = serializedObject.FindProperty(propName);
+        if (prop != null)
+            EditorGUILayout.PropertyField(prop, new GUIContent(label));
+    }
+}
+#endif

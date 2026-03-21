@@ -52,10 +52,12 @@ public class FloorQueue
 public class ElevatorController : MonoBehaviour
 {
     [Header("Elevator Settings")]
-    public int maxCapacity = 4;        // จำนวนคนสูงสุดที่ลิฟต์รับได้
+    public int maxCapacity = 4;
     public float speed = 3f;           // ความเร็วการเคลื่อนที่ของลิฟต์
     public int currentFloor = 0;       // ชั้นปัจจุบันที่ลิฟต์อยู่
     public float distacneWaitslottolift = 3f; // ระยะห่างสูงสุดที่ AI จะยอมขึ้นลิฟต์ได้
+    [Header("StartFloor")]
+    public int minFloor = 0;
 
     [Header("Floor Settings")]
     public Transform[] floorTargets;   // ตำแหน่งพิกัด Y ของแต่ละชั้น
@@ -139,7 +141,7 @@ public class ElevatorController : MonoBehaviour
         {
             elevatorRoutine = StartCoroutine(ProcessElevatorLoop());
         }
-        
+
     }
 
     /// <summary>
@@ -460,8 +462,9 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public Transform RequestWaitSlot(MoveHandleAI character, int floor, out int slotIndex)
     {
-        if (floor >= 0 && floor < floorQueues.Length)
-            return floorQueues[floor].GetAvailableSlot(character, out slotIndex);
+        int localIndex = floor - minFloor;
+        if (localIndex >= 0 && localIndex < floorQueues.Length)
+            return floorQueues[localIndex].GetAvailableSlot(character, out slotIndex);
         slotIndex = -1;
         return null;
     }
@@ -471,7 +474,8 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     public void ReleaseSlot(int floor, int index)
     {
-        if (floor >= 0 && floor < floorQueues.Length)
-            floorQueues[floor].ReleaseSlot(index);
+        int localIndex = floor - minFloor;
+        if (localIndex >= 0 && localIndex < floorQueues.Length)
+            floorQueues[localIndex].ReleaseSlot(index);
     }
 }
