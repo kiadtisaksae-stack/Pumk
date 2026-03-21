@@ -18,4 +18,4 @@ MonoBehaviour:
   itemIcon: {fileID: -7028366481181212325, guid: 2ab0eb76403ea514a988e3e03119392f, type: 3}
   requiredForService: 2
   pickupTime: 1
-  deliverTime: 1
+  deliverTime: 20

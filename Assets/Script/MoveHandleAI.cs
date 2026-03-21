@@ -50,6 +50,7 @@ public abstract class MoveHandleAI : MonoBehaviour
 
     [Header("Visual Settings")]
     public GameObject characterVisual;
+    protected Vector3 _originalScale;  // scale เริ่มต้นของ visual — เก็บก่อนเสมอ
 
 
     protected virtual void Awake()
@@ -60,6 +61,10 @@ public abstract class MoveHandleAI : MonoBehaviour
     }
     public virtual void Start()
     {
+        _originalScale = characterVisual != null
+            ? characterVisual.transform.localScale
+            : transform.localScale;
+
         animator = GetComponentInChildren<Animator>();
         // เช็กเพื่อความชัวร์ว่าเจอไหม
         if (animator == null)
@@ -91,7 +96,7 @@ public abstract class MoveHandleAI : MonoBehaviour
 
         if (agent.velocity.magnitude > 0.1f)
         {
-            if(animator == null) return;
+            if (animator == null) return;
             if (travelState == TravelState.WalkToCallElevator || travelState == TravelState.WalkToTarget
                 || travelState == TravelState.WalkToWaitSlot)
             {
@@ -284,17 +289,30 @@ public abstract class MoveHandleAI : MonoBehaviour
     /// </summary>
     public virtual void ExitElevator()
     {
-        transform.SetParent(null); // ออกจากลิฟต์
-        agent.enabled = true;
-        if (characterVisual != null) characterVisual.SetActive(true);
+        StartCoroutine(ExitElevatorRoutine());
+    }
+
+    private IEnumerator ExitElevatorRoutine()
+    {
+        transform.SetParent(null);
         currentFloor = targetFloor;
         assignedElevator = null;
         currentSlotIndex = -1;
         travelState = TravelState.WalkToTarget;
 
-        if (targetIObj != null)
+        // รอ 1 frame ให้ NavMesh อัปเดต transform หลัง SetParent
+        yield return null;
+
+        agent.enabled = true;
+
+        if (characterVisual != null)
         {
-            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
+            characterVisual.SetActive(true);
+            // คืน scale เพราะ AnimateEnterRoom DOScale ไปเป็น zero
+            characterVisual.transform.localScale = _originalScale;
         }
+
+        if (targetIObj != null)
+            MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
     }
 }

@@ -45,6 +45,7 @@ public class LevelManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
         uiManager = FindAnyObjectByType<LevelUI>();
         uiManager.UpdateLevel(lv);
         uiManager.UpdateProgressBar(moneyGetInLevel,requireMoneyToNext);

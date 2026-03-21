@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdcc335c5716fd44d9e87ec46602cc46, type: 3}
   m_Name: Drink
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  itemName: 
+  itemName: Drink
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 0}
-  requiredForService: 0
+  itemIcon: {fileID: 21300000, guid: ace74a8c0d2ee66449df4aef0070e7d4, type: 3}
+  requiredForService: 2
   pickupTime: 1
-  deliverTime: 1
+  deliverTime: 20

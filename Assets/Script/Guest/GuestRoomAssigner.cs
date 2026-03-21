@@ -62,9 +62,10 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
     {
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
-
+        
         if (hit.collider != null && hit.collider.TryGetComponent<Room>(out var room))
         {
+            
             if (room.RoomData.isUnAvailable)
             {
                 Debug.Log("❌ ห้องนี้มีแขกแล้ว");
@@ -74,6 +75,17 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
             if (targetGuest != null)
             {
+                ReaperGuest reaperGuest = targetGuest.GetComponent<ReaperGuest>();
+                if (reaperGuest != null)
+                {
+                    // ถ้าเป็น Reaper แต่ห้องที่ลากไปใส่ไม่ใช่ RoomType.Big
+                    if (room.RoomData.roomType != RoomType.Big)
+                    {
+                        Debug.Log("<color=red>❌ Reaper ต้องการห้อง Big เท่านั้น!</color>");
+                        transform.localPosition = _originalPosition; // ส่งกลับที่เดิม
+                        return; // หยุดการทำงาน ไม่ให้เข้าห้องนี้
+                    }
+                }
                 SoundManager.Instance.PlaySFX(onDragtoRoom);
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
                 targetGuest.finalRoomData = room.RoomData;

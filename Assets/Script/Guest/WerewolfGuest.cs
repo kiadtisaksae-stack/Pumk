@@ -3,12 +3,12 @@ using UnityEngine;
 
 /// <summary>
 /// Werewolf — The Furious Customer
-/// - Requests 3 items (Luggage fixed + 2 random from Food/Drink/Soul)
+/// - 2 items (Luggage fixed + 1 random: Food/Drink/Soul)  ← spec: 2 items
 /// - Heart: 5, decays -1.0 every 3s
-/// - EVENT: Anger Stack — 3 bars, หายทีละ 1 ทุก 2.5s
-///   ถ้าหมดทุก bar ก่อนได้รับ service = ClearItem() บน player
-///   Stack reset ทุก request ใหม่
-/// - Reward: ~105 coins
+/// - EVENT: Anger Stack — 3 bars, drains 1 bar every 2.5s per request
+///   Stack resets at each new request
+///   Full stack loss = ClearItem() on Player inventory
+/// servicePool ใน Inspector: Food, Drink, Soul
 /// </summary>
 public class WerewolfGuest : GuestAI
 {
@@ -16,7 +16,6 @@ public class WerewolfGuest : GuestAI
     public int maxAngerBars = 3;
     public float barDrainInterval = 2.5f;
 
-    // expose ให้ UI อ่านได้
     public int CurrentAngerBars { get; private set; }
 
     private Coroutine _angerCoroutine;
@@ -25,17 +24,18 @@ public class WerewolfGuest : GuestAI
     public override void Start()
     {
         base.Start();
-        serviceCount = 3;
+        serviceCount = 2;       // Luggage + 1 random = 2 items
         decaysHit = 1.0f;
         _player = FindAnyObjectByType<Player>();
     }
 
+    // ── เริ่ม Anger Stack ใหม่ทุก request ──
     public override void OnServiceStart(ItemSO service)
     {
-        // reset และเริ่ม anger stack ใหม่ทุก request
         StopAngerStack();
         CurrentAngerBars = maxAngerBars;
         _angerCoroutine = StartCoroutine(AngerStackRoutine());
+        guestUI?.OnAngerStart();
         Debug.Log($"<color=orange>Werewolf: Anger Stack เริ่ม ({maxAngerBars} bars)</color>");
     }
 
@@ -51,10 +51,11 @@ public class WerewolfGuest : GuestAI
         StopAngerStack();
     }
 
-    public override void OnCheckOut(bool isAnger)
-    {
-        StopAngerStack();
-    }
+    public override void OnCheckOut(bool isAnger) => StopAngerStack();
+
+    // ─────────────────────────────────────────────
+    //  Anger internals
+    // ─────────────────────────────────────────────
 
     private IEnumerator AngerStackRoutine()
     {
@@ -65,9 +66,7 @@ public class WerewolfGuest : GuestAI
             Debug.Log($"<color=orange>Werewolf Anger: {CurrentAngerBars}/{maxAngerBars}</color>");
 
             if (CurrentAngerBars <= 0)
-            {
                 TriggerAngerPunish();
-            }
         }
     }
 
@@ -88,5 +87,6 @@ public class WerewolfGuest : GuestAI
             _angerCoroutine = null;
         }
         CurrentAngerBars = 0;
+        guestUI?.OnAngerEnd();
     }
 }

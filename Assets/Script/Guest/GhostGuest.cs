@@ -2,10 +2,10 @@ using UnityEngine;
 
 /// <summary>
 /// Ghost — The Classic Guest
-/// - Requests 2 items (Luggage fixed + 1 random from Food/Drink/Soul)
+/// - 2 items (Luggage fixed + 1 random: Food/Drink/Soul)
 /// - Heart: 5, decays -0.5 every 3s
-/// - No special events
-/// - Used for tutorial and system testing
+/// - No events
+/// servicePool ใน Inspector: Food, Drink, Soul
 /// </summary>
 public class GhostGuest : GuestAI
 {

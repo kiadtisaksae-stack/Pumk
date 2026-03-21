@@ -1,42 +1,57 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-[RequireComponent(typeof(ServiceManager))]
+
+/// <summary>
+/// Room คุยกับ GuestAI โดยตรง ไม่ผ่าน ServiceManager
+/// - BuildQueue / CheckDelivery ย้ายมาอยู่ที่นี่
+/// - GuestAI.ProcessRequests รับ Room โดยตรง
+/// </summary>
+[RequireComponent(typeof(Collider2D))]
 public class Room : CanInteractObj, IInteractable
 {
-
     public RoomData RoomData => interactObjData.roomData;
     public RoomState roomState;
 
     [Header("Interaction")]
-
     public Button upgradeRoomButton;
 
-    [SerializeField]
-    private GuestAI guestInRoom;
+    [Header("Service State")]
+    public float serviceCooldown = 5f;
+    public bool isDelivered;
+    public int deliveryCount;   // นับชิ้นที่ส่งแล้วใน slot นี้
+    public Counter counter;
 
+    [SerializeField] private GuestAI guestInRoom;
     public GameObject unCleanObj;
-    public ServiceManager serviceManager;
     public int roomCost = 100;
+
+    [HideInInspector] public List<ItemSO> serviceQueue = new List<ItemSO>();
+
+    // ─────────────────────────────────────────────
+    //  Init
+    // ─────────────────────────────────────────────
 
     protected override void Awake()
     {
         base.Awake();
         if (upgradeRoomButton != null)
             upgradeRoomButton.onClick.AddListener(UpgradeRoom);
-
-        ////if (roomServiceButton != null)
-        ////    roomServiceButton.onClick.AddListener(StartService);
-
         UpdateUpgradeButton();
     }
+
     public override void Start()
     {
         base.Start();
         roomState = RoomState.Available;
         unCleanObj.SetActive(false);
-        serviceManager = GetComponent<ServiceManager>();
+        if (counter == null) counter = FindAnyObjectByType<Counter>();
     }
+
+    // ─────────────────────────────────────────────
+    //  Trigger Zone
+    // ─────────────────────────────────────────────
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -45,13 +60,16 @@ public class Room : CanInteractObj, IInteractable
             if (player.finalRoomData != RoomData) return;
 
             if (guestInRoom != null && guestInRoom.currentService != null)
-            {
-                serviceManager.RequestCheck(guestInRoom.currentService, player);
-            }
+                if (CheckDelivery(guestInRoom.currentService, player))
+                {
+                    deliveryCount++;
+                    if (deliveryCount >= guestInRoom.deliveryPerSlot)
+                        isDelivered = true;
+                }
+
             if (roomState == RoomState.Dirty)
             {
-                //เช็คของและเคลียร์
-                ClearRoom(player);
+                TryCleanRoom(player);
                 roomState = RoomState.Available;
             }
 
@@ -64,69 +82,120 @@ public class Room : CanInteractObj, IInteractable
             if (employee.finalRoomData != RoomData) return;
 
             if (guestInRoom != null && guestInRoom.currentService != null)
-            {
-                serviceManager.RequestCheck(guestInRoom.currentService, employee);
-            }
+                if (CheckDelivery(guestInRoom.currentService, employee))
+                {
+                    deliveryCount++;
+                    if (deliveryCount >= guestInRoom.deliveryPerSlot)
+                        isDelivered = true;
+                }
         }
+
         if (collision.CompareTag("Guest"))
         {
-            Debug.Log("Guest entered the zone!");
             GuestAI guest = collision.GetComponent<GuestAI>();
+            if (guest == null) return;
             if (guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
-            if (guest != null) //อันนี้ทำเทสเฉยๆ จริงๆต้องทำ combo จากสีห้องที่ตรงกับแขก
-            {
-                LevelManager levelManager = FindAnyObjectByType<LevelManager>();
-                levelManager.AddCombo(1);
-            }
-            else
-            {
-                LevelManager levelManager = FindAnyObjectByType<LevelManager>();
-                LevelUI levelUI = FindAnyObjectByType<LevelUI>();
-                levelManager.streakCount = 0;
-                levelUI.comboText.text = "Combo: 0 ";
 
-            }
+            FindAnyObjectByType<LevelManager>()?.AddCombo(1);
+
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
             guest.tip += 10;
-            StartService(guest);
 
+            StartService(guest);
         }
     }
 
-    public void AssignGuest(GuestAI guest)
+    // ─────────────────────────────────────────────
+    //  Service
+    // ─────────────────────────────────────────────
+
+    public void StartService(GuestAI guest)
     {
         guestInRoom = guest;
+        serviceQueue = BuildQueue(guest.servicePool, guest.serviceCount);
+        guest.OnCheckIn();
+        guest.guestUI?.OnCheckIn();
+        guest.StartProcessing(this);
     }
 
-    public void ClearRoom(MoveHandleAI actor)
+    // ─────────────────────────────────────────────
+    //  BuildQueue  (เคยอยู่ใน ServiceManager)
+    // ─────────────────────────────────────────────
+
+    private List<ItemSO> BuildQueue(List<ItemSO> pool, int serviceCount)
     {
-        List<ItemSO> actorInventory = null;
-        Player playerActor = actor as Player;
-        Employee employeeActor = actor as Employee;
+        List<ItemSO> result = new List<ItemSO>();
+        List<ItemSO> working = new List<ItemSO>(pool);
 
-        if (playerActor != null) actorInventory = playerActor.inventory;
-        else if (employeeActor != null) actorInventory = employeeActor.inventory;
-
-        foreach (ItemSO item in actorInventory)
+        for (int i = 0; i < working.Count; i++)
         {
-            if (item.requiredForService == ServiceRequestType.Laundry)
+            if (working[i].requiredForService == ServiceRequestType.DeliveryLuggage)
             {
-                if (playerActor != null) playerActor.RemoveItem(item);
-                else if (employeeActor != null) employeeActor.RemoveItem(item);
-
-                guestInRoom = null;
-                RoomData.isUnAvailable = false;
-                unCleanObj.SetActive(false);
-                RoomData.currentServiceRequest = null;
+                result.Add(working[i]);
+                working.RemoveAt(i);
                 break;
             }
         }
+
+        Shuffle(working);
+        result.AddRange(working);
+
+        if (result.Count > serviceCount)
+            result.RemoveRange(serviceCount, result.Count - serviceCount);
+
+        return result;
     }
 
+    // ─────────────────────────────────────────────
+    //  CheckDelivery  (เคยอยู่ใน ServiceManager)
+    // ─────────────────────────────────────────────
+
+    private bool CheckDelivery(ItemSO service, MoveHandleAI actor)
+    {
+        if (service == null) return false;
+
+        List<ItemSO> inv = GetInventory(actor);
+        if (inv == null) return false;
+
+        ItemSO found = inv.Find(x => x == service);
+        if (found == null)
+        {
+            Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการ</color>");
+            return false;
+        }
+
+        RemoveFromInventory(actor, found);
+        Debug.Log($"<color=cyan>ส่ง {found.itemName} สำเร็จ</color>");
+        return true;
+    }
+
+    // ─────────────────────────────────────────────
+    //  Room State
+    // ─────────────────────────────────────────────
+
+    public void AssignGuest(GuestAI guest) => guestInRoom = guest;
+
+    public void TryCleanRoom(MoveHandleAI actor)
+    {
+        List<ItemSO> inv = GetInventory(actor);
+        if (inv == null) return;
+
+        foreach (ItemSO item in inv)
+        {
+            if (item.requiredForService != ServiceRequestType.Laundry) continue;
+
+            RemoveFromInventory(actor, item);
+            guestInRoom = null;
+            RoomData.isUnAvailable = false;
+            unCleanObj.SetActive(false);
+            RoomData.currentServiceRequest = null;
+            break;
+        }
+    }
 
     public void DirtyRoom()
     {
@@ -134,53 +203,68 @@ public class Room : CanInteractObj, IInteractable
         unCleanObj.SetActive(true);
     }
 
-
+    // ─────────────────────────────────────────────
+    //  Upgrade
+    // ─────────────────────────────────────────────
 
     public void UpgradeRoom()
     {
-        if (RoomData.isUnAvailable)
-        {
-            Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก");
-            return;
-        }
-
-        if (RoomData.roomLevel == RoomLevel.Suite)
-        {
-            Debug.Log("❌ ห้องนี้เป็น Suite แล้ว");
-            return;
-        }
+        if (RoomData.isUnAvailable) { Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก"); return; }
+        if (RoomData.roomLevel == RoomLevel.Suite) { Debug.Log("❌ Suite แล้ว"); return; }
 
         RoomData.roomLevel++;
-        roomCost = roomCost + 100;
+        roomCost += 100;
         Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
-
         UpdateUpgradeButton();
     }
+
     private void UpdateUpgradeButton()
     {
         if (upgradeRoomButton == null) return;
-
         upgradeRoomButton.interactable =
-            !RoomData.isUnAvailable &&
-            RoomData.roomLevel != RoomLevel.Suite;
-    }
-    public void StartService(GuestAI guest)
-    {
-        guest.OnCheckIn();
-        guest.RequestService(serviceManager);
+            !RoomData.isUnAvailable && RoomData.roomLevel != RoomLevel.Suite;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, 0.3f);
-        Gizmos.DrawLine(transform.position, transform.position);
-    }
+    // ─────────────────────────────────────────────
+    //  IInteractable
+    // ─────────────────────────────────────────────
 
     public override void Interact(MoveHandleAI actor)
     {
         base.Interact(actor);
         actor.finalRoomData = RoomData;
         actor.StartTravel(interactObjData);
+    }
+
+    // ─────────────────────────────────────────────
+    //  Inventory Helpers
+    // ─────────────────────────────────────────────
+
+    private List<ItemSO> GetInventory(MoveHandleAI actor)
+    {
+        if (actor is Player p) return p.inventory;
+        if (actor is Employee e) return e.inventory;
+        return null;
+    }
+
+    private void RemoveFromInventory(MoveHandleAI actor, ItemSO item)
+    {
+        if (actor is Player p) { p.RemoveItem(item); return; }
+        if (actor is Employee e) { e.RemoveItem(item); return; }
+    }
+
+    private void Shuffle(List<ItemSO> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int r = Random.Range(i, list.Count);
+            (list[i], list[r]) = (list[r], list[i]);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, 0.3f);
     }
 }

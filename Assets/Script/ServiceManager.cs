@@ -1,183 +1,91 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿//using System.Collections.Generic;
+//using UnityEngine;
 
-public class ServiceManager : MonoBehaviour
-{
-    public List<ItemSO> listService = new List<ItemSO>();
-    public Button roomServiceButton;
-    public float serviceCooldown = 5f;
+///// <summary>
+///// Pure utility — ไม่เก็บ state, ไม่รู้จัก Room
+///// หน้าที่: build queue จาก pool + validate delivery
+///// Room เป็นคนเรียกใช้และเก็บ state ทั้งหมด
+///// </summary>
+//public class ServiceManager : MonoBehaviour
+//{
+//    // ─────────────────────────────────────────────
+//    //  Build Queue  (Room เรียกตอน guest check-in)
+//    // ─────────────────────────────────────────────
 
-    public bool isPlayerinRange;
-    public bool isSuccess;
-    public Counter counter;
+//    public List<ItemSO> BuildQueue(List<ItemSO> pool, int serviceCount)
+//    {
+//        List<ItemSO> result = new List<ItemSO>();
+//        List<ItemSO> working = new List<ItemSO>(pool);
 
-    private Room room;
+//        // Luggage ก่อนเสมอ
+//        for (int i = 0; i < working.Count; i++)
+//        {
+//            if (working[i].requiredForService == ServiceRequestType.DeliveryLuggage)
+//            {
+//                result.Add(working[i]);
+//                working.RemoveAt(i);
+//                break;
+//            }
+//        }
 
-    void Start()
-    {
-        roomServiceButton.gameObject.SetActive(false);
-        counter = FindAnyObjectByType<Counter>();
-        room = GetComponent<Room>();
-    }
+//        // สุ่มที่เหลือ
+//        Shuffle(working);
+//        result.AddRange(working);
 
-    // ─────────────────────────────────────────────
-    //  Entry Point
-    // ─────────────────────────────────────────────
+//        // ตัดให้ครบพอดี
+//        if (result.Count > serviceCount)
+//            result.RemoveRange(serviceCount, result.Count - serviceCount);
 
-    public void StartRequests(GuestAI guest)
-    {
-        StartCoroutine(ProcessRequests(guest));
-    }
+//        Debug.Log($"<color=green>BuildQueue: {result.Count} รายการ</color>");
+//        return result;
+//    }
 
-    // ─────────────────────────────────────────────
-    //  ทุก behavior ส่งผ่าน hooks ของ GuestAI
-    // ─────────────────────────────────────────────
+//    // ─────────────────────────────────────────────
+//    //  Validate Delivery  (Room เรียกตอน actor เดินมาถึง)
+//    // ─────────────────────────────────────────────
 
-    IEnumerator ProcessRequests(GuestAI guest)
-    {
-        FrankenGuest franken = guest as FrankenGuest;
-        MummyGuest mummy = guest as MummyGuest;
+//    public bool CheckDelivery(ItemSO service, MoveHandleAI actor)
+//    {
+//        if (service == null) return false;
 
-        for (int slotIndex = 0; slotIndex < listService.Count; slotIndex++)
-        {
-            // Mummy: เช็กว่า slot นี้มี forced service หรือเปล่า
-            ItemSO service = listService[slotIndex];
-            if (mummy != null)
-            {
-                ItemSO forced = mummy.GetForcedServiceForSlot(slotIndex);
-                if (forced != null) service = forced;
-            }
+//        List<ItemSO> inventory = GetInventory(actor);
+//        if (inventory == null) return false;
 
-            isSuccess = false;
-            guest.OnServiceStart(service);
-            ServicePopUp(service, roomServiceButton);
-            guest.currentService = service;
+//        ItemSO found = inventory.Find(x => x == service);
+//        if (found == null)
+//        {
+//            Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการ</color>");
+//            return false;
+//        }
 
-            Coroutine decayCoroutine = guest.StartDecayCoroutine();
+//        RemoveFromInventory(actor, found);
+//        Debug.Log($"<color=cyan>ส่ง {found.itemName} สำเร็จ</color>");
+//        return true;
+//    }
 
-            while (true)
-            {
-                if (isSuccess)
-                {
-                    guest.isDecaying = false;
-                    if (decayCoroutine != null) guest.StopCoroutine(decayCoroutine);
-                    break;
-                }
+//    // ─────────────────────────────────────────────
+//    //  Helpers
+//    // ─────────────────────────────────────────────
 
-                if (guest.isExit)
-                {
-                    roomServiceButton.gameObject.SetActive(false);
-                    room.RoomData.isUnAvailable = false;
-                    if (decayCoroutine != null) guest.StopCoroutine(decayCoroutine);
-                    StopAllCoroutines();
-                    yield break;
-                }
+//    private List<ItemSO> GetInventory(MoveHandleAI actor)
+//    {
+//        if (actor is Player p) return p.inventory;
+//        if (actor is Employee e) return e.inventory;
+//        return null;
+//    }
 
-                yield return null;
-            }
+//    private void RemoveFromInventory(MoveHandleAI actor, ItemSO item)
+//    {
+//        if (actor is Player p) { p.RemoveItem(item); return; }
+//        if (actor is Employee e) { e.RemoveItem(item); return; }
+//    }
 
-            roomServiceButton.gameObject.SetActive(false);
-            guest.currentService = null;
-
-            if (!isSuccess)
-                guest.OnServiceFail(service);
-            else
-                guest.OnServiceSuccess(service);
-
-            // ── Cooldown + Franken sleepwalk window ──
-            // Franken สุ่ม sleepwalk ระหว่าง cooldown ก่อน service ถัดไป
-            if (franken != null && slotIndex < listService.Count - 1)
-            {
-                bool sleeping = franken.TrySleepwalk();
-                if (sleeping)
-                {
-                    // รอให้ตื่นก่อนค่อยนับ cooldown
-                    yield return new WaitUntil(() => !franken.IsSleepwalking);
-                }
-            }
-
-            yield return new WaitForSeconds(serviceCooldown);
-        }
-
-        guest.OnAllServicesComplete(counter);
-        room.DirtyRoom();
-    }
-
-    // ─────────────────────────────────────────────
-    //  Request Validation
-    // ─────────────────────────────────────────────
-
-    public bool RequestCheck(ItemSO service, MoveHandleAI actor)
-    {
-        List<ItemSO> actorInventory = null;
-        Player playerActor = actor as Player;
-        Employee employeeActor = actor as Employee;
-
-        if (playerActor != null) actorInventory = playerActor.inventory;
-        else if (employeeActor != null) actorInventory = employeeActor.inventory;
-
-        if (actorInventory == null || service == null) return false;
-
-        ItemSO found = actorInventory.Find(x => x == service);
-        if (found == null)
-        {
-            Debug.Log("<color=red>ไม่มีไอเทมที่ลูกค้าต้องการ</color>");
-            return false;
-        }
-
-        if (playerActor != null) playerActor.RemoveItem(found);
-        else if (employeeActor != null) employeeActor.RemoveItem(found);
-
-        isSuccess = true;
-        Debug.Log($"<color=cyan>ส่ง {found.itemName} สำเร็จ</color>");
-        return true;
-    }
-
-    // ─────────────────────────────────────────────
-    //  Setup Helpers
-    // ─────────────────────────────────────────────
-
-    public void ServicePopUp(ItemSO service, Button serviceButton)
-    {
-        serviceButton.gameObject.SetActive(true);
-        serviceButton.image.sprite = service.itemIcon;
-    }
-
-    public void ServiceSetUp(List<ItemSO> allService, int serviceCount)
-    {
-        FindLuggageService(allService);
-
-        List<ItemSO> randomService = new List<ItemSO>(allService);
-        ShuffleList(randomService);
-        listService.AddRange(randomService);
-
-        if (listService.Count > serviceCount)
-            listService.RemoveRange(serviceCount, listService.Count - serviceCount);
-
-        Debug.Log($"<color=green>Set Up Service เรียบร้อย ({listService.Count} รายการ)</color>");
-    }
-
-    void ShuffleList(List<ItemSO> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int r = Random.Range(i, list.Count);
-            (list[i], list[r]) = (list[r], list[i]);
-        }
-    }
-
-    public void FindLuggageService(List<ItemSO> allService)
-    {
-        for (int i = 0; i < allService.Count; i++)
-        {
-            if (allService[i].requiredForService == ServiceRequestType.DeliveryLuggage)
-            {
-                listService.Add(allService[i]);
-                allService.RemoveAt(i);
-                break;
-            }
-        }
-    }
-}
+//    private void Shuffle(List<ItemSO> list)
+//    {
+//        for (int i = 0; i < list.Count; i++)
+//        {
+//            int r = Random.Range(i, list.Count);
+//            (list[i], list[r]) = (list[r], list[i]);
+//        }
+//    }
+//}

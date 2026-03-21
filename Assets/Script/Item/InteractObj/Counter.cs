@@ -27,14 +27,16 @@ public class Counter : CanInteractObj
             SoundManager.Instance.PlaySFX(cashOutSound);
             LevelManager gameManager = FindAnyObjectByType<LevelManager>();
             ShowMoneyPopup(guest.totalIncome);
-            // เพิ่มเงิน
             gameManager.AddMoney(guest.totalIncome);
             gameManager.guestServed++;
             RefreshCheckOutCount();
-           
-            // แสดง popup
-            
-            Destroy(guest.gameObject);
+
+            // ส่ง guest ไปที่ ExitDoor — ExitDoor จะ Destroy เอง
+            ExitDoor exitDoor = FindAnyObjectByType<ExitDoor>();
+            if (exitDoor != null)
+                guest.StartTravel(exitDoor.interactObjData);
+            else
+                Destroy(guest.gameObject);
         }
     }
 

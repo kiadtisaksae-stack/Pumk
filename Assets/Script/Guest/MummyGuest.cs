@@ -1,68 +1,52 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Mummy — The Special-Request Guest
-/// - Requests 3 items (Luggage fixed + 2 random)
+/// - 3 items (Luggage fixed + 2 random)
 /// - Heart: 5, decays -1.0 every 3s
-/// - EVENT: Cloth request guaranteed ครั้งแรกที่ request #2 หรือ #3 (สุ่ม)
-///   และหลังจากนั้น Cloth ถูกเพิ่มเข้า random pool ด้วย
+/// - EVENT: Cloth guaranteed at slot 1 OR 2 (random)
+///   - ก่อน event: servicePool = Food/Drink/Soul  (ไม่มี Cloth)
+///   - หลัง event: Cloth ถูกเพิ่มเข้า servicePool ด้วย (อาจโผล่ใน request ถัดไป)
 ///
-/// DESIGN: override ServiceSetUp ผ่าน hook OnCheckIn
-///   - ก่อนเริ่ม: Cloth ไม่อยู่ใน pool
-///   - เมื่อถึง trigger slot: inject Cloth เป็น service นั้น (forced)
-///   - หลัง triggered: Cloth อยู่ใน pool ปกติ
+/// servicePool ใน Inspector: Food, Drink, Soul  (อย่าใส่ Cloth — inject อัตโนมัติ)
+/// clothItem ใน Inspector: ลาก Cloth ItemSO ใส่
 /// </summary>
 public class MummyGuest : GuestAI
 {
     [Header("Cloth Settings")]
-    public ItemSO clothItem;    // ลาก Cloth ItemSO ใน Inspector
+    public ItemSO clothItem;
 
-    // slot ที่ Cloth จะ forced (1 = request #2, 2 = request #3, นับจาก 0)
     private int _clothForcedSlot = -1;
     private bool _clothTriggered = false;
-
-    // service ที่ถูก inject แทนที่ random (ใช้ใน ServiceManager override)
-    public ItemSO ForcedNextService { get; private set; } = null;
 
     public override void Start()
     {
         base.Start();
-        serviceCount = 3;
+        serviceCount = 3;       // Luggage + 2 random = 3 items
         decaysHit = 1.0f;
     }
 
     public override void OnCheckIn()
     {
         _clothTriggered = false;
-        // สุ่มว่า Cloth จะ forced ที่ slot 1 หรือ 2 (request #2 หรือ #3)
+        // สุ่มว่า Cloth จะ forced ที่ slot 1 หรือ slot 2  (0-indexed; slot 0 = Luggage)
         _clothForcedSlot = Random.Range(1, 3);
         Debug.Log($"<color=yellow>Mummy: Cloth forced ที่ slot {_clothForcedSlot}</color>");
     }
 
-    public override void OnServiceStart(ItemSO service)
-    {
-        // ล้าง forced service หลังจาก ServiceManager หยิบไปแล้ว
-        ForcedNextService = null;
-    }
-
-    /// <summary>
-    /// ServiceManager เรียกก่อนเลือก service ถัดไปจาก list
-    /// ถ้า return non-null = ใช้ ItemSO นี้แทน list item
-    /// </summary>
-    public ItemSO GetForcedServiceForSlot(int slotIndex)
+    protected override ItemSO GetServiceForSlot(int slotIndex, ItemSO listItem)
     {
         if (!_clothTriggered && slotIndex == _clothForcedSlot && clothItem != null)
         {
             _clothTriggered = true;
-            Debug.Log("<color=yellow>Mummy: Cloth forced!</color>");
+            Debug.Log("<color=yellow>Mummy: Cloth event triggered!</color>");
 
-            // หลัง triggered เพิ่ม Cloth เข้า pool ด้วย (ถ้ายังไม่มี)
-            if (!serviceRequest_All.Contains(clothItem))
-                serviceRequest_All.Add(clothItem);
+            // หลัง event เพิ่ม Cloth เข้า pool → อาจโผล่ใน request ถัดไป
+            if (!servicePool.Contains(clothItem))
+                servicePool.Add(clothItem);
 
             return clothItem;
         }
-        return null;
+        return listItem;
     }
 }
