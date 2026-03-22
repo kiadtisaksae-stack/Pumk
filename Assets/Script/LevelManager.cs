@@ -103,6 +103,13 @@ public class LevelManager : MonoBehaviour
         uiLevelManager.UpdateMoney(currentMoney);
         uiLevelManager.UpdateCombo(streakCount);
     }
+
+    public void ResetCombo()
+    {
+        streakCount = 0;
+        uiLevelManager.UpdateCombo(streakCount);
+    }
+
     public void CulculateRank()
     {
         if(currentPoints >= 3)

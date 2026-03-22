@@ -153,7 +153,7 @@ public class LevelUI : MonoBehaviour
     {
         // โหลดฉากโฮม
         Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameHub");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("UI Scene");
         
     }
     public void Notify(string message)

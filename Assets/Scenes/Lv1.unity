@@ -2318,7 +2318,7 @@ AudioSource:
   m_GameObject: {fileID: 232227461}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -7860991005124426579, guid: bcd2ce6b1a0a1b946b4c79105e1a498c, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -4766,6 +4766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab1fb20ec602b94d98a10766c510946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+  mainMixer: {fileID: 24100000, guid: bcd2ce6b1a0a1b946b4c79105e1a498c, type: 2}
   audioBG: {fileID: 8300000, guid: a81331e5ff5e907439bbec8eab2777bb, type: 3}
   musicSource: {fileID: 232227462}
   sfxSource: {fileID: 912711228}
@@ -8770,7 +8771,7 @@ AudioSource:
   m_GameObject: {fileID: 912711227}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7857191649039467908, guid: bcd2ce6b1a0a1b946b4c79105e1a498c, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -12121,6 +12122,7 @@ MonoBehaviour:
   speed: 3
   currentFloor: 0
   distacneWaitslottolift: 3
+  minFloor: 0
   floorTargets:
   - {fileID: 37310301}
   - {fileID: 1188480881}
@@ -12336,6 +12338,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1247870054}
     m_Modifications:
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 244858021972797616, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2409482810752304915, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_Name
       value: Game Settings UI
@@ -12343,6 +12369,54 @@ PrefabInstance:
     - target: {fileID: 2409482810752304915, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469436746731104838, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6435411668124813140, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7118330547436148024, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.x

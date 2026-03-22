@@ -12,6 +12,7 @@ public class Room : CanInteractObj, IInteractable
 {
     public RoomData RoomData => interactObjData.roomData;
     public RoomState roomState;
+    public ObjColor roomColor;
 
     [Header("Interaction")]
     public Button upgradeRoomButton;
@@ -98,7 +99,14 @@ public class Room : CanInteractObj, IInteractable
             if (guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
 
-            FindAnyObjectByType<LevelManager>()?.AddCombo(1);
+            if (guest.guestColor == roomColor)
+            {
+                FindAnyObjectByType<LevelManager>()?.AddCombo(1);
+            }
+            else
+            {
+                FindAnyObjectByType<LevelManager>()?.ResetCombo();
+            }
 
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;

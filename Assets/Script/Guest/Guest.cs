@@ -12,6 +12,7 @@ public enum Guestphase { CheckingIn, InRoom, RequestingService, CheckingOut }
 public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
+    [SerializeField] public ObjColor guestColor;
 
     [Header("Heart and Decaying")]
     public float heart = 5f;
@@ -47,9 +48,23 @@ public class GuestAI : MoveHandleAI
         base.Start();
         door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
+        RandomColor();
 
         guestUI = GetComponentInChildren<GuestUIController>(true);
         if (guestUI != null) guestUI.Init(this);
+    }
+
+
+    private void RandomColor() //สุ่มสี
+    {
+        System.Array values = System.Enum.GetValues(typeof(ObjColor));
+
+        int randomIndex = UnityEngine.Random.Range(0, values.Length);
+
+        // ต้องแน่ใจว่ามีการประกาศตัวแปร guestColor ไว้แล้ว
+        guestColor = (ObjColor)values.GetValue(randomIndex);
+
+        Debug.Log("สุ่มได้สี: " + guestColor);
     }
 
     // ─────────────────────────────────────────────
