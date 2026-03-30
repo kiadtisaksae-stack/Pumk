@@ -138,6 +138,6 @@ public class LevelManager : MonoBehaviour
         }
         uiLevelManager.ShowEndLevelScreen(isWin, guestServed , maxSteakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);
 
-        GameManager.Instance.AddGold(currentMoney);
+        //GameManager.Instance.AddGold(currentMoney);
     }
 }
