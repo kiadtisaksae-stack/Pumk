@@ -1,34 +1,28 @@
 fileFormatVersion: 2
-guid: 3ab2c5e5f5bd3ae468135f5be7695dbd
+guid: 185343b9359384341b32434f715ac9b5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2368408383761483995
-    second: IMG_4379_0
+      213: -1391923431092765258
+    second: IMG_4393_0
   - first:
-      213: 3562107824501670777
-    second: IMG_4379_1
+      213: 558770423533716364
+    second: IMG_4393_1
   - first:
-      213: 373082536115480592
-    second: IMG_4379_2
+      213: -3636773594262605102
+    second: IMG_4393_2
   - first:
-      213: 4597127321617147443
-    second: IMG_4379_3
+      213: -6191523142603176316
+    second: IMG_4393_3
   - first:
-      213: -5037548338907147173
-    second: IMG_4379_4
+      213: -6608643333922627062
+    second: IMG_4393_4
   - first:
-      213: -5234027403869315117
-    second: IMG_4379_5
+      213: -8499013384356525235
+    second: IMG_4393_5
   - first:
-      213: -1354501343544452457
-    second: IMG_4379_6
-  - first:
-      213: 1428348286953526892
-    second: IMG_4379_7
-  - first:
-      213: 7199948922693978248
-    second: IMG_4379_8
+      213: 8077699827119331968
+    second: IMG_4393_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,7 +90,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -121,7 +115,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -137,13 +131,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IMG_4379_0
+      name: IMG_4393_0
       rect:
         serializedVersion: 2
-        x: 310
-        y: 1788
-        width: 55
-        height: 108
+        x: 1705
+        y: 1663
+        width: 138
+        height: 41
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +146,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 527f6d29f19b12fd0800000000000000
-      internalID: -2368408383761483995
+      spriteID: 6bd3c2f9305eeace0800000000000000
+      internalID: -1391923431092765258
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_1
+      name: IMG_4393_1
       rect:
         serializedVersion: 2
-        x: 398
-        y: 1852
-        width: 25
-        height: 32
+        x: 1927
+        y: 1673
+        width: 89
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,63 +168,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 973cf0b81362f6130800000000000000
-      internalID: 3562107824501670777
+      spriteID: c83c8bd5db621c700800000000000000
+      internalID: 558770423533716364
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_2
+      name: IMG_4393_2
       rect:
         serializedVersion: 2
-        x: 399
-        y: 1766
-        width: 84
-        height: 156
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 018a01507947d2500800000000000000
-      internalID: 373082536115480592
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IMG_4379_3
-      rect:
-        serializedVersion: 2
-        x: 515
-        y: 1811
-        width: 47
-        height: 119
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 336ab3041f64ccf30800000000000000
-      internalID: 4597127321617147443
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IMG_4379_4
-      rect:
-        serializedVersion: 2
-        x: 541
-        y: 1798
-        width: 88
+        x: 1712
+        y: 1583
+        width: 122
         height: 73
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -240,20 +190,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b549490d978071ab0800000000000000
-      internalID: -5037548338907147173
+      spriteID: 2d2f4793fa5978dc0800000000000000
+      internalID: -3636773594262605102
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_5
+      name: IMG_4393_3
       rect:
         serializedVersion: 2
-        x: 688
-        y: 1808
-        width: 45
-        height: 93
+        x: 1912
+        y: 1543
+        width: 19
+        height: 54
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -262,20 +212,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3df95b7aecffc57b0800000000000000
-      internalID: -5234027403869315117
+      spriteID: 4860782818a431aa0800000000000000
+      internalID: -6191523142603176316
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_6
+      name: IMG_4393_4
       rect:
         serializedVersion: 2
-        x: 635
-        y: 1792
-        width: 33
-        height: 40
+        x: 1933
+        y: 1594
+        width: 82
+        height: 67
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -284,20 +234,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 79a5e3a5438d33de0800000000000000
-      internalID: -1354501343544452457
+      spriteID: a02e942e6e16944a0800000000000000
+      internalID: -6608643333922627062
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_7
+      name: IMG_4393_5
       rect:
         serializedVersion: 2
-        x: 1864
-        y: 1548
-        width: 73
-        height: 115
+        x: 1874
+        y: 1565
+        width: 30
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -306,20 +256,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c661763033382d310800000000000000
-      internalID: 1428348286953526892
+      spriteID: d4b832c4b507d0a80800000000000000
+      internalID: -8499013384356525235
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IMG_4379_8
+      name: IMG_4393_6
       rect:
         serializedVersion: 2
-        x: 2010
-        y: 1585
-        width: 59
-        height: 93
+        x: 1830
+        y: 1479
+        width: 80
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -328,8 +278,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8888122f56b5be360800000000000000
-      internalID: 7199948922693978248
+      spriteID: 08a9eadf131c91070800000000000000
+      internalID: 8077699827119331968
       vertices: []
       indices: 
       edges: []
@@ -348,15 +298,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IMG_4379_0: -2368408383761483995
-      IMG_4379_1: 3562107824501670777
-      IMG_4379_2: 373082536115480592
-      IMG_4379_3: 4597127321617147443
-      IMG_4379_4: -5037548338907147173
-      IMG_4379_5: -5234027403869315117
-      IMG_4379_6: -1354501343544452457
-      IMG_4379_7: 1428348286953526892
-      IMG_4379_8: 7199948922693978248
+      IMG_4393_0: -1391923431092765258
+      IMG_4393_1: 558770423533716364
+      IMG_4393_2: -3636773594262605102
+      IMG_4393_3: -6191523142603176316
+      IMG_4393_4: -6608643333922627062
+      IMG_4393_5: -8499013384356525235
+      IMG_4393_6: 8077699827119331968
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

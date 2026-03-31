@@ -45,9 +45,9 @@ public class WerewolfGuest : GuestAI
         StopAngerStack();
     }
 
-    public override void OnServiceFail(ItemSO service)
+    public override void OnServiceFail(ItemSO service,Room room)
     {
-        base.OnServiceFail(service);
+        base.OnServiceFail(service,room);
         StopAngerStack();
     }
 

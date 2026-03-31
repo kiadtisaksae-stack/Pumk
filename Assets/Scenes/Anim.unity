@@ -440,11 +440,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1494542451728383314, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.13
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1494542451728383314, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.55
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1494542451728383314, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -539,6 +539,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Frankin
       objectReference: {fileID: 0}
+    - target: {fileID: 6279203601716730699, guid: 0d86db335a744614c8441de78a0591b1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -596,6 +600,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Reaper
       objectReference: {fileID: 0}
+    - target: {fileID: 7204013237161185136, guid: 5fa9620b7dd7a6946b543dac1af5c36d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -612,6 +620,10 @@ PrefabInstance:
     - target: {fileID: 4312484582853831259, guid: c9f4d2c3c11d5e34c9ebe76830dbfa3a, type: 3}
       propertyPath: m_Name
       value: Woft
+      objectReference: {fileID: 0}
+    - target: {fileID: 4312484582853831259, guid: c9f4d2c3c11d5e34c9ebe76830dbfa3a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6554853141152454064, guid: c9f4d2c3c11d5e34c9ebe76830dbfa3a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -670,6 +682,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Witch
       objectReference: {fileID: 0}
+    - target: {fileID: 2475360172386291032, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6908744231441520786, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.2
@@ -715,6 +731,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+--- !u!1001 &7094585432632583417
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3443014953534623149, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_Name
+      value: Vampie
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
 --- !u!1001 &7568822621412924680
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -767,6 +840,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Employeeeee
       objectReference: {fileID: 0}
+    - target: {fileID: 8319218711433316189, guid: 174ac1cbd1aabcc4e93bf1c6b03758a9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -783,6 +860,10 @@ PrefabInstance:
     - target: {fileID: 5498399569394215916, guid: 2ecf729cd72dae543b51a52a4ecd717f, type: 3}
       propertyPath: m_Name
       value: Mummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5498399569394215916, guid: 2ecf729cd72dae543b51a52a4ecd717f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6778695983909819999, guid: 2ecf729cd72dae543b51a52a4ecd717f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -843,3 +924,4 @@ SceneRoots:
   - {fileID: 2410334543230039610}
   - {fileID: 4883788556112877677}
   - {fileID: 2076655433349895135}
+  - {fileID: 7094585432632583417}

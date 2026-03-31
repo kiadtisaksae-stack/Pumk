@@ -120,7 +120,7 @@ public class GuestAI : MoveHandleAI
             currentService = null;
 
             if (room.isDelivered) OnServiceSuccess(service);
-            else OnServiceFail(service);
+            else OnServiceFail(service, room);
 
             if (slotIndex < room.serviceQueue.Count - 1)
                 yield return OnBetweenServices(slotIndex);
@@ -130,6 +130,7 @@ public class GuestAI : MoveHandleAI
 
         OnAllServicesComplete(room.counter);
         room.DirtyRoom();
+        room.RoomData.isUnAvailable = false;
     }
 
     // ─────────────────────────────────────────────
@@ -140,7 +141,10 @@ public class GuestAI : MoveHandleAI
     protected virtual IEnumerator OnBetweenServices(int completedSlotIndex) { yield break; }
 
     public virtual void OnCheckIn() { }
-    public virtual void OnCheckOut(bool isAnger) { }
+    public virtual void OnCheckOut(bool isAnger)
+    {
+        
+    }
     public virtual void OnServiceStart(ItemSO service) { }
 
     public virtual void OnServiceSuccess(ItemSO service)
@@ -150,7 +154,11 @@ public class GuestAI : MoveHandleAI
         heart = 5f;
     }
 
-    public virtual void OnServiceFail(ItemSO service) => servicePayment--;
+    public virtual void OnServiceFail(ItemSO service , Room room)
+    {
+        servicePayment--;
+        
+    }
 
     public virtual void OnAllServicesComplete(Counter counter)
         => CheckOut(counter.interactObjData);
