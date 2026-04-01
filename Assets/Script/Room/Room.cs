@@ -105,6 +105,10 @@ public class Room : CanInteractObj, IInteractable
             if (guest.guestPhase == Guestphase.CheckingOut) return;
             if (guest.finalRoomData != RoomData) return;
 
+            // Guard: ถ้าห้องมี guest อยู่แล้ว (เช่น Franken กลับห้องหลัง sleepwalk)
+            // ไม่ต้อง StartService ใหม่ — guestInRoom ยังคง set อยู่ตลอดที่ guest ยังพักในห้องนั้น
+            if (guestInRoom != null) return;
+
             if (guest.guestColor == roomColor)
             {
                 FindAnyObjectByType<LevelManager>()?.AddCombo(1);
@@ -219,6 +223,7 @@ public class Room : CanInteractObj, IInteractable
 
     public void DirtyRoom()
     {
+        guestInRoom = null;
         roomState = RoomState.Dirty;
         RoomData.isUnAvailable = true;
         unCleanObj.SetActive(true);

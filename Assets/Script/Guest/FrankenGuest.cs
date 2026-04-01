@@ -138,6 +138,7 @@ public class FrankenGuest : GuestAI
         IsSleepwalking = false;
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
+        heart = 5f; // ฟื้นเลือดกลับมาเต็ม
         Debug.Log("<color=cyan>Player ปลุก Franken สำเร็จ!</color>");
     }
 }
