@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -90,9 +90,9 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 }
                 SoundManager.Instance.PlaySFX(onDragtoRoom);
                 Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
+                room.RoomData.isUnAvailable = true; // จองห้องไว้ก่อน ป้องกัน guest อื่นมาแย่ง
                 targetGuest.finalRoomData = room.RoomData;
                 targetGuest.StartTravel(room.interactObjData);
-                room.AssignGuest(targetGuest);
                 gameObject.SetActive(false);
             }
         }
