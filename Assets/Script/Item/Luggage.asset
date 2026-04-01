@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Luggage
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: -5645543168870853298, guid: 5c1f0f913c457064d972b255a0a2efbf, type: 3}
+  itemIcon: {fileID: -6992314884412484882, guid: 4a492b6ba6cd42b4db16786bb65f73f4, type: 3}
   requiredForService: 1
   pickupTime: 1
   deliverTime: 20

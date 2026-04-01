@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Laundry
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 3276815841030329958, guid: d42791f085616df4ab978eaee2face80, type: 3}
   requiredForService: 3
   pickupTime: 1
   deliverTime: 1

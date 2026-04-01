@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -45,6 +45,7 @@ public abstract class MoveHandleAI : MonoBehaviour
     protected int currentSlotIndex = -1;
     public ElevatorController assignedElevator;
     private ElevatorManager _manager;
+    private Coroutine _elevatorEntryRoutine;
 
     public Animator animator;
 
@@ -166,6 +167,25 @@ public abstract class MoveHandleAI : MonoBehaviour
     /// </summary>
     public void StartTravel(InteractObjData iObj)
     {
+        // ยกเลิกการจองลิฟต์เดิมที่มีอยู่
+        if (assignedElevator != null)
+        {
+            assignedElevator.UnregisterGuest(this);
+            if (currentSlotIndex != -1)
+            {
+                assignedElevator.ReleaseSlot(currentFloor, currentSlotIndex);
+                currentSlotIndex = -1;
+            }
+            assignedElevator = null;
+        }
+
+        // หยุด Coroutine การเดินเข้าลิฟต์ถ้ากำลังรันอยู่
+        if (_elevatorEntryRoutine != null)
+        {
+            StopCoroutine(_elevatorEntryRoutine);
+            _elevatorEntryRoutine = null;
+        }
+
         targetIObj = iObj;
         targetFloor = iObj.floorNumber;
 
@@ -239,7 +259,7 @@ public abstract class MoveHandleAI : MonoBehaviour
         }
 
         travelState = TravelState.WalkToElevator;
-        StartCoroutine(GoInsideElevatorRoutine(elevatorTransform));
+        _elevatorEntryRoutine = StartCoroutine(GoInsideElevatorRoutine(elevatorTransform));
     }
 
     /// <summary>
@@ -266,6 +286,8 @@ public abstract class MoveHandleAI : MonoBehaviour
             timeout -= Time.deltaTime;
             yield return null;
         }
+
+        if (assignedElevator == null) yield break;
 
         // สถานะอยู่ในลิฟต์: ปิด Agent และย้าย Parent ไปที่ลิฟต์
         travelState = TravelState.InElevator;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -38,6 +38,7 @@ public class GuestAI : MoveHandleAI
 
     // หา GuestUIController จาก children อัตโนมัติ
     [HideInInspector] public GuestUIController guestUI;
+    [HideInInspector] public Room room;
 
     // ─────────────────────────────────────────────
     //  Unity Lifecycle
@@ -73,6 +74,7 @@ public class GuestAI : MoveHandleAI
 
     public void StartProcessing(Room room)
     {
+        this.room = room;
         guestPhase = Guestphase.RequestingService;
         StartCoroutine(ProcessRequests(room));
     }
@@ -107,7 +109,7 @@ public class GuestAI : MoveHandleAI
                 if (isExit)
                 {
                     guestUI?.HideBubble();
-                    room.RoomData.isUnAvailable = false;
+                    if (room != null) room.DirtyRoom();
                     if (decayCoroutine != null) StopCoroutine(decayCoroutine);
                     StopAllCoroutines();
                     yield break;
@@ -129,8 +131,7 @@ public class GuestAI : MoveHandleAI
         }
 
         OnAllServicesComplete(room.counter);
-        room.DirtyRoom();
-        room.RoomData.isUnAvailable = false;
+        if (room != null) room.DirtyRoom();
     }
 
     // ─────────────────────────────────────────────
@@ -200,6 +201,7 @@ public class GuestAI : MoveHandleAI
         OnCheckOut(isAnger: true);
         guestUI?.OnCheckOut();
         AnimateExitRoom();
+        if (room != null) room.DirtyRoom();
         StopAllCoroutines();
         StartTravel(exit);
     }

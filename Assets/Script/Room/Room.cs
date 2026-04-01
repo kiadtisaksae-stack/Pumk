@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +25,7 @@ public class Room : CanInteractObj, IInteractable
 
     [SerializeField] private GuestAI guestInRoom;
     public GameObject unCleanObj;
+    public GameObject dirtyIcon; // ไอคอนที่โชว์เมื่อห้องสกปรก
     public int upgradeRoomCost = 100;
     public int roomServiceBonusCost = 100;
 
@@ -47,6 +48,7 @@ public class Room : CanInteractObj, IInteractable
         base.Start();
         roomState = RoomState.Available;
         unCleanObj.SetActive(false);
+        if (dirtyIcon != null) dirtyIcon.SetActive(false);
         if (counter == null) counter = FindAnyObjectByType<Counter>();
     }
 
@@ -72,7 +74,6 @@ public class Room : CanInteractObj, IInteractable
             if (roomState == RoomState.Dirty)
             {
                 TryCleanRoom(player);
-                roomState = RoomState.Available;
             }
 
             player.travelState = TravelState.Idle;
@@ -90,6 +91,11 @@ public class Room : CanInteractObj, IInteractable
                     if (deliveryCount >= guestInRoom.deliveryPerSlot)
                         isDelivered = true;
                 }
+
+            if (roomState == RoomState.Dirty)
+            {
+                TryCleanRoom(employee);
+            }
         }
 
         if (collision.CompareTag("Guest"))
@@ -115,6 +121,7 @@ public class Room : CanInteractObj, IInteractable
             guest.tip += 10;
 
             StartService(guest);
+            RoomManager.Instance.OnInstacneLuggage();
         }
     }
 
@@ -188,10 +195,10 @@ public class Room : CanInteractObj, IInteractable
 
     public void AssignGuest(GuestAI guest) => guestInRoom = guest;
 
-    public void TryCleanRoom(MoveHandleAI actor)
+    public bool TryCleanRoom(MoveHandleAI actor)
     {
         List<ItemSO> inv = GetInventory(actor);
-        if (inv == null) return;
+        if (inv == null) return false;
 
         foreach (ItemSO item in inv)
         {
@@ -199,17 +206,24 @@ public class Room : CanInteractObj, IInteractable
 
             RemoveFromInventory(actor, item);
             guestInRoom = null;
+            roomState = RoomState.Available;
             RoomData.isUnAvailable = false;
             unCleanObj.SetActive(false);
+            if (dirtyIcon != null) dirtyIcon.SetActive(false);
             RoomData.currentServiceRequest = null;
-            break;
+            Debug.Log($"<color=green>ทำความสะอาดห้อง {name} สำเร็จ</color>");
+            return true;
         }
+        return false;
     }
 
     public void DirtyRoom()
     {
         roomState = RoomState.Dirty;
+        RoomData.isUnAvailable = true;
         unCleanObj.SetActive(true);
+        if (dirtyIcon != null) dirtyIcon.SetActive(true);
+        Debug.Log($"<color=orange>ห้อง {name} สกปรกแล้ว!</color>");
     }
 
     // ─────────────────────────────────────────────

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,11 +42,10 @@ public class ElevatorManager : MonoBehaviour
             if (elevator.passengers.Count >= elevator.maxCapacity) continue;
             if (elevator.floorQueues == null) continue;
 
-            // แปลง world floor → local array index
-            // ลิฟต์ตัวที่ 2 (minFloor=1): ชั้น 1 → index 0, ชั้น 2 → index 1
-            int localIndex = fromFloor - elevator.minFloor;
-            if (localIndex < 0 || localIndex >= elevator.floorQueues.Length) continue;
+            // ตรวจสอบว่าลิฟต์ให้บริการทั้งชั้นต้นทางและปลายทางหรือไม่
+            if (!elevator.IsFloorServed(fromFloor) || !elevator.IsFloorServed(toFloor)) continue;
 
+            int localIndex = fromFloor - elevator.minFloor;
             // เช็กว่ามี slot ว่างไหม (ไม่จองยัง ให้ AssignElevator จอง)
             int dummy;
             Transform slot = elevator.floorQueues[localIndex].GetAvailableSlot(null, out dummy);

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,6 +58,25 @@ public class ElevatorController : MonoBehaviour
     public float distacneWaitslottolift = 3f; // ระยะห่างสูงสุดที่ AI จะยอมขึ้นลิฟต์ได้
     [Header("StartFloor")]
     public int minFloor = 0;
+    public List<int> disabledFloors = new List<int>();
+
+    /// <summary>
+    /// เช็กว่าลิฟต์ตัวนี้ให้บริการชั้นดังกล่าวหรือไม่ 
+    /// (รวมถึงเช็กช่วง minFloor และรายการชั้นที่ถูกสั่งปิด)
+    /// </summary>
+    public bool IsFloorServed(int floor)
+    {
+        if (floor < 0 || floor >= floorTargets.Length) return false;
+        
+        // ตรวจสอบช่วงชั้นที่ลิฟต์ตัวนี้รองรับ (อิงตาม minFloor และจำนวน Queue ที่วางไว้)
+        int localIndex = floor - minFloor;
+        if (localIndex < 0 || localIndex >= floorQueues.Length) return false;
+        
+        // ตรวจสอบว่าชั้นนี้ถูกสั่งปิดรายชั้นหรือไม่
+        if (disabledFloors != null && disabledFloors.Contains(floor)) return false;
+        
+        return true;
+    }
 
     [Header("Floor Settings")]
     public Transform[] floorTargets;   // ตำแหน่งพิกัด Y ของแต่ละชั้น
@@ -143,6 +162,19 @@ public class ElevatorController : MonoBehaviour
         }
 
     }
+    public void UnregisterGuest(MoveHandleAI character)
+    {
+        int floor = character.currentFloor;
+        if (readyAIsOnFloor.ContainsKey(floor))
+        {
+            if (readyAIsOnFloor[floor].Contains(character))
+            {
+                readyAIsOnFloor[floor].Remove(character);
+                if (isDebugMode)
+                    Debug.Log($"<color=red>Unregister: {character.name} จากชั้น {floor}</color>");
+            }
+        }
+    }
 
     /// <summary>
     /// ตรรกะตัดสินใจเลือกชั้นถัดไป (Smart Logic)
@@ -180,6 +212,7 @@ public class ElevatorController : MonoBehaviour
 
             for (int f = currentFloor; f < floorTargets.Length; f++)
             {
+                if (!IsFloorServed(f)) continue; // ข้ามชั้นที่ไม่เสิร์ฟ
                 if (f == currentFloor && IsDoorOpening()) continue; // ข้ามถ้ากำลังเปิดประตูอยู่แล้ว
 
                 bool someoneGettingOff = passengers.Any(p => p.targetFloor == f);
@@ -195,7 +228,7 @@ public class ElevatorController : MonoBehaviour
                 // วิ่งไปหาชั้นบนสุดที่มีคนรอ (แม้เขาจะลง)
                 for (int f = currentFloor + 1; f < floorTargets.Length; f++)
                 {
-                    if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
+                    if (IsFloorServed(f) && readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
                 }
             }
 
@@ -207,6 +240,7 @@ public class ElevatorController : MonoBehaviour
         {
             for (int f = currentFloor; f >= 0; f--)
             {
+                if (!IsFloorServed(f)) continue; // ข้ามชั้นที่ไม่เสิร์ฟ
                 if (f == currentFloor && IsDoorOpening()) continue;
 
                 bool someoneGettingOff = passengers.Any(p => p.targetFloor == f);
@@ -219,7 +253,7 @@ public class ElevatorController : MonoBehaviour
             {
                 for (int f = currentFloor - 1; f >= 0; f--)
                 {
-                    if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
+                if (IsFloorServed(f) && readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return f;
                 }
             }
 
@@ -232,12 +266,12 @@ public class ElevatorController : MonoBehaviour
 
     private bool HasGuestGoing(int floor, ElevatorDirection dir)
     {
-        if (!readyAIsOnFloor.ContainsKey(floor)) return false;
+        if (!IsFloorServed(floor) || !readyAIsOnFloor.ContainsKey(floor)) return false;
         foreach (var g in readyAIsOnFloor[floor])
         {
-            // คนที่รออยู่ ต้องการไปทิศเดียวกับที่เช็คหรือไม่
-            if (dir == ElevatorDirection.Up && g.targetFloor > floor) return true;
-            if (dir == ElevatorDirection.Down && g.targetFloor < floor) return true;
+            // คนที่รออยู่ ต้องการไปทิศเดียวกับที่เช็คหรือไม่ และชั้นเป้าหมายต้องเสิร์ฟด้วย
+            if (dir == ElevatorDirection.Up && g.targetFloor > floor && IsFloorServed(g.targetFloor)) return true;
+            if (dir == ElevatorDirection.Down && g.targetFloor < floor && IsFloorServed(g.targetFloor)) return true;
         }
         return false;
     }
@@ -247,7 +281,7 @@ public class ElevatorController : MonoBehaviour
         // มีคนรออยู่ชั้นที่สูงกว่านี้ไหม
         for (int f = floor + 1; f < floorTargets.Length; f++)
         {
-            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
+            if (IsFloorServed(f) && readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
         }
         return false;
     }
@@ -256,7 +290,7 @@ public class ElevatorController : MonoBehaviour
     {
         for (int f = floor - 1; f >= 0; f--)
         {
-            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
+            if (IsFloorServed(f) && readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0) return true;
         }
         return false;
     }
@@ -274,7 +308,7 @@ public class ElevatorController : MonoBehaviour
         // เช็คคนรอข้างนอก
         for (int f = 0; f < floorTargets.Length; f++)
         {
-            if (readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0)
+            if (IsFloorServed(f) && readyAIsOnFloor.ContainsKey(f) && readyAIsOnFloor[f].Count > 0)
             {
                 int dist = Mathf.Abs(currentFloor - f);
                 if (dist < minDist) { minDist = dist; closest = f; }
@@ -319,11 +353,11 @@ public class ElevatorController : MonoBehaviour
 
             yield return StartCoroutine(OpenDoors());
             yield return new WaitForSeconds(0.2f);
-            elevatorRoutine = null; // สำคัญมาก!
         }
 
         isMoving = false;
-        currentDirection = ElevatorDirection.Idle;
+        currentDirection = ElevatorDirection.Idle; 
+        elevatorRoutine = null; 
     }
 
     /// <summary>
@@ -413,9 +447,14 @@ public class ElevatorController : MonoBehaviour
                     float waitTime = 3f;
                     yield return new WaitUntil(() => {
                         waitTime -= Time.deltaTime;
+                        // ถ้า AI เปลี่ยนเป้าหมายไปแล้ว ให้ยกเลิกการรอ
+                        if (character.assignedElevator != this || character.travelState != TravelState.WaitAtSlot) return true;
                         float dist = Vector2.Distance(character.transform.position, transform.position);
                         return dist < distacneWaitslottolift || waitTime <= 0;
                     });
+
+                    // เช็คอีกครั้งเผื่อกรณีเปลี่ยนเป้าหมายระหว่างรอ
+                    if (character.assignedElevator != this || character.travelState != TravelState.WaitAtSlot) continue;
 
                     if (isDebugMode) Debug.Log($"<color=green>Elevator: รับ {character.name} (ไป {character.targetFloor})</color>");
 
@@ -449,7 +488,7 @@ public class ElevatorController : MonoBehaviour
     /// </summary>
     private void AddDestination(int floor)
     {
-        if (floor < 0 || floor >= floorTargets.Length) return;
+        if (floor < 0 || floor >= floorTargets.Length || !IsFloorServed(floor)) return;
         if (!destinationQueue.Contains(floor))
         {
             destinationQueue.Add(floor);

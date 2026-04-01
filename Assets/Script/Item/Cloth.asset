@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Cloth
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 21300000, guid: 87d305403e4b41d44ad27c3ba1d9d3ba, type: 3}
+  itemIcon: {fileID: 16778831510826496, guid: 1ea44ff2ea11b7a4ea8b43592286f991, type: 3}
   requiredForService: 0
   pickupTime: 1
   deliverTime: 20

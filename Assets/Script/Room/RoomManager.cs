@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +9,10 @@ public class RoomManager : MonoBehaviour
     [Header("All Rooms in Hotel")]
     [SerializeField]
     private List<Room> allRooms = new List<Room>();
+    public GameObject luggagePrefab;
+    public Transform pointSPluggage;
+    public float offsetLuggage = 0.8f;
+    private List<GameObject> listluggageShow;
 
     private void Awake()
     {
@@ -54,7 +58,36 @@ public class RoomManager : MonoBehaviour
             .Where(r => !r.RoomData.isUnAvailable)
             .ToList();
     }
+    public void OnInstacneLuggage()
+    {
+        if (listluggageShow == null)
+            listluggageShow = new List<GameObject>();
 
+        int count = listluggageShow.Count;
+
+        // คำนวณ offset
+        float offset = offsetLuggage * count;
+
+        // สมมติให้เรียงตามแกน X
+        Vector3 spawnPos = pointSPluggage.position + new Vector3(offset, 0, 0);
+
+        GameObject luggage = Instantiate(luggagePrefab, spawnPos, Quaternion.identity);
+
+        listluggageShow.Add(luggage);
+    }
+    public void DeleteLuggage()
+    {
+        if (listluggageShow != null && listluggageShow.Count > 0)
+        {
+            GameObject first = listluggageShow[0];
+
+            // ลบ object ใน scene
+            Destroy(first);
+
+            // ลบออกจาก list
+            listluggageShow.RemoveAt(0);
+        }
+    }
     #endregion
 
     #region Editor Only

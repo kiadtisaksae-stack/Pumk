@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Drink
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 21300000, guid: ace74a8c0d2ee66449df4aef0070e7d4, type: 3}
+  itemIcon: {fileID: 6756415093686839968, guid: 396934b66e650324c9c6362214a9d4a4, type: 3}
   requiredForService: 2
   pickupTime: 1
   deliverTime: 20

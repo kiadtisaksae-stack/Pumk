@@ -1,10 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ServiceObj : CanInteractObj
+public class LuggageService : ServiceObj
 {
-    public ItemSO serviceItem;
-
-    protected virtual void OnTriggerEnter2D(Collider2D other)
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
@@ -15,6 +13,7 @@ public class ServiceObj : CanInteractObj
 
             player.AddItem(serviceItem);
             player.travelState = TravelState.Idle;
+            RoomManager.Instance.DeleteLuggage();
         }
 
         if (other.CompareTag("Employee"))
@@ -25,6 +24,8 @@ public class ServiceObj : CanInteractObj
 
             employee.AddItem(serviceItem);
             employee.travelState = TravelState.Idle;
+            RoomManager.Instance.DeleteLuggage();
+
         }
     }
 
