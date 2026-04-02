@@ -14,6 +14,16 @@ public class GuestAI : MoveHandleAI
     public Guestphase guestPhase;
     [SerializeField] public ObjColor guestColor;
 
+
+    [Header("Material References")]
+
+
+    [SerializeField] private Material orangeMat;
+    [SerializeField] private Material blueMat;
+    [SerializeField] private Material yellowMat;
+
+
+
     [Header("Heart and Decaying")]
     public float heart = 5f;
     public float decaysHit = 1f;
@@ -49,10 +59,10 @@ public class GuestAI : MoveHandleAI
         base.Start();
         door = FindAnyObjectByType<ExitDoor>();
         guestPhase = Guestphase.CheckingIn;
-        RandomColor();
 
         guestUI = GetComponentInChildren<GuestUIController>(true);
         if (guestUI != null) guestUI.Init(this);
+        RandomColor();
     }
 
 
@@ -65,8 +75,37 @@ public class GuestAI : MoveHandleAI
         // ต้องแน่ใจว่ามีการประกาศตัวแปร guestColor ไว้แล้ว
         guestColor = (ObjColor)values.GetValue(randomIndex);
 
-        Debug.Log("สุ่มได้สี: " + guestColor);
+        Debug.Log(this.name + " สุ่มได้สี: " + guestColor);
+        UpdateAllChildrenMaterials();
     }
+
+    private void UpdateAllChildrenMaterials()
+    {
+        SpriteRenderer[] allRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+
+        Material targetMat = GetMaterialByEnum(guestColor);
+
+        if (targetMat != null)
+        {
+            foreach (SpriteRenderer renderer in allRenderers)
+            {
+                renderer.material = targetMat;
+            }
+        }
+    }
+
+    private Material GetMaterialByEnum(ObjColor color)
+    {
+        switch (color)
+        {
+            case ObjColor.Orange: return orangeMat;
+            case ObjColor.Blue: return blueMat;
+            case ObjColor.Yellow: return yellowMat;
+            default: return null;
+        }
+    }
+
+
 
     // ─────────────────────────────────────────────
     //  Entry Point

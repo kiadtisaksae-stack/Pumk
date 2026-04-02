@@ -476,7 +476,10 @@ MonoBehaviour:
   animator: {fileID: 3110798358307251634}
   characterVisual: {fileID: 5254823789062897402}
   guestPhase: 0
-  guestColor: 0
+  guestColor: 1
+  orangeMat: {fileID: 2100000, guid: 1992746ddd70c1a478976ff8f9ae552d, type: 2}
+  blueMat: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+  yellowMat: {fileID: 2100000, guid: e4060e345f62bc847bc141c3c21299d9, type: 2}
   heart: 5
   decaysHit: 1
   isDecaying: 0
@@ -493,6 +496,7 @@ MonoBehaviour:
   totalIncome: 0
   currentService: {fileID: 0}
   guestUI: {fileID: 0}
+  room: {fileID: 0}
 --- !u!114 &5163558699288440033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1206,6 +1210,42 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3106782397648669576, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106782397648669576, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106782397648669576, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3106782397648669576, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 4046947812372667399, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 5384928147252070018, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384928147252070018, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384928147252070018, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384928147252070018, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     - target: {fileID: 6851069614351600795, guid: b59e93a4c365ad6499ce7fab1a8e13f4, type: 3}
       propertyPath: m_Name
       value: Ghost

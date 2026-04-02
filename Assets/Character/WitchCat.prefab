@@ -137,6 +137,9 @@ MonoBehaviour:
   characterVisual: {fileID: 8775874306414520065}
   guestPhase: 0
   guestColor: 0
+  orangeMat: {fileID: 2100000, guid: 1992746ddd70c1a478976ff8f9ae552d, type: 2}
+  blueMat: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+  yellowMat: {fileID: 2100000, guid: e4060e345f62bc847bc141c3c21299d9, type: 2}
   heart: 5
   decaysHit: 1
   isDecaying: 0
@@ -153,6 +156,7 @@ MonoBehaviour:
   totalIncome: 0
   currentService: {fileID: 0}
   guestUI: {fileID: 0}
+  room: {fileID: 0}
 --- !u!114 &7289344059642863342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1287,10 +1291,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6277734773288283990}
     m_Modifications:
+    - target: {fileID: 1958194652763674753, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 2306944866932923359, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     - target: {fileID: 2475360172386291032, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
       propertyPath: m_Name
       value: Witch
       objectReference: {fileID: 0}
+    - target: {fileID: 4783797589870308444, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 5787218266203042618, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     - target: {fileID: 6908744231441520786, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.08
@@ -1347,6 +1367,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7375116830744479067, guid: 159c18530b3d8db4480fc3f2cdcc0828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

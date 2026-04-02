@@ -159,7 +159,7 @@ MonoBehaviour:
       roomType: 0
       roomLevel: 0
       RoomID: 0
-      isAvailable: 0
+      isUnAvailable: 0
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
   travelState: 0
@@ -167,7 +167,7 @@ MonoBehaviour:
     roomType: 0
     roomLevel: 0
     RoomID: 0
-    isAvailable: 0
+    isUnAvailable: 0
     currentServiceRequest: {fileID: 0}
   showDebugInfo: 1
   currentDestination: {x: 0, y: 0, z: 0}
@@ -178,6 +178,8 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   maxSlots: 3
   inventory: []
+  inventorySlotImages: []
+  emptySlotSprite: {fileID: 0}
   isbusy: 0
 --- !u!114 &2163832332070168875
 MonoBehaviour:

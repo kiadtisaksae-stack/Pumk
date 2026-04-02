@@ -937,6 +937,9 @@ MonoBehaviour:
   characterVisual: {fileID: 7421090009462248071}
   guestPhase: 0
   guestColor: 0
+  orangeMat: {fileID: 2100000, guid: 1992746ddd70c1a478976ff8f9ae552d, type: 2}
+  blueMat: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+  yellowMat: {fileID: 2100000, guid: e4060e345f62bc847bc141c3c21299d9, type: 2}
   heart: 5
   decaysHit: 1
   isDecaying: 0
@@ -953,6 +956,7 @@ MonoBehaviour:
   totalIncome: 0
   currentService: {fileID: 0}
   guestUI: {fileID: 0}
+  room: {fileID: 0}
 --- !u!114 &7948727638249927028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150,10 +1154,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7948280831891806528}
     m_Modifications:
+    - target: {fileID: 318460917023657362, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 2517400481822069960, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 3180824853181388988, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     - target: {fileID: 3443014953534623149, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
       propertyPath: m_Name
       value: Vampie
       objectReference: {fileID: 0}
+    - target: {fileID: 3621886770518080946, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 3805836165542386701, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 5122603870615768115, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 5876833532213230388, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+    - target: {fileID: 8233248668179209504, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
     - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.063
