@@ -9,6 +9,9 @@ public class GuestSpawner : MonoBehaviour
 {
     public List<GameObject> guestPrefabs;
 
+    private List<ItemSO> guestServices = new List<ItemSO>();
+    private LevelManager levelManager;
+
     [Header("Positions")]
     public Transform standPoint;    // จุด Spawn (นอกจอ)
     public Transform slot1;         // คิวหน้าร้าน จุดที่ 1
@@ -19,6 +22,8 @@ public class GuestSpawner : MonoBehaviour
 
     private void Start()
     {
+        levelManager = FindAnyObjectByType<LevelManager>();
+        guestServices.AddRange(levelManager.inLevelService);
         InvokeRepeating(nameof(SpawnGuest), 1f, 5f);
     }
 
@@ -41,7 +46,7 @@ public class GuestSpawner : MonoBehaviour
         GuestAI guest = go.GetComponent<GuestAI>();
 
         if (guest == null) { Destroy(go); return; }
-
+        guest.servicePool.AddRange(guestServices);
         guest.currentFloor = 0;
         guest.name = $"Guest_Remaining_{guestPrefabs.Count}";
 

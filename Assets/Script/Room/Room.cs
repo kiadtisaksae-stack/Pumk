@@ -120,6 +120,7 @@ public class Room : CanInteractObj, IInteractable
 
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;
+            if (upgradeRoomButton != null) upgradeRoomButton.gameObject.SetActive(false);
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
             guest.tip += 10;
@@ -226,6 +227,7 @@ public class Room : CanInteractObj, IInteractable
         guestInRoom = null;
         roomState = RoomState.Dirty;
         RoomData.isUnAvailable = true;
+        if (upgradeRoomButton != null) upgradeRoomButton.gameObject.SetActive(true);
         unCleanObj.SetActive(true);
         if (dirtyIcon != null) dirtyIcon.SetActive(true);
         Debug.Log($"<color=orange>ห้อง {name} สกปรกแล้ว!</color>");

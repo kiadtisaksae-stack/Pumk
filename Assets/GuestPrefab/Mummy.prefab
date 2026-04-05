@@ -132,6 +132,10 @@ MonoBehaviour:
   animator: {fileID: 5235465302785579099}
   characterVisual: {fileID: 1894534773581932220}
   guestPhase: 0
+  guestColor: 0
+  orangeMat: {fileID: 2100000, guid: 1992746ddd70c1a478976ff8f9ae552d, type: 2}
+  blueMat: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
+  yellowMat: {fileID: 2100000, guid: e4060e345f62bc847bc141c3c21299d9, type: 2}
   heart: 5
   decaysHit: 1
   isDecaying: 0
@@ -142,12 +146,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 70d848090c8db2f4589ee16f708a0747, type: 2}
   - {fileID: 11400000, guid: 09a62c77c80ef5e4ea403be06614c3e1, type: 2}
   serviceCount: 0
+  deliveryPerSlot: 1
   roomPayment: 105
   tip: 0
   servicePayment: 0
   totalIncome: 0
   currentService: {fileID: 0}
   guestUI: {fileID: 0}
+  room: {fileID: 0}
   clothItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
 --- !u!114 &5618364325178975267
 MonoBehaviour:
@@ -168,6 +174,7 @@ MonoBehaviour:
   angerBarGroup: {fileID: 0}
   angerBarSlots: []
   sleepIndicator: {fileID: 0}
+  deliveryCountText: {fileID: 0}
 --- !u!58 &3728042306292197523
 CircleCollider2D:
   m_ObjectHideFlags: 0

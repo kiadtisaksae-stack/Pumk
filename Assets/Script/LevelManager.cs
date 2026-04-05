@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,13 +12,15 @@ public enum RewardRank
 public class LevelManager : MonoBehaviour
 {
     public int lv;
+    public int guestQuitCount;
+    public List<ItemSO> inLevelService = new List<ItemSO>();
 
 
     [Header("Currency")]
     public int currentMoney = 0;
 
     public int requireMoneyToNext;
-    public int moneyGetInLevel;
+    public int moneyGetInLevel;   
 
     [Header("Guest count in Level")]
     public int guestServed;
@@ -132,7 +135,7 @@ public class LevelManager : MonoBehaviour
         CulculateRank();
         gold = (int)rank;
         // เช็คว่าชนะหรือแพ้ตามเงื่อนไข
-        if (moneyGetInLevel == requireMoneyToNext)
+        if (moneyGetInLevel >= requireMoneyToNext)
         {
             isWin = true;
         }
