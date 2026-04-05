@@ -71,7 +71,7 @@ public class LevelUI : MonoBehaviour
     }
     public void UpdateLevel(int amount)
     {
-        // อัปเดตข้อความเงินใน UI
+        // อัปเดตข้อความLevelใน UI
         lvText.text = "LV." + amount.ToString();
         winLevelText.text = "Level " + amount.ToString();
         failLevelText.text = "Level " + amount.ToString();

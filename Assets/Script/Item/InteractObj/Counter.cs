@@ -3,9 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 public class Counter : CanInteractObj
 {
-    [Header("Game State")]
-    public int CheckOutCount;
-    private int currentCheckOutCount;
+    
 
     public TextMeshProUGUI BounceText;
 
@@ -29,7 +27,6 @@ public class Counter : CanInteractObj
             ShowMoneyPopup(guest.totalIncome);
             gameManager.AddMoney(guest.totalIncome);
             gameManager.guestServed++;
-            RefreshCheckOutCount();
 
             // ส่ง guest ไปที่ ExitDoor — ExitDoor จะ Destroy เอง
             ExitDoor exitDoor = FindAnyObjectByType<ExitDoor>();
@@ -37,16 +34,6 @@ public class Counter : CanInteractObj
                 guest.StartTravel(exitDoor.interactObjData);
             else
                 Destroy(guest.gameObject);
-        }
-    }
-
-
-    public void RefreshCheckOutCount()
-    {
-        currentCheckOutCount++;
-        if (currentCheckOutCount == CheckOutCount)
-        {
-            levelManager.EndLevel();
         }
     }
 

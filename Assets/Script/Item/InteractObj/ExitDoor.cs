@@ -2,15 +2,34 @@
 
 public class ExitDoor : CanInteractObj
 {
+    private int currentGuestExitCount;
+    private LevelManager levelManager;
+
+    public override void Start()
+    {
+        base.Start();
+        levelManager = FindAnyObjectByType<LevelManager>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<GuestAI>(out var guest))
         {
             if (guest.guestPhase == Guestphase.CheckingOut) 
             {
-                Debug.Log(guest + " ออกไปแบบไม่จ่ายตัง");
+                Debug.Log(guest + " ออกจากร้าน");
+                RefreshExitCount();
                 Destroy(guest.gameObject);
             }
+        }
+    }
+
+    public void RefreshExitCount()
+    {
+        currentGuestExitCount++;
+        if (currentGuestExitCount == levelManager.guestQuitCount)
+        {
+            levelManager.EndLevel();
         }
     }
 }

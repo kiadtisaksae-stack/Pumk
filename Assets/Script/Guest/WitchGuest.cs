@@ -11,8 +11,8 @@ public class WitchGuest : GuestAI
     public override void Start()
     {
         base.Start();
-        serviceCount = 2;
+        //serviceCount = 2;
         decaysHit = 0.5f;
-        deliveryPerSlot = 2;    // ต้องส่งครบ 2 ชิ้นต่อ 1 slot
+        //deliveryPerSlot = 2;    // ต้องส่งครบ 2 ชิ้นต่อ 1 slot
     }
 }
