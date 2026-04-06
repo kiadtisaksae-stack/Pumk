@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,8 +7,10 @@ public class LevelUI : MonoBehaviour
 {
     public TextMeshProUGUI lvText;
     public TextMeshProUGUI timeText;
+    public RectTransform clockHand;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI comboText;
+    public TextMeshProUGUI _starText;
 
     public Slider priceSlider;
 
@@ -62,6 +64,15 @@ public class LevelUI : MonoBehaviour
         goToHome.onClick.AddListener(ClickGoToHome);
         forceback.gameObject.SetActive(false);
         endPopUp.gameObject.SetActive(false);
+        UpdateStarUI();
+    }
+
+    public void UpdateStarUI()
+    {
+        if (_starText != null && GameManager.Instance != null)
+        {
+             _starText.text = "  " + GameManager.Instance.Star.ToString();
+        }
     }
 
     // Update is called once per frame
@@ -117,23 +128,34 @@ public class LevelUI : MonoBehaviour
     }
 
 
-    public void DisplayTime(bool isUnLimit ,float timeToDisplay)
+    public void DisplayTime(bool isUnLimit ,float timeToDisplay, float maxTime)
     {
         if (isUnLimit)
         {
-            timeText.text = "-----";
+            if (timeText != null) timeText.text = "-----";
             return;
         }
 
         // ป้องกันเลขติดลบตอนแสดงผล
         if (timeToDisplay < 0) timeToDisplay = 0;
 
-        // คำนวณ นาที และ วินาที
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        // หมุนเข็มนาฬิกา
+        if (clockHand != null && maxTime > 0)
+        {
+            float timeRatio = 1f - (timeToDisplay / maxTime);
+            float rotationZ = -360f * timeRatio;
+            clockHand.localRotation = Quaternion.Euler(0, 0, rotationZ);
+        }
 
-        // แสดงผลในรูปแบบ 00:00
-        timeText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        // คำนวณ นาที และ วินาที
+        if (timeText != null)
+        {
+            float minutes = Mathf.FloorToInt(timeToDisplay / 60);
+            float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+
+            // แสดงผลในรูปแบบ 00:00
+            timeText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        }
     }
 
     public void ClicktoRetry()
@@ -147,14 +169,28 @@ public class LevelUI : MonoBehaviour
         Time.timeScale = 1f;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
+        
     }
 
     public void ClickGoToHome()
     {
-        // โหลดฉากโฮม
         Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("UI Scene");
-        
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        // เช็คว่า index ถัดไป น้อยกว่าจำนวน Scene ทั้งหมดใน Build Settings หรือไม่
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            // มี Scene ถัดไป -> โหลดด่านถัดไป
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+
+        }
+
     }
     public void Notify(string message)
     {

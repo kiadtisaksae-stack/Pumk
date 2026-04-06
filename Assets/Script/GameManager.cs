@@ -1,11 +1,10 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public int Gold { get; set; }
-    public string loadcurrentlevel;
+    public int Star;
 
     private void Awake()
     {
@@ -22,7 +21,6 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -30,15 +28,15 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void AddGold(int amount)
+    public void AddStar(int amount)
     {
-        Gold += amount;
-        
+        Star += amount;
     }
-    public void OnSelectLevel(string levelName)
+    public void RemoveStar(int amount)
     {
-        
+        Star -= amount;
     }
+ 
 
 }
 

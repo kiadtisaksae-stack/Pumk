@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class StartGame : MonoBehaviour
 {
     private Button start;
+    public string sceneName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,6 +20,6 @@ public class StartGame : MonoBehaviour
     }
     void ClisckStart()
     {
-        SceneManager.LoadScene("GameHub");
+        SceneManager.LoadScene(sceneName);
     }
 }

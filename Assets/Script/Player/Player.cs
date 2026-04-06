@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,21 +41,33 @@ public class Player : MoveHandleAI
 
     private void OnClickPosition(Vector2 clickPosition)
     {
-        Vector3 worldPoint = mainCamera.ScreenToWorldPoint(
-            new Vector3(clickPosition.x, clickPosition.y, 0));
+        Vector3 worldPoint = mainCamera.ScreenToWorldPoint(new Vector3(clickPosition.x, clickPosition.y, 0));
+        worldPoint.z = 0; // ล็อคค่า Z ให้เป็น 0 เพื่อให้ Raycast ทำงานในระนาบเดียวกับ Collider 2D
 
+        // 1. ใช้ RaycastAll เพื่อดึง Object ทั้งหมดที่อยู่ในตำแหน่งที่คลิก
         RaycastHit2D[] hits = Physics2D.RaycastAll(worldPoint, Vector2.zero);
+
+        IInteractable bestTarget = null;
 
         foreach (var hit in hits)
         {
             if (hit.collider == null) continue;
-            if (hit.collider.CompareTag("Employee")) continue;
+
+            // ข้ามพวกพนักงานหรือตัวผู้เล่นเอง (เพื่อไม่ให้คลิกโดนตัวเองแล้วติด)
+            if (hit.collider.CompareTag("Employee") || hit.collider.CompareTag("Player")) continue;
 
             if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
             {
-                interactable.Interact(this);
-                return;
+                // เก็บตัวที่เจอไว้ (คุณสามารถเพิ่มเงื่อนไขเลือกตัวที่อยู่ Layer บนสุดได้ที่นี่)
+                bestTarget = interactable;
+                break; // เจออันแรกที่คลิกได้แล้วหยุดทันที (หรือเอา break ออกถ้าต้องการเช็คตัวอื่นต่อ)
             }
+        }
+
+        // 2. ถ้าเจอเป้าหมายที่ Interact ได้ ให้ทำงาน
+        if (bestTarget != null)
+        {
+            bestTarget.Interact(this);
         }
     }
 
@@ -71,7 +83,7 @@ public class Player : MoveHandleAI
             return false;
         }
         inventory.Add(newItem);
-        Debug.Log($"เก็บ {newItem.itemName} เรียบร้อย ช่องว่างเหลือ: {maxSlots - inventory.Count}");
+
         RefreshInventoryUI();
         return true;
     }
@@ -82,7 +94,7 @@ public class Player : MoveHandleAI
         {
             inventory.Remove(itemToRemove);
             RefreshInventoryUI();
-            Debug.Log($"นำ {itemToRemove.itemName} ออกจากกระเป๋าแล้ว");
+
         }
         else
         {

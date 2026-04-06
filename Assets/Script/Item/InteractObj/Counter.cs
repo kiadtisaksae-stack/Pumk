@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using DG.Tweening;
 public class Counter : CanInteractObj
@@ -21,7 +21,7 @@ public class Counter : CanInteractObj
         if (collision.TryGetComponent<GuestAI>(out var guest))
         {
             if (guest.guestPhase != Guestphase.CheckingOut) return;
-            Debug.Log(guest + " check out get Money " + guest.totalIncome);
+
             SoundManager.Instance.PlaySFX(cashOutSound);
             LevelManager gameManager = FindAnyObjectByType<LevelManager>();
             ShowMoneyPopup(guest.totalIncome);

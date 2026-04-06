@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8f06c29b949a016469ad9ccbe99d90a4
+guid: f7ff43e2f0064a349802a0338a8e62a0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5121447049156943923
-    second: "\u0E25\u0E32\u0E1A_0"
+      213: -3722207398138004718
+    second: grok-image-77b408da-497b-44ee-abd1-fe9b43804aed_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,12 +72,12 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
@@ -87,7 +87,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 10
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -100,7 +100,7 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 45
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u0E25\u0E32\u0E1A_0"
+      name: grok-image-77b408da-497b-44ee-abd1-fe9b43804aed_0
       rect:
         serializedVersion: 2
-        x: 79
-        y: 260
-        width: 866
-        height: 504
+        x: 0
+        y: 0
+        width: 1248
+        height: 832
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 330e8f4e4f8031740800000000000000
-      internalID: 5121447049156943923
+      spriteID: 21b37ada710185cc0800000000000000
+      internalID: -3722207398138004718
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "\u0E25\u0E32\u0E1A_0": 5121447049156943923
+      grok-image-77b408da-497b-44ee-abd1-fe9b43804aed_0: -3722207398138004718
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -61,12 +61,26 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private void ProcessAssignment(PointerEventData eventData)
     {
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
-        
-        if (hit.collider != null && hit.collider.TryGetComponent<Room>(out var room))
+
+        // 1. ใช้ GetRayIntersectionAll เพื่อเก็บ Object ทั้งหมดที่ Ray ลากผ่าน
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
+
+        Room targetRoom = null;
+
+        // 2. วนลูปหาว่าในบรรดาที่ Hit มีตัวไหนเป็น Room บ้าง
+        foreach (var hit in hits)
         {
-            
-            if (room.RoomData.isUnAvailable)
+            if (hit.collider != null && hit.collider.TryGetComponent<Room>(out var room))
+            {
+                targetRoom = room;
+                break; // เจอห้องแล้ว หยุดหาตัวอื่น
+            }
+        }
+
+        // 3. เช็คเงื่อนไขหลังจากหาห้องเจอ
+        if (targetRoom != null)
+        {
+            if (targetRoom.RoomData.isUnAvailable)
             {
                 Debug.Log("❌ ห้องนี้มีแขกแล้ว");
                 transform.localPosition = _originalPosition;
@@ -78,27 +92,28 @@ public class GuestRoomAssigner : MonoBehaviour, IBeginDragHandler, IDragHandler,
                 ReaperGuest reaperGuest = targetGuest.GetComponent<ReaperGuest>();
                 if (reaperGuest != null)
                 {
-                    // ถ้าเป็น Reaper แต่ห้องที่ลากไปใส่ไม่ใช่ RoomType.Big
-                    if (room.RoomData.roomType != RoomType.Big)
+                    if (targetRoom.RoomData.roomType != RoomType.Big)
                     {
                         Debug.Log("<color=red>❌ Reaper ต้องการห้อง Big เท่านั้น!</color>");
-                        transform.localPosition = _originalPosition; // ส่งกลับที่เดิม
+                        transform.localPosition = _originalPosition;
                         LevelUI levelUI = FindAnyObjectByType<LevelUI>();
                         levelUI.Notify("Need a Big Room Only");
-                        return; // หยุดการทำงาน ไม่ให้เข้าห้องนี้
+                        return;
                     }
                 }
+
+                // --- การทำงานปกติเมื่อเงื่อนไขผ่าน ---
                 SoundManager.Instance.PlaySFX(onDragtoRoom);
-                Debug.Log($"<color=green>กำหนดห้องให้แขก {targetGuest.name}</color>");
-                room.RoomData.isUnAvailable = true; // จองห้องไว้ก่อน ป้องกัน guest อื่นมาแย่ง
-                targetGuest.finalRoomData = room.RoomData;
-                targetGuest.StartTravel(room.interactObjData);
+                targetRoom.RoomData.isUnAvailable = true;
+                targetGuest.finalRoomData = targetRoom.RoomData;
+                targetGuest.StartTravel(targetRoom.interactObjData);
                 gameObject.SetActive(false);
             }
         }
         else
         {
-            Debug.Log("ลากไปตกนอกห้อง");
+            // ถ้าวนลูปจนจบแล้วยังไม่เจอ Room เลย
+            Debug.Log("ลากไปตกนอกห้อง หรือไม่มี Collider ของ Room อยู่ในแนว Ray");
             transform.localPosition = _originalPosition;
         }
     }

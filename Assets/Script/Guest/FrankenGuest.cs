@@ -67,7 +67,7 @@ public class FrankenGuest : GuestAI
     private IEnumerator SleepwalkRoutine()
     {
         IsSleepwalking = true;
-        Debug.Log("<color=cyan>Franken เริ่ม Sleepwalk!</color>");
+
 
         // คืน scale visual ก่อนเดิน เพราะ AnimateEnterRoom DOScale(zero) ค้างไว้
         if (characterVisual != null)
@@ -107,7 +107,7 @@ public class FrankenGuest : GuestAI
             _activePoint = null;
         }
 
-        Debug.Log("<color=cyan>Franken ตื่นแล้ว! กลับห้อง...</color>");
+
 
         // กลับห้องเดิม
         if (_savedRoomTarget != null)
@@ -123,7 +123,7 @@ public class FrankenGuest : GuestAI
         {
             yield return new WaitForSeconds(1f);
             heart -= heartLossPerSecond;
-            Debug.Log($"<color=cyan>Franken sleepwalk heart: {heart}</color>");
+
             if (heart <= 0) break;
         }
     }
@@ -139,6 +139,6 @@ public class FrankenGuest : GuestAI
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
         heart = 5f; // ฟื้นเลือดกลับมาเต็ม
-        Debug.Log("<color=cyan>Player ปลุก Franken สำเร็จ!</color>");
+
     }
 }
