@@ -26,7 +26,8 @@ public class Room : CanInteractObj, IInteractable
     [SerializeField] private GuestAI guestInRoom;
     public GameObject unCleanObj;
     public GameObject dirtyIcon; // ไอคอนที่โชว์เมื่อห้องสกปรก
-    public int upgradeRoomCost = 100;
+    [Header("Upgrade Settings")]
+    public int upgradeRoomCost = 1;
     public int roomServiceBonusCost = 100;
 
     [HideInInspector] public List<ItemSO> serviceQueue = new List<ItemSO>();
@@ -45,23 +46,29 @@ public class Room : CanInteractObj, IInteractable
 
     public override void Start()
     {
+        upgradeRoomCost = 1; // เริ่มต้นที่ 1 ดาว
         base.Start();
         roomState = RoomState.Available;
         unCleanObj.SetActive(false);
         if (dirtyIcon != null) dirtyIcon.SetActive(false);
         if (counter == null) counter = FindAnyObjectByType<Counter>();
+        UpdateUpgradeButton();
     }
 
     // ─────────────────────────────────────────────
     //  Trigger Zone
     // ─────────────────────────────────────────────
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             Player player = collision.GetComponent<Player>();
             if (player.finalRoomData != RoomData) return;
+
+            // เคลียร์เป้าหมายเพื่อให้สามารถคลิกห้องกดย้ำซ้ำได้อีกรอบ เมื่อยืนอยู่ใน Collider
+            player.finalRoomData = null;
+            player.targetIObj = null;
 
             if (guestInRoom != null && guestInRoom.currentService != null)
                 if (CheckDelivery(guestInRoom.currentService, player))
@@ -83,6 +90,9 @@ public class Room : CanInteractObj, IInteractable
         {
             Employee employee = collision.GetComponent<Employee>();
             if (employee.finalRoomData != RoomData) return;
+
+            employee.finalRoomData = null;
+            employee.targetIObj = null;
 
             if (guestInRoom != null && guestInRoom.currentService != null)
                 if (CheckDelivery(guestInRoom.currentService, employee))
@@ -120,7 +130,7 @@ public class Room : CanInteractObj, IInteractable
 
             RoomData.isUnAvailable = true;
             roomState = RoomState.OnUse;
-            if (upgradeRoomButton != null) upgradeRoomButton.gameObject.SetActive(false);
+            UpdateUpgradeButton();
             guest.travelState = TravelState.stayRoom;
             guest.AnimateEnterRoom();
             guest.tip += 10;
@@ -190,7 +200,7 @@ public class Room : CanInteractObj, IInteractable
         }
 
         RemoveFromInventory(actor, found);
-        Debug.Log($"<color=cyan>ส่ง {found.itemName} สำเร็จ</color>");
+
         return true;
     }
 
@@ -216,7 +226,8 @@ public class Room : CanInteractObj, IInteractable
             unCleanObj.SetActive(false);
             if (dirtyIcon != null) dirtyIcon.SetActive(false);
             RoomData.currentServiceRequest = null;
-            Debug.Log($"<color=green>ทำความสะอาดห้อง {name} สำเร็จ</color>");
+            UpdateUpgradeButton();
+
             return true;
         }
         return false;
@@ -227,7 +238,7 @@ public class Room : CanInteractObj, IInteractable
         guestInRoom = null;
         roomState = RoomState.Dirty;
         RoomData.isUnAvailable = true;
-        if (upgradeRoomButton != null) upgradeRoomButton.gameObject.SetActive(true);
+        UpdateUpgradeButton();
         unCleanObj.SetActive(true);
         if (dirtyIcon != null) dirtyIcon.SetActive(true);
         Debug.Log($"<color=orange>ห้อง {name} สกปรกแล้ว!</color>");
@@ -241,28 +252,36 @@ public class Room : CanInteractObj, IInteractable
     {
         if (RoomData.isUnAvailable) { Debug.Log("❌ ไม่สามารถอัปเกรดได้ ขณะมีแขก"); return; }
         if (RoomData.roomLevel == RoomLevel.Suite) { Debug.Log("❌ Suite แล้ว"); return; }
-        LevelManager levelManager = FindAnyObjectByType<LevelManager>();
-        if (levelManager == null) return ;
-        if (levelManager.currentMoney < upgradeRoomCost)
+        
+        if (GameManager.Instance == null) return;
+        
+        if (GameManager.Instance.Star < upgradeRoomCost)
         {
-            LevelUI levelUI = FindAnyObjectByType< LevelUI>();
-            if (levelUI == null) return ;
-            levelUI.Notify("Enough Money");
-            return ;
+            LevelUI levelUI = FindAnyObjectByType<LevelUI>();
+            if (levelUI != null) levelUI.Notify("Not Enough Stars!");
+            return;
         }
-        levelManager.PriceItem(upgradeRoomCost);
+
+        GameManager.Instance.RemoveStar(upgradeRoomCost);
         RoomData.roomLevel++;
         roomServiceBonusCost += 100;
-        upgradeRoomCost *= 2;
-        Debug.Log($"⬆️ อัปเกรดห้อง {name} เป็น {RoomData.roomLevel}");
+        upgradeRoomCost += 1; // เพิ่มราคาดาวในการอัปเกรดขั้นต่อไป
+
         UpdateUpgradeButton();
+        
+        // อัปเดต UI พอยต์ดาวให้แสดงค่าล่าสุด
+        LevelUI ui = FindAnyObjectByType<LevelUI>();
+        if (ui != null) ui.UpdateStarUI();
     }
 
     private void UpdateUpgradeButton()
     {
         if (upgradeRoomButton == null) return;
-        upgradeRoomButton.interactable =
-            !RoomData.isUnAvailable && RoomData.roomLevel != RoomLevel.Suite;
+        
+        // โชว์เฉพาะตอนว่าง หายไปเลยเมื่อมีแขกหรือห้องสกปรก
+        upgradeRoomButton.gameObject.SetActive(!RoomData.isUnAvailable);
+
+        upgradeRoomButton.interactable = RoomData.roomLevel != RoomLevel.Suite;
     }
 
     // ─────────────────────────────────────────────

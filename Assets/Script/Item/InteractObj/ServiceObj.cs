@@ -4,7 +4,7 @@ public class ServiceObj : CanInteractObj
 {
     public ItemSO serviceItem;
 
-    protected virtual void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
@@ -12,6 +12,9 @@ public class ServiceObj : CanInteractObj
             if (player == null) return;
             // เช็กว่า player เดินมาหาตัวนี้จริงไหม
             if (player.targetIObj != interactObjData) return;
+
+            // สำคัญมาก: เปลี่ยน target ให้ว่าง เพื่อกันไม่ให้เก็บรัวๆ แบบอัตโนมัติ แต่อนุญาตให้คลิกเพื่อเก็บแบบเจาะจงซ้ำได้
+            player.targetIObj = null;
 
             player.AddItem(serviceItem);
             player.travelState = TravelState.Idle;
@@ -23,6 +26,7 @@ public class ServiceObj : CanInteractObj
             if (employee == null) return;
             if (employee.targetIObj != interactObjData) return;
 
+            employee.targetIObj = null;
             employee.AddItem(serviceItem);
             employee.travelState = TravelState.Idle;
         }

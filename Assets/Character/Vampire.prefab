@@ -343,7 +343,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.028, y: 1.245}
+  m_AnchoredPosition: {x: 0.027, y: 1.466}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2916773890576550875
@@ -471,7 +471,7 @@ Transform:
   m_GameObject: {fileID: 4530198062335333167}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.53999996, z: 0}
+  m_LocalPosition: {x: 0, y: 0.6689999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1010,7 +1010,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.33}
+  m_Offset: {x: 0, y: 0.27}
   m_Radius: 0.23
 --- !u!50 &166125177606196244
 Rigidbody2D:
@@ -1207,7 +1207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.509
+      value: 0.638
       objectReference: {fileID: 0}
     - target: {fileID: 8596164626824432147, guid: b2dd1059160b94d0d90bdcaa87600eb8, type: 3}
       propertyPath: m_LocalPosition.z

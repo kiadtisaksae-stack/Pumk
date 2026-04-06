@@ -96,7 +96,7 @@ public class RoomManager : MonoBehaviour
     private void RefreshRooms()
     {
         allRooms = FindObjectsOfType<Room>(true).ToList();
-        Debug.Log($"🏨 Found {allRooms.Count} rooms");
+
     }
 
     #endregion

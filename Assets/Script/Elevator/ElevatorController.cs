@@ -152,8 +152,8 @@ public class ElevatorController : MonoBehaviour
         if (!readyAIsOnFloor[floor].Contains(character))
         {
             readyAIsOnFloor[floor].Add(character);
-            if (isDebugMode)
-                Debug.Log($"<color=green>Register: {character.name} พร้อมที่ชั้น {floor}</color>");
+  
+
         }
         // แก้ไขตรงนี้: ถ้ายังไม่มี Loop ทำงานอยู่ หรือ Loop เก่าจบไปแล้ว ให้เริ่มใหม่
         if (elevatorRoutine == null)
@@ -170,8 +170,7 @@ public class ElevatorController : MonoBehaviour
             if (readyAIsOnFloor[floor].Contains(character))
             {
                 readyAIsOnFloor[floor].Remove(character);
-                if (isDebugMode)
-                    Debug.Log($"<color=red>Unregister: {character.name} จากชั้น {floor}</color>");
+     
             }
         }
     }

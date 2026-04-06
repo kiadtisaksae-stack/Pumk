@@ -77,7 +77,7 @@ public class GuestAI : MoveHandleAI
         // ต้องแน่ใจว่ามีการประกาศตัวแปร guestColor ไว้แล้ว
         guestColor = (ObjColor)values.GetValue(randomIndex);
 
-        Debug.Log(this.name + " สุ่มได้สี: " + guestColor);
+
         UpdateAllChildrenMaterials();
     }
 

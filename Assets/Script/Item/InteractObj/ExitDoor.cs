@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class ExitDoor : CanInteractObj
 {
@@ -17,7 +17,7 @@ public class ExitDoor : CanInteractObj
         {
             if (guest.guestPhase == Guestphase.CheckingOut) 
             {
-                Debug.Log(guest + " ออกจากร้าน");
+
                 RefreshExitCount();
                 Destroy(guest.gameObject);
             }

@@ -36,7 +36,7 @@ public class WerewolfGuest : GuestAI
         CurrentAngerBars = maxAngerBars;
         _angerCoroutine = StartCoroutine(AngerStackRoutine());
         guestUI?.OnAngerStart();
-        Debug.Log($"<color=orange>Werewolf: Anger Stack เริ่ม ({maxAngerBars} bars)</color>");
+
     }
 
     public override void OnServiceSuccess(ItemSO service)
@@ -63,7 +63,7 @@ public class WerewolfGuest : GuestAI
         {
             yield return new WaitForSeconds(barDrainInterval);
             CurrentAngerBars--;
-            Debug.Log($"<color=orange>Werewolf Anger: {CurrentAngerBars}/{maxAngerBars}</color>");
+
 
             if (CurrentAngerBars <= 0)
                 TriggerAngerPunish();

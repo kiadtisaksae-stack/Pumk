@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public List<Button> levelButtons = new List<Button>();
 
     public List<GameObject> hideOnStartObj;
+    
 
 
     void Start()
@@ -30,9 +31,21 @@ public class UIManager : MonoBehaviour
     }
     public void SetupLevelButtons()
     {
-        foreach (Button btn in levelButtons)
+        for (int i = 0; i < levelButtons.Count; i++)
         {
+            Button btn = levelButtons[i];
             string sceneName = btn.name; 
+
+            // ปลดล็อกด่านแรก (index 0) ให้เล่นได้เสมอ
+            // ด่านอื่นๆ เช็คจาก PlayerPrefs
+            if (i == 0 || PlayerPrefs.GetInt("UnlockedLevel_" + i, 0) == 1)
+            {
+                btn.interactable = true;
+            }
+            else
+            {
+                btn.interactable = false;
+            }
 
             btn.onClick.AddListener(() =>
             {
@@ -44,7 +57,7 @@ public class UIManager : MonoBehaviour
     {
         if (Application.CanStreamedLevelBeLoaded(sceneName))
         {
-            Debug.Log("Loading" + sceneName);
+
             SceneManager.LoadScene(sceneName);
         }
         else

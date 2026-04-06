@@ -20,11 +20,10 @@ public class GameInput : MonoBehaviour
     {
         if (value.isPressed)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            // เปลี่ยนจาก Mouse เป็น Pointer เพื่อให้รองรับทั้ง นิ้วสัมผัส (Touch) และ เมาส์ (Mouse)
+            Vector2 pointerPosition = Pointer.current.position.ReadValue();
 
-            OnClickPosition?.Invoke(mousePosition);
-
+            OnClickPosition?.Invoke(pointerPosition);
         }
-
     }
 }

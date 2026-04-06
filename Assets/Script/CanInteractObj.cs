@@ -1,4 +1,4 @@
-﻿using NUnit.Framework.Interfaces;
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 using DG.Tweening;
 [RequireComponent(typeof(Collider2D))]
@@ -36,7 +36,7 @@ public class CanInteractObj : MonoBehaviour ,IInteractable
         transform.DOPunchScale(new Vector3(bounceAmount, bounceAmount, 0), duration, 5, 1f)
             .OnComplete(() => transform.localScale = originalScale);
 
-        Debug.Log($"[กดที่] {gameObject.name} was interacted!");
+
 
         // ตรงนี้สามารถใส่ logic เพิ่มเติมได้ เช่น เปิดหน้าต่าง MarketManager
     }

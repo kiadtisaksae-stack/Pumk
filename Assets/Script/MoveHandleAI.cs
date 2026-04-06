@@ -156,9 +156,6 @@ public abstract class MoveHandleAI : MonoBehaviour
         {
             // กรณีรอคิวหน้าร้าน: ให้เปลี่ยนเป็นสถานะ Idle เพื่อเล่นแอนิเมชันยืนนิ่ง
             travelState = TravelState.Idle;
-
-            if (showDebugInfo)
-                Debug.Log($"<color=yellow>{gameObject.name}: ถึงจุดรอหน้าร้านแล้ว</color>");
         }
     }
 

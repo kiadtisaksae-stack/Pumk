@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Employee : MoveHandleAI
@@ -23,7 +23,7 @@ public class Employee : MoveHandleAI
 
         // 2. ถ้ายังไม่เต็ม ให้เพิ่มเข้า List
         inventory.Add(newItem);
-        Debug.Log($"เก็บ {newItem.itemName} เรียบร้อย. ช่องว่างเหลือ: {maxSlots - inventory.Count}");
+
 
         // (Optional) เรียกอัปเดต UI ตรงนี้
         // UpdateUI(); 
@@ -40,7 +40,7 @@ public class Employee : MoveHandleAI
         if (inventory.Contains(itemToRemove))
         {
             inventory.Remove(itemToRemove);
-            Debug.Log($"นำ {itemToRemove.itemName} ออกจากกระเป๋าแล้ว");
+
         }
         else
         {

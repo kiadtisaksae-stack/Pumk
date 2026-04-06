@@ -31,7 +31,7 @@ public class MummyGuest : GuestAI
         _clothTriggered = false;
         // สุ่มว่า Cloth จะ forced ที่ slot 1 หรือ slot 2  (0-indexed; slot 0 = Luggage)
         _clothForcedSlot = Random.Range(1, 3);
-        Debug.Log($"<color=yellow>Mummy: Cloth forced ที่ slot {_clothForcedSlot}</color>");
+
     }
 
     protected override ItemSO GetServiceForSlot(int slotIndex, ItemSO listItem)
@@ -39,7 +39,7 @@ public class MummyGuest : GuestAI
         if (!_clothTriggered && slotIndex == _clothForcedSlot && clothItem != null)
         {
             _clothTriggered = true;
-            Debug.Log("<color=yellow>Mummy: Cloth event triggered!</color>");
+
 
             // หลัง event เพิ่ม Cloth เข้า pool → อาจโผล่ใน request ถัดไป
             if (!servicePool.Contains(clothItem))
