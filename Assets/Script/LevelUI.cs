@@ -102,7 +102,8 @@ public class LevelUI : MonoBehaviour
     public void UpdateProgressBar(int currentPrice , int targetPrice)
     {
         priceSlider.maxValue = targetPrice;
-        priceSlider.value = currentPrice;   
+        priceSlider.value = currentPrice;
+        Debug.Log("Update Bar จ้า");
     }
 
 
