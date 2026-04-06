@@ -13,6 +13,7 @@ public class GuestAI : MoveHandleAI
 {
     public Guestphase guestPhase;
     [SerializeField] public ObjColor guestColor;
+    public AudioClip guestSound;
 
 
     [Header("Material References")]
@@ -58,6 +59,7 @@ public class GuestAI : MoveHandleAI
     {
         base.Start();
         door = FindAnyObjectByType<ExitDoor>();
+        if (guestSound != null) SoundManager.Instance.PlaySFX(guestSound);
         guestPhase = Guestphase.CheckingIn;
 
         guestUI = GetComponentInChildren<GuestUIController>(true);

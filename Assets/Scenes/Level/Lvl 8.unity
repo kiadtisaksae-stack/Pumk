@@ -4887,7 +4887,7 @@ MonoBehaviour:
       isUnAvailable: 0
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
-  objSFX: {fileID: 0}
+  objSFX: {fileID: 8300000, guid: 2b50f8dc09037c64bb03fd207aeb239b, type: 3}
   serviceItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
 --- !u!61 &674320491
 BoxCollider2D:
@@ -11814,8 +11814,8 @@ Transform:
   m_GameObject: {fileID: 1553862993}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.17, y: 2.59, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 2.17, y: 2.5963, z: 0}
+  m_LocalScale: {x: 1, y: 1.0127, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1562225180}

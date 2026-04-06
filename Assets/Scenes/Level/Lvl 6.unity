@@ -4887,7 +4887,7 @@ MonoBehaviour:
       isUnAvailable: 0
       currentServiceRequest: {fileID: 0}
     itemData: {fileID: 0}
-  objSFX: {fileID: 0}
+  objSFX: {fileID: 8300000, guid: 58cbe88bf58bea94ab3aca2fa24eac64, type: 3}
   serviceItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
 --- !u!61 &674320491
 BoxCollider2D:
