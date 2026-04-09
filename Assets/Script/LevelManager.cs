@@ -44,7 +44,7 @@ public class LevelManager : MonoBehaviour
     [Header("Bonus Combo")] //bonus สำหรับสีห้องตร
     public int bonusNet;
     public int streakCount = 0;
-    public int maxSteakCount;
+    public int maxStreakCount;
 
     [Header("Game Time Settings")]
     public float gameTimeMinutes = 5f;
@@ -118,9 +118,9 @@ public class LevelManager : MonoBehaviour
     {
         streakCount += streak;
 
-        if (streakCount > maxSteakCount)
+        if (streakCount > maxStreakCount)
         {
-            maxSteakCount = streakCount;
+            maxStreakCount = streakCount;
         }
 
         int bonus = 50 * streakCount;
@@ -145,7 +145,7 @@ public class LevelManager : MonoBehaviour
         {
             rank = RewardRank.Gold;
         }
-        else if (ratio >= 0.8f)
+        else if (ratio >= 0.5f)
         {
             rank = RewardRank.Silver;
         }
@@ -172,6 +172,20 @@ public class LevelManager : MonoBehaviour
             }
         }
 
+        if (maxStreakCount >= 6)
+        {
+            starsEarned += 3;
+        }
+        else if (maxStreakCount >= 4)
+        {
+            starsEarned += 2;
+        }
+        else if (maxStreakCount >= 2)
+        {
+            starsEarned += 1;
+        }
+
+
         // เช็คว่าชนะหรือแพ้ตาม rank (Gold >= 100%, Silver >= 80%)
         if (rank == RewardRank.Gold || rank == RewardRank.Silver)
         {
@@ -189,7 +203,8 @@ public class LevelManager : MonoBehaviour
         {
             isWin = false;
         }
-        uiLevelManager.ShowEndLevelScreen(isWin, guestServed , maxSteakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);
+        uiLevelManager.UpdateStarUI();
+        uiLevelManager.ShowEndLevelScreen(isWin, guestServed , maxStreakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);
 
         //GameManager.Instance.AddGold(currentMoney);
     }
