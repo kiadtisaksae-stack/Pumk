@@ -280,6 +280,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6748801181808915809}
+  - component: {fileID: 7798535065417988801}
   m_Layer: 5
   m_Name: UI PopUp
   m_TagString: Untagged
@@ -308,6 +309,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 877.11755, y: 624.42334}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7798535065417988801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7719592099646559838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3a9183d4fbd8b4e87a49929e72f1f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIbounceOnActibe
+  duration: 0.5
+  easeType: 27
 --- !u!1 &8440318087504351943
 GameObject:
   m_ObjectHideFlags: 0

@@ -4398,6 +4398,7 @@ MonoBehaviour:
   - {fileID: 8680416230904874247, guid: f41ae71e137064732adba08693e22c80, type: 3}
   - {fileID: 135786280056170047, guid: 73a3ae90763044e35aab642f6783c9e8, type: 3}
   - {fileID: 4249811485877859511, guid: 5822ff66b5e264140b734ece9be02f78, type: 3}
+  guestColor: 010000000200000000000000
   standPoint: {fileID: 1894098023}
   slot1: {fileID: 1902315987}
   slot2: {fileID: 713409978}
