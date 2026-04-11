@@ -3510,11 +3510,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7118330547436148024, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7118330547436148024, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7431408629390184917, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -3574,11 +3574,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7885799048366716806, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7885799048366716806, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8038100483521413889, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_Pivot.x
@@ -3662,17 +3662,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8483645329834557306, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8483645329834557306, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4444602153463502209, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8936951073588096805}
   m_SourcePrefab: {fileID: 100100000, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+--- !u!1 &555379911963859425 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4444602153463502209, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
+  m_PrefabInstance: {fileID: 4187077762401340512}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8936951073588096805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555379911963859425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3a9183d4fbd8b4e87a49929e72f1f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIbounceOnActibe
+  duration: 0.5
+  easeType: 27
 --- !u!1 &1975759532924832627 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2409482810752304915, guid: 78d9ba0169e148f4093ff069af3da637, type: 3}
@@ -4125,6 +4147,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1161370975776653347, guid: 011d807efdd077f4faf1e8ae98b2f84f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1173081388089451511}
+    - targetCorrespondingSourceObject: {fileID: 2019631189232407163, guid: 011d807efdd077f4faf1e8ae98b2f84f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1277336957023715902}
   m_SourcePrefab: {fileID: 100100000, guid: 011d807efdd077f4faf1e8ae98b2f84f, type: 3}
 --- !u!224 &493475934943514367 stripped
 RectTransform:
@@ -4152,6 +4177,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &6094329690056112407 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2019631189232407163, guid: 011d807efdd077f4faf1e8ae98b2f84f, type: 3}
+  m_PrefabInstance: {fileID: 5229879069110594412}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1277336957023715902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6094329690056112407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3a9183d4fbd8b4e87a49929e72f1f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIbounceOnActibe
+  duration: 0.5
+  easeType: 27
 --- !u!1 &6115577560466708968 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2038624499236188804, guid: 011d807efdd077f4faf1e8ae98b2f84f, type: 3}

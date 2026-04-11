@@ -9,6 +9,8 @@ public class GuestSpawner : MonoBehaviour
 {
     public List<GameObject> guestPrefabs;
 
+    public List<ObjColor> guestColor = new List<ObjColor>();
+
     private List<ItemSO> guestServices = new List<ItemSO>();
     private LevelManager levelManager;
 
@@ -47,6 +49,7 @@ public class GuestSpawner : MonoBehaviour
 
         if (guest == null) { Destroy(go); return; }
         guest.servicePool.AddRange(guestServices);
+        guest.RandomColor(guestColor);
         guest.currentFloor = 0;
         guest.name = $"Guest_Remaining_{guestPrefabs.Count}";
 

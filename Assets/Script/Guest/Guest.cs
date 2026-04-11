@@ -64,18 +64,17 @@ public class GuestAI : MoveHandleAI
 
         guestUI = GetComponentInChildren<GuestUIController>(true);
         if (guestUI != null) guestUI.Init(this);
-        RandomColor();
+        
     }
 
 
-    private void RandomColor() //สุ่มสี
+    public void RandomColor(List<ObjColor> colors) //สุ่มสี
     {
-        System.Array values = System.Enum.GetValues(typeof(ObjColor));
-
-        int randomIndex = UnityEngine.Random.Range(0, values.Length);
+        
+        int randomIndex = UnityEngine.Random.Range(0, colors.Count);
 
         // ต้องแน่ใจว่ามีการประกาศตัวแปร guestColor ไว้แล้ว
-        guestColor = (ObjColor)values.GetValue(randomIndex);
+        guestColor = colors[randomIndex];
 
 
         UpdateAllChildrenMaterials();
