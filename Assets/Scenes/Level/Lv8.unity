@@ -13051,7 +13051,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 09a62c77c80ef5e4ea403be06614c3e1, type: 2}
     - target: {fileID: 4302216871941570437, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: m_Name
-      value: LevelManager
+      value: LevelManager&Sound
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
