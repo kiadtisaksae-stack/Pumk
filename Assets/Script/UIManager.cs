@@ -35,6 +35,8 @@ public class UIManager : MonoBehaviour
     [Header("TitleScene")]
     public Button storyBtn;
     public string titleSceneName = "Title";
+    [Header("System")]
+    public Button quitGameButton;
 
     private void OnEnable()
     {
@@ -64,6 +66,11 @@ public class UIManager : MonoBehaviour
         {
             storyBtn.onClick.RemoveAllListeners();
             storyBtn.onClick.AddListener(LoadStoryScene);
+        }
+        if (quitGameButton != null)
+        {
+            quitGameButton.onClick.RemoveAllListeners();
+            quitGameButton.onClick.AddListener(QuitGame);
         }
     }
 
@@ -144,6 +151,15 @@ public class UIManager : MonoBehaviour
     public void LoadStoryScene()
     {
         SceneManager.LoadScene(titleSceneName);
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
     private void ToggleUpgradeHotelPanel()
     {

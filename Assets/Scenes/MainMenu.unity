@@ -1741,6 +1741,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3125360042876840158, guid: 2eeef3953bffe6d40a3ee86dd5938713, type: 3}
   m_PrefabInstance: {fileID: 7065280832111837526}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &739981701 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5437145494099356365, guid: e54f64497be646644b2d778a52fb3478, type: 3}
+  m_PrefabInstance: {fileID: 9119894299539318303}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &759310640
 GameObject:
   m_ObjectHideFlags: 0
@@ -3151,6 +3162,7 @@ MonoBehaviour:
   roomProgressFill: {fileID: 300023510}
   storyBtn: {fileID: 834138325}
   titleSceneName: Title
+  quitGameButton: {fileID: 739981701}
 --- !u!4 &1258078410
 Transform:
   m_ObjectHideFlags: 0
