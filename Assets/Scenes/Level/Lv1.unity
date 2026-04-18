@@ -13199,21 +13199,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: guestQuitCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: infiniteGameTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: requireMoneyToNext
-      value: 750
-      objectReference: {fileID: 0}
     - target: {fileID: 4302216871941570437, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: m_Name
-      value: LevelManager
+      value: LevelManager&Sound
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

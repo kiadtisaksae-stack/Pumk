@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3251334344452493801}
   - component: {fileID: 4066373790339125557}
+  - component: {fileID: 3877969316832559489}
   m_Layer: 0
-  m_Name: LevelManager
+  m_Name: LevelManager&SoundSetter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,8 +66,25 @@ MonoBehaviour:
   guestNotServed: 0
   bonusNet: 0
   streakCount: 0
-  maxSteakCount: 0
+  maxStreakCount: 0
   gameTimeMinutes: 1
   gameTime: 60
   infiniteGameTime: 0
   unlockNextLevelIndex: 1
+--- !u!114 &3877969316832559489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4302216871941570437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 532899ad5a58a9745b3ef2add537d8e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneMusicSetter
+  sceneMusic: {fileID: 0}
+  loop: 1
+  onlyIfDifferentClip: 1
+  waitForSoundManagerIfMissing: 1
+  waitTimeoutSeconds: 2
