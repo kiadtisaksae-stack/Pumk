@@ -135,6 +135,7 @@ MonoBehaviour:
   assignedElevator: {fileID: 0}
   animator: {fileID: 1682070068884391005}
   characterVisual: {fileID: 8775874306414520065}
+  characterVisualList: []
   guestPhase: 0
   guestColor: 0
   guestSound: {fileID: 8300000, guid: 0ee2b58b32b53d9439278ae88f875159, type: 3}
@@ -147,8 +148,13 @@ MonoBehaviour:
   isExit: 0
   servicePool:
   - {fileID: 11400000, guid: 70d848090c8db2f4589ee16f708a0747, type: 2}
+  - {fileID: 11400000, guid: eac9c4fc987bd2f469cc2bb5c14ddab2, type: 2}
+  - {fileID: 11400000, guid: 6ce47619c54b4d34cb11a827afa37b51, type: 2}
+  - {fileID: 11400000, guid: 09a62c77c80ef5e4ea403be06614c3e1, type: 2}
   serviceCount: 4
-  deliveryPerSlot: 1
+  deliveryPerSlot: 2
+  roomRequirementMode: 0
+  requiredRoomType: 0
   roomPayment: 120
   tip: 0
   servicePayment: 0
@@ -691,6 +697,7 @@ GameObject:
   - component: {fileID: 3282492131949949363}
   - component: {fileID: 1932374462127832614}
   - component: {fileID: 1147778854387673902}
+  - component: {fileID: 3407324393509218394}
   m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
@@ -784,6 +791,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3407324393509218394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5484583630944640862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f428c7623de3e7a4eb6bd48bac57eda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuestCanvasNoRotate
+  lockWorldX: 1
+  lockWorldY: 1
 --- !u!1 &6001838925203633615
 GameObject:
   m_ObjectHideFlags: 0

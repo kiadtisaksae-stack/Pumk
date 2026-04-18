@@ -23,6 +23,12 @@ public class Player : MoveHandleAI
     public bool isbusy = false;
 
     private readonly List<RaycastResult> uiRaycastResults = new List<RaycastResult>();
+    private readonly List<Collider2D> interactableProbeResults = new List<Collider2D>();
+
+    [Header("Interaction Detection")]
+    [SerializeField] private LayerMask interactionLayerMask = Physics2D.DefaultRaycastLayers;
+    [SerializeField] private float clickProbeRadius = 0.2f;
+    [SerializeField] private bool logInteractionDebug;
 
     protected override void Awake()
     {
@@ -156,7 +162,14 @@ public class Player : MoveHandleAI
 
     private void OnClickPosition(Vector2 clickPosition)
     {
-        if (IsPointerOverBlockingUI(clickPosition)) return;
+        if (IsPointerOverBlockingUI(clickPosition))
+        {
+            if (logInteractionDebug)
+            {
+                Debug.Log($"[Player Interaction] Click blocked by UI at {clickPosition}.");
+            }
+            return;
+        }
 
         if (mainCamera == null)
         {
@@ -167,26 +180,114 @@ public class Player : MoveHandleAI
         Vector3 worldPoint = mainCamera.ScreenToWorldPoint(new Vector3(clickPosition.x, clickPosition.y, 0f));
         worldPoint.z = 0f;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(worldPoint, Vector2.zero);
-
-        IInteractable bestTarget = null;
-
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider == null) continue;
-
-            if (hit.collider.CompareTag("Employee") || hit.collider.CompareTag("Player")) continue;
-
-            if (hit.collider.TryGetComponent<IInteractable>(out IInteractable interactable))
-            {
-                bestTarget = interactable;
-                break;
-            }
-        }
-
+        IInteractable bestTarget = FindBestInteractable(worldPoint);
         if (bestTarget != null)
         {
             bestTarget.Interact(this);
+            return;
+        }
+
+        if (logInteractionDebug)
+        {
+            Debug.Log($"[Player Interaction] No interactable found at world {worldPoint}.");
+            LogHitDebug(worldPoint);
+        }
+    }
+
+    private IInteractable FindBestInteractable(Vector2 worldPoint)
+    {
+        interactableProbeResults.Clear();
+        Physics2D.OverlapPoint(worldPoint, new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = interactionLayerMask,
+            useTriggers = true
+        }, interactableProbeResults);
+
+        if (interactableProbeResults.Count == 0 && clickProbeRadius > 0f)
+        {
+            Collider2D[] nearby = Physics2D.OverlapCircleAll(worldPoint, clickProbeRadius, interactionLayerMask);
+            for (int i = 0; i < nearby.Length; i++)
+            {
+                Collider2D c = nearby[i];
+                if (c != null && !interactableProbeResults.Contains(c))
+                {
+                    interactableProbeResults.Add(c);
+                }
+            }
+        }
+
+        IInteractable bestTarget = null;
+        float bestScore = float.MinValue;
+
+        for (int i = 0; i < interactableProbeResults.Count; i++)
+        {
+            Collider2D collider = interactableProbeResults[i];
+            if (collider == null) continue;
+            if (collider.CompareTag("Employee") || collider.CompareTag("Player")) continue;
+
+            IInteractable interactable = collider.GetComponent<IInteractable>();
+            if (interactable == null)
+            {
+                interactable = collider.GetComponentInParent<IInteractable>();
+            }
+
+            if (interactable == null) continue;
+
+            float score = ComputeInteractionScore(collider, worldPoint);
+            if (score > bestScore)
+            {
+                bestTarget = interactable;
+                bestScore = score;
+            }
+        }
+
+        return bestTarget;
+    }
+
+    private float ComputeInteractionScore(Collider2D collider, Vector2 worldPoint)
+    {
+        float score = 0f;
+
+        Renderer renderer = collider.GetComponentInParent<Renderer>();
+        if (renderer != null)
+        {
+            score += SortingLayer.GetLayerValueFromID(renderer.sortingLayerID) * 10000f;
+            score += renderer.sortingOrder * 10f;
+            score += renderer.transform.position.z;
+        }
+        else
+        {
+            score += collider.transform.position.z;
+        }
+
+        float centerDistance = Vector2.Distance(worldPoint, collider.bounds.center);
+        score -= centerDistance;
+        return score;
+    }
+
+    private void LogHitDebug(Vector2 worldPoint)
+    {
+        List<Collider2D> debugHits = new List<Collider2D>(Physics2D.OverlapPointAll(worldPoint, interactionLayerMask));
+        if (debugHits.Count == 0 && clickProbeRadius > 0f)
+        {
+            debugHits.AddRange(Physics2D.OverlapCircleAll(worldPoint, clickProbeRadius, interactionLayerMask));
+        }
+
+        if (debugHits.Count == 0)
+        {
+            Debug.Log("[Player Interaction] Overlap probe found no collider.");
+            return;
+        }
+
+        int logCount = Mathf.Min(debugHits.Count, 8);
+        for (int i = 0; i < logCount; i++)
+        {
+            Collider2D col = debugHits[i];
+            if (col == null) continue;
+
+            bool hasInteractable = col.GetComponent<IInteractable>() != null || col.GetComponentInParent<IInteractable>() != null;
+            Debug.Log($"[Player Interaction] Hit {i}: {col.name} (layer={LayerMask.LayerToName(col.gameObject.layer)}, trigger={col.isTrigger}, interactable={hasInteractable})");
         }
     }
 

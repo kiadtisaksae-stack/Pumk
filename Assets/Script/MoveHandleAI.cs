@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum TravelState
 {
@@ -51,7 +52,9 @@ public abstract class MoveHandleAI : MonoBehaviour
 
     [Header("Visual Settings")]
     public GameObject characterVisual;
-    protected Vector3 _originalScale;  // scale เริ่มต้นของ visual — เก็บก่อนเสมอ
+    public List<GameObject> characterVisualList = new List<GameObject>();
+    protected Vector3 _originalScale;
+    protected readonly List<Vector3> _originalVisualScales = new List<Vector3>();
 
 
     protected virtual void Awake()
@@ -62,9 +65,7 @@ public abstract class MoveHandleAI : MonoBehaviour
     }
     public virtual void Start()
     {
-        _originalScale = characterVisual != null
-            ? characterVisual.transform.localScale
-            : transform.localScale;
+        CacheCharacterVisualScales();
 
         animator = GetComponentInChildren<Animator>();
         // เช็กเพื่อความชัวร์ว่าเจอไหม
@@ -290,7 +291,7 @@ public abstract class MoveHandleAI : MonoBehaviour
         travelState = TravelState.InElevator;
         agent.enabled = false;
         transform.SetParent(elevatorTransform);
-        if (characterVisual != null) characterVisual.SetActive(false);
+        SetCharacterVisualsActive(false);
         // Lerp เพื่อจัดตำแหน่งให้กึ่งกลางเป๊ะๆ
         float t = 0;
         Vector3 startPos = transform.localPosition;
@@ -324,14 +325,76 @@ public abstract class MoveHandleAI : MonoBehaviour
 
         agent.enabled = true;
 
-        if (characterVisual != null)
-        {
-            characterVisual.SetActive(true);
-            // คืน scale เพราะ AnimateEnterRoom DOScale ไปเป็น zero
-            characterVisual.transform.localScale = _originalScale;
-        }
+        SetCharacterVisualsActive(true);
+        // reset scale after room-enter animation shrinks visuals to zero
+        ResetCharacterVisualScales();
 
         if (targetIObj != null)
             MoveTo(targetIObj.ObjPosition.position, TravelState.WalkToTarget);
     }
+
+    protected List<GameObject> GetCharacterVisuals()
+    {
+        List<GameObject> visuals = new List<GameObject>();
+
+        if (characterVisualList != null)
+        {
+            for (int i = 0; i < characterVisualList.Count; i++)
+            {
+                GameObject visual = characterVisualList[i];
+                if (visual != null && !visuals.Contains(visual))
+                {
+                    visuals.Add(visual);
+                }
+            }
+        }
+
+        if (characterVisual != null && !visuals.Contains(characterVisual))
+        {
+            visuals.Add(characterVisual);
+        }
+
+        return visuals;
+    }
+
+    protected void CacheCharacterVisualScales()
+    {
+        List<GameObject> visuals = GetCharacterVisuals();
+        _originalVisualScales.Clear();
+
+        for (int i = 0; i < visuals.Count; i++)
+        {
+            _originalVisualScales.Add(visuals[i].transform.localScale);
+        }
+
+        _originalScale = visuals.Count > 0 ? visuals[0].transform.localScale : transform.localScale;
+    }
+
+    protected void SetCharacterVisualsActive(bool isActive)
+    {
+        List<GameObject> visuals = GetCharacterVisuals();
+        for (int i = 0; i < visuals.Count; i++)
+        {
+            visuals[i].SetActive(isActive);
+        }
+    }
+
+    protected void ResetCharacterVisualScales()
+    {
+        List<GameObject> visuals = GetCharacterVisuals();
+
+        if (_originalVisualScales.Count != visuals.Count)
+        {
+            CacheCharacterVisualScales();
+            visuals = GetCharacterVisuals();
+        }
+
+        for (int i = 0; i < visuals.Count; i++)
+        {
+            Vector3 scale = i < _originalVisualScales.Count ? _originalVisualScales[i] : _originalScale;
+            visuals[i].transform.localScale = scale;
+        }
+    }
 }
+
+

@@ -1588,38 +1588,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4179800321241935384, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4179800321241935384, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4179800321241935384, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4179800321241935384, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4666949834172864067, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1627,10 +1595,6 @@ PrefabInstance:
     - target: {fileID: 4666949834172864067, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6379990927553571663, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7326126099675471312, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_Name
@@ -3743,7 +3707,6 @@ MonoBehaviour:
   objSFX: {fileID: 8300000, guid: 44613ff3d5d6ee9438e5bf36e7780089, type: 3}
   roomState: 0
   roomColor: 0
-  upgradeRoomButton: {fileID: 0}
   serviceCooldown: 5
   isDelivered: 0
   deliveryCount: 0
@@ -3751,8 +3714,6 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
-  upgradeRoomCost: 100
-  roomServiceBonusCost: 100
   serviceQueue: []
 --- !u!212 &679739016
 SpriteRenderer:
@@ -7152,6 +7113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorController
   maxCapacity: 4
   speed: 3
+  baseSpeed: 3
   currentFloor: 0
   distacneWaitslottolift: 3
   minFloor: 1
@@ -11907,7 +11869,6 @@ MonoBehaviour:
   objSFX: {fileID: 8300000, guid: f110cc44ccf5f5c4cbc1f51af57a09d6, type: 3}
   roomState: 0
   roomColor: 0
-  upgradeRoomButton: {fileID: 0}
   serviceCooldown: 5
   isDelivered: 0
   deliveryCount: 0
@@ -11915,8 +11876,6 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
-  upgradeRoomCost: 100
-  roomServiceBonusCost: 100
   serviceQueue: []
 --- !u!212 &2110018698
 SpriteRenderer:

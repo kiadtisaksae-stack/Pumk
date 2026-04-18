@@ -70,11 +70,25 @@ public class FrankenGuest : GuestAI
 
 
         // คืน scale visual ก่อนเดิน เพราะ AnimateEnterRoom DOScale(zero) ค้างไว้
-        if (characterVisual != null)
+        List<GameObject> visuals = GetCharacterVisuals();
+        if (visuals.Count > 0)
         {
-            characterVisual.transform.DOKill();
-            characterVisual.transform.localScale = _originalScale;
-            characterVisual.SetActive(true);
+            if (_originalVisualScales.Count != visuals.Count)
+            {
+                CacheCharacterVisualScales();
+                visuals = GetCharacterVisuals();
+            }
+
+            for (int i = 0; i < visuals.Count; i++)
+            {
+                GameObject visual = visuals[i];
+                if (visual == null) continue;
+
+                Vector3 scale = i < _originalVisualScales.Count ? _originalVisualScales[i] : _originalScale;
+                visual.transform.DOKill();
+                visual.transform.localScale = scale;
+                visual.SetActive(true);
+            }
         }
 
         // บันทึก targetIObj ของห้องปัจจุบันก่อน override

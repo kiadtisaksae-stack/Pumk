@@ -49,8 +49,12 @@ public class Room : CanInteractObj, IInteractable
             {
                 if (CheckDelivery(guestInRoom.currentService, player))
                 {
+                    guestInRoom.RestoreHeart();
                     deliveryCount++;
-                    if (deliveryCount >= guestInRoom.deliveryPerSlot)
+                    int requiredDeliveryCount = guestInRoom.GetRequiredDeliveryCountForService(guestInRoom.currentService);
+                    int remainingCount = Mathf.Max(0, requiredDeliveryCount - deliveryCount);
+                    guestInRoom.guestUI?.SetDeliveryCount(remainingCount);
+                    if (deliveryCount >= requiredDeliveryCount)
                     {
                         isDelivered = true;
                     }
@@ -77,8 +81,12 @@ public class Room : CanInteractObj, IInteractable
             {
                 if (CheckDelivery(guestInRoom.currentService, employee))
                 {
+                    guestInRoom.RestoreHeart();
                     deliveryCount++;
-                    if (deliveryCount >= guestInRoom.deliveryPerSlot)
+                    int requiredDeliveryCount = guestInRoom.GetRequiredDeliveryCountForService(guestInRoom.currentService);
+                    int remainingCount = Mathf.Max(0, requiredDeliveryCount - deliveryCount);
+                    guestInRoom.guestUI?.SetDeliveryCount(remainingCount);
+                    if (deliveryCount >= requiredDeliveryCount)
                     {
                         isDelivered = true;
                     }

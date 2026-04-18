@@ -13,6 +13,7 @@ public class ReaperGuest : GuestAI
     public override void Start()
     {
         base.Start();
+        SetRequiredRoomType(RoomType.Big);
         serviceCount = 3;
         decaysHit = 0.5f;
     }

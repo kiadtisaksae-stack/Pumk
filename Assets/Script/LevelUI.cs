@@ -93,18 +93,18 @@ public class LevelUI : MonoBehaviour
         priceSlider.value = currentPrice;
     }
 
-    public void ShowEndLevelScreen(bool isWin, int guestServed, int combo, int notServed, int score, int goal, int exGoal)
+    public void ShowEndLevelScreen(bool isWin, int guestServed, int combo, int notServed, int score, int goal, int comboBonusScore)
     {
         if (winHeader != null) winHeader.gameObject.SetActive(isWin);
         if (continueButton != null) continueButton.gameObject.SetActive(isWin);
         if (failHeader != null) failHeader.gameObject.SetActive(!isWin);
 
         if (guestServedText != null) guestServedText.text = "Guest Served : " + guestServed;
-        if (bestComboText != null) bestComboText.text = "Best Combo : " + combo;
+        if (bestComboText != null) bestComboText.text = "Best Combo : " + combo + " = +" + comboBonusScore + " score";
         if (notServedText != null) notServedText.text = "Customers not served : " + notServed;
         if (totalScore != null) totalScore.text = "Total Score : " + score;
         if (goalText != null) goalText.text = "Goal : " + goal;
-        if (expertGoalText != null) expertGoalText.text = "Expert goal : " + exGoal;
+        if (expertGoalText != null) expertGoalText.text = "Combo Bonus : +" + comboBonusScore;
 
         if (endPopUp != null) endPopUp.gameObject.SetActive(true);
         Time.timeScale = 0f;
