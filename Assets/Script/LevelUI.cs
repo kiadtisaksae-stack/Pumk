@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 public class LevelUI : MonoBehaviour
 {
     public TextMeshProUGUI lvText;
@@ -14,11 +15,11 @@ public class LevelUI : MonoBehaviour
 
     public Slider priceSlider;
 
-    [Header("Force End Pop Up")]
-    public Transform forceback;
-    public Button forceBackHome;
-    public Button yes;
-    public Button no;
+    [Header("settingLevel")]
+    public Transform settingLevelPanel;
+    public Button settingButton;
+    public Button continueLevelButton;
+    public Button backToMenuButton;
 
     [Header("End Level Pop Up")]
     public Transform endPopUp;
@@ -42,28 +43,20 @@ public class LevelUI : MonoBehaviour
     public TextMeshProUGUI notifyText;
     public float notifyLife = 2.5f;
     private Coroutine notifyCoroutine;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Start()
     {
         UpdateCombo(0);
-        notifyText.text = "";
-        forceBackHome.onClick.AddListener(() =>
-        {
-            forceback.gameObject.SetActive(true);
-            Time.timeScale = 0f;
-        });
-        yes.onClick.AddListener(() =>
-        {
-            ClickGoToHome();
-        });
-        no.onClick.AddListener(() =>
-        {
-            forceback.gameObject.SetActive(false);
-            Time.timeScale = 1f;
-        });
-        goToHome.onClick.AddListener(ClickGoToHome);
-        forceback.gameObject.SetActive(false);
-        endPopUp.gameObject.SetActive(false);
+        if (notifyText != null) notifyText.text = "";
+
+        if (settingButton != null) settingButton.onClick.AddListener(OpenSettingLevel);
+        if (continueLevelButton != null) continueLevelButton.onClick.AddListener(CloseSettingLevel);
+        if (backToMenuButton != null) backToMenuButton.onClick.AddListener(BackToMainMenuFromSettingLevel);
+        if (goToHome != null) goToHome.onClick.AddListener(ClickGoToHome);
+
+        if (settingLevelPanel != null) settingLevelPanel.gameObject.SetActive(false);
+        if (endPopUp != null) endPopUp.gameObject.SetActive(false);
+
         UpdateStarUI();
     }
 
@@ -71,65 +64,53 @@ public class LevelUI : MonoBehaviour
     {
         if (_starText != null && GameManager.Instance != null)
         {
-             _starText.text = "  " + GameManager.Instance.Star.ToString();
+            _starText.text = "  " + GameManager.Instance.Star;
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void UpdateLevel(int amount)
     {
-        // อัปเดตข้อความLevelใน UI
-        lvText.text = "LV." + amount.ToString();
-        winLevelText.text = "Level " + amount.ToString();
-        failLevelText.text = "Level " + amount.ToString();
+        if (lvText != null) lvText.text = "LV." + amount;
+        if (winLevelText != null) winLevelText.text = "Level " + amount;
+        if (failLevelText != null) failLevelText.text = "Level " + amount;
     }
 
     public void UpdateMoney(int amount)
     {
-        // อัปเดตข้อความเงินใน UI
-        moneyText.text = "Money: $" + amount.ToString();
+        if (moneyText != null) moneyText.text = "Money: $" + amount;
     }
+
     public void UpdateCombo(int points)
     {
-        // อัปเดตข้อความคะแนนใน UI
-        comboText.text = "Combo: " + points.ToString();
+        if (comboText != null) comboText.text = "Combo: " + points;
     }
 
-    public void UpdateProgressBar(int currentPrice , int targetPrice)
+    public void UpdateProgressBar(int currentPrice, int targetPrice)
     {
+        if (priceSlider == null) return;
+
         priceSlider.maxValue = targetPrice;
         priceSlider.value = currentPrice;
-        Debug.Log("Update Bar จ้า");
     }
 
-
-    public void ShowEndLevelScreen(bool isWin, int guestServed, int combo, int notServed,  int score , int goal , int exGoal)
+    public void ShowEndLevelScreen(bool isWin, int guestServed, int combo, int notServed, int score, int goal, int exGoal)
     {
-        // สลับหัวข้อตามสถานะ
-        winHeader.gameObject.SetActive(isWin);
-        continueButton.gameObject.SetActive(isWin);
-        failHeader.gameObject.SetActive(!isWin);
+        if (winHeader != null) winHeader.gameObject.SetActive(isWin);
+        if (continueButton != null) continueButton.gameObject.SetActive(isWin);
+        if (failHeader != null) failHeader.gameObject.SetActive(!isWin);
 
+        if (guestServedText != null) guestServedText.text = "Guest Served : " + guestServed;
+        if (bestComboText != null) bestComboText.text = "Best Combo : " + combo;
+        if (notServedText != null) notServedText.text = "Customers not served : " + notServed;
+        if (totalScore != null) totalScore.text = "Total Score : " + score;
+        if (goalText != null) goalText.text = "Goal : " + goal;
+        if (expertGoalText != null) expertGoalText.text = "Expert goal : " + exGoal;
 
-        // ใส่ข้อมูลลงใน Text
-        guestServedText.text = "Guest Served : " + guestServed.ToString();
-        bestComboText.text = "Best Combo : " + combo;
-        notServedText.text = "Customers not served : " + notServed;
-        totalScore.text = "Total Score : " + score.ToString();
-        goalText.text = "Goal : " + goal.ToString();
-        expertGoalText.text = "Expert goal : " + exGoal.ToString();
-
-
-        endPopUp.gameObject.SetActive(true);
+        if (endPopUp != null) endPopUp.gameObject.SetActive(true);
         Time.timeScale = 0f;
     }
 
-
-    public void DisplayTime(bool isUnLimit ,float timeToDisplay, float maxTime)
+    public void DisplayTime(bool isUnLimit, float timeToDisplay, float maxTime)
     {
         if (isUnLimit)
         {
@@ -137,10 +118,8 @@ public class LevelUI : MonoBehaviour
             return;
         }
 
-        // ป้องกันเลขติดลบตอนแสดงผล
         if (timeToDisplay < 0) timeToDisplay = 0;
 
-        // หมุนเข็มนาฬิกา
         if (clockHand != null && maxTime > 0)
         {
             float timeRatio = 1f - (timeToDisplay / maxTime);
@@ -148,13 +127,10 @@ public class LevelUI : MonoBehaviour
             clockHand.localRotation = Quaternion.Euler(0, 0, rotationZ);
         }
 
-        // คำนวณ นาที และ วินาที
         if (timeText != null)
         {
             float minutes = Mathf.FloorToInt(timeToDisplay / 60);
             float seconds = Mathf.FloorToInt(timeToDisplay % 60);
-
-            // แสดงผลในรูปแบบ 00:00
             timeText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
         }
     }
@@ -163,39 +139,44 @@ public class LevelUI : MonoBehaviour
     {
         Time.timeScale = 1f;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex);
+        SceneManager.LoadScene(currentSceneIndex);
     }
+
     public void ClicktoNextLevel()
     {
         Time.timeScale = 1f;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
-        
+        SceneManager.LoadScene(currentSceneIndex + 1);
     }
 
     public void ClickGoToHome()
     {
         Time.timeScale = 1f;
-
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        // เช็คว่า index ถัดไป น้อยกว่าจำนวน Scene ทั้งหมดใน Build Settings หรือไม่
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            // มี Scene ถัดไป -> โหลดด่านถัดไป
-            SceneManager.LoadScene(nextSceneIndex);
-        }
-        else
-        {
-            SceneManager.LoadScene("MainMenu");
-
-        }
-
+        SceneManager.LoadScene("MainMenu");
     }
+
+    public void OpenSettingLevel()
+    {
+        if (settingLevelPanel != null) settingLevelPanel.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void CloseSettingLevel()
+    {
+        if (settingLevelPanel != null) settingLevelPanel.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void BackToMainMenuFromSettingLevel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void Notify(string message)
     {
- 
+        if (notifyText == null) return;
+
         if (notifyCoroutine != null)
         {
             StopCoroutine(notifyCoroutine);
@@ -205,13 +186,11 @@ public class LevelUI : MonoBehaviour
         notifyCoroutine = StartCoroutine(ClearNotify());
     }
 
-    IEnumerator ClearNotify()
+    private IEnumerator ClearNotify()
     {
         yield return new WaitForSecondsRealtime(notifyLife);
 
-        notifyText.text = "";
+        if (notifyText != null) notifyText.text = "";
         notifyCoroutine = null;
     }
 }
-
-

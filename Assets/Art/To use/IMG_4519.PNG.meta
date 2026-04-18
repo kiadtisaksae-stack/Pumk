@@ -1,0 +1,520 @@
+fileFormatVersion: 2
+guid: 112efb8de9bb89e47b924789961326b2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4046997558583197614
+    second: IMG_4519_0
+  - first:
+      213: 2905426938795347464
+    second: IMG_4519_1
+  - first:
+      213: -1591920673855663608
+    second: IMG_4519_2
+  - first:
+      213: 3603569540425726278
+    second: IMG_4519_3
+  - first:
+      213: 4636749665288975427
+    second: IMG_4519_4
+  - first:
+      213: -4608284653126612337
+    second: IMG_4519_5
+  - first:
+      213: -6353761323846514481
+    second: IMG_4519_6
+  - first:
+      213: 7593078416056294321
+    second: IMG_4519_7
+  - first:
+      213: -2857810498680918387
+    second: IMG_4519_8
+  - first:
+      213: 2916461712606552036
+    second: IMG_4519_9
+  - first:
+      213: 3492580471829985744
+    second: IMG_4519_10
+  - first:
+      213: 2111650887602388707
+    second: IMG_4519_11
+  - first:
+      213: 2614425802730730713
+    second: IMG_4519_12
+  - first:
+      213: 5091657292334150719
+    second: IMG_4519_13
+  - first:
+      213: 2840709694127170341
+    second: IMG_4519_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 256
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: IMG_4519_0
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 577
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaf793e66d2d92830800000000000000
+      internalID: 4046997558583197614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_1
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 571
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80e4fbf3866225820800000000000000
+      internalID: 2905426938795347464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_2
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 565
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8029b3cd49c58e9e0800000000000000
+      internalID: -1591920673855663608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_3
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 558
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6493e7c8763720230800000000000000
+      internalID: 3603569540425726278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_4
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 556
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 344f5f7014b095040800000000000000
+      internalID: 4636749665288975427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_5
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 344
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8a018216851c00c0800000000000000
+      internalID: -4608284653126612337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_6
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 338
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc843885db7e2d7a0800000000000000
+      internalID: -6353761323846514481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_7
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 332
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bb98bce698006960800000000000000
+      internalID: 7593078416056294321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_8
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 325
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8eedb62e740758d0800000000000000
+      internalID: -2857810498680918387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_9
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 323
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4efd0fcb97a597820800000000000000
+      internalID: 2916461712606552036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_10
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 104
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d974e44f63287030800000000000000
+      internalID: 3492580471829985744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_11
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 98
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eebd255b471e4d10800000000000000
+      internalID: 2111650887602388707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_12
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 92
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d4716f6a6e484420800000000000000
+      internalID: 2614425802730730713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_13
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 85
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f34ba93a45339a640800000000000000
+      internalID: 5091657292334150719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_4519_14
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 83
+        width: 134
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52365748a6a3c6720800000000000000
+      internalID: 2840709694127170341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      IMG_4519_0: 4046997558583197614
+      IMG_4519_1: 2905426938795347464
+      IMG_4519_10: 3492580471829985744
+      IMG_4519_11: 2111650887602388707
+      IMG_4519_12: 2614425802730730713
+      IMG_4519_13: 5091657292334150719
+      IMG_4519_14: 2840709694127170341
+      IMG_4519_2: -1591920673855663608
+      IMG_4519_3: 3603569540425726278
+      IMG_4519_4: 4636749665288975427
+      IMG_4519_5: -4608284653126612337
+      IMG_4519_6: -6353761323846514481
+      IMG_4519_7: 7593078416056294321
+      IMG_4519_8: -2857810498680918387
+      IMG_4519_9: 2916461712606552036
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

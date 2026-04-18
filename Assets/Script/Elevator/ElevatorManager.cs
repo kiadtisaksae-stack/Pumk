@@ -6,15 +6,38 @@ public class ElevatorManager : MonoBehaviour
 {
     public List<ElevatorController> elevators = new List<ElevatorController>();
 
-    void Start()
+    private void Awake()
     {
-        // ค้นหาลิฟต์ที่มีทั้งหมดใน Scene นี้ตอนเริ่มด่าน
         RefreshElevatorList();
+    }
+
+    private void Start()
+    {
+        // ค้นหาลิฟต์ทั้งหมดในฉากตอนเริ่มด่าน
+        RefreshElevatorList();
+
+        if (GameManager.Instance != null)
+        {
+            ApplyElevatorSpeedUpgrade(GameManager.Instance.GetElevatorSpeedMultiplier());
+        }
     }
 
     public void RefreshElevatorList()
     {
         elevators = Object.FindObjectsByType<ElevatorController>(FindObjectsSortMode.None).ToList();
+    }
+
+    public void ApplyElevatorSpeedUpgrade(float speedMultiplier)
+    {
+        RefreshElevatorList();
+
+        for (int i = 0; i < elevators.Count; i++)
+        {
+            ElevatorController elevator = elevators[i];
+            if (elevator == null) continue;
+
+            elevator.ApplySpeedMultiplier(speedMultiplier);
+        }
     }
 
     /// <summary>

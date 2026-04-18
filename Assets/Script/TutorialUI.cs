@@ -5,74 +5,185 @@ using UnityEngine.UI;
 
 public class TutorialUI : MonoBehaviour
 {
-    public List<GameObject> pages;
-    private int currentIndex = 0;
+    [Header("Tutorial Pages")]
+    [Tooltip("Tutorial pages in display order (first page is index 0).")]
+    public List<GameObject> pages = new List<GameObject>();
+
+    [Tooltip("Back button for previous page. Usually hidden on first page.")]
     public Button backButton;
+
+    [Tooltip("Optional level text label (example: Level 1).")]
     public TextMeshProUGUI lvText;
 
+    [Header("Tutorial Access")]
+    [Tooltip("Root object to show or hide tutorial UI. If empty, this GameObject is used.")]
+    public GameObject tutorialPanelRoot;
+
+    [Tooltip("Button used during gameplay to reopen tutorial.")]
+    public Button tutorialOpenButton;
+
+    [Tooltip("When reopened, reset to first page before showing tutorial.")]
+    public bool resetToFirstPageWhenOpen = true;
+
+    [Header("Tutorial Start Behavior (This Scene)")]
+    [Tooltip("Per-scene prefab setting: open tutorial automatically on Start.")]
+    public bool openTutorialOnStart = true;
+
+    private int currentIndex;
     private LevelManager levelManager;
+    private CanvasGroup tutorialCanvasGroup;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        UpdatePages();
         levelManager = FindAnyObjectByType<LevelManager>();
-        UpdateLeveltext(levelManager.lv);
-        Time.timeScale = 0f;
+        if (levelManager != null)
+        {
+            UpdateLeveltext(levelManager.lv);
+        }
 
+        if (tutorialPanelRoot == null)
+        {
+            tutorialPanelRoot = gameObject;
+        }
+
+        tutorialCanvasGroup = tutorialPanelRoot.GetComponent<CanvasGroup>();
+
+        if (tutorialOpenButton != null)
+        {
+            tutorialOpenButton.onClick.RemoveListener(OpenTutorialFromButton);
+            tutorialOpenButton.onClick.AddListener(OpenTutorialFromButton);
+        }
+
+        if (backButton != null)
+        {
+            backButton.gameObject.SetActive(false);
+        }
+
+        if (openTutorialOnStart)
+        {
+            OpenTutorial();
+        }
+        else
+        {
+            HideTutorial();
+            Time.timeScale = 1f;
+        }
     }
 
     public void UpdateLeveltext(int amount)
     {
-        lvText.text = "Level " + amount.ToString();
+        if (lvText != null)
+        {
+            lvText.text = "Level " + amount;
+        }
+    }
+
+    public void OpenTutorialFromButton()
+    {
+        OpenTutorial();
+    }
+
+    public void OpenTutorial()
+    {
+        if (resetToFirstPageWhenOpen)
+        {
+            currentIndex = 0;
+        }
+
+        UpdatePages();
+        SetTutorialVisible(true);
+
+        if (backButton != null)
+        {
+            backButton.gameObject.SetActive(currentIndex > 0);
+        }
+
+        Time.timeScale = 0f;
+    }
+
+    public void CloseTutorial()
+    {
+        Time.timeScale = 1f;
+        HideTutorial();
+    }
+
+    public void CloseUI()
+    {
+        CloseTutorial();
     }
 
     public void NextPage()
     {
         currentIndex++;
 
-        // เช็คว่าถ้า Index เกินจำนวนหน้าที่มี (หน้า 4 คือ Index 3)
         if (currentIndex >= pages.Count)
         {
-            CloseUI();
+            CloseTutorial();
+            return;
         }
-        else
+
+        UpdatePages();
+
+        if (backButton != null)
         {
-            if (currentIndex >= 1)
-            {
-                backButton.gameObject.SetActive(true);
-            }
-            UpdatePages();
+            backButton.gameObject.SetActive(currentIndex >= 1);
         }
     }
+
     public void BackPage()
     {
-        currentIndex--;
-
-        // เช็คว่าถ้า Index เกินจำนวนหน้าที่มี (หน้า 4 คือ Index 3)
+        currentIndex = Mathf.Max(0, currentIndex - 1);
         UpdatePages();
-        if (currentIndex <= 0)
+
+        if (backButton != null)
         {
-            backButton.gameObject.SetActive(false);
+            backButton.gameObject.SetActive(currentIndex > 0);
         }
     }
 
-    void UpdatePages()
+    private void UpdatePages()
     {
         for (int i = 0; i < pages.Count; i++)
         {
-            // ถ้า i ตรงกับ Index ปัจจุบันให้เปิด (true) นอกนั้นปิด (false)
-            pages[i].SetActive(i == currentIndex);
+            if (pages[i] != null)
+            {
+                pages[i].SetActive(i == currentIndex);
+            }
         }
     }
 
-    void CloseUI()
+    private void HideTutorial()
     {
-        // คำสั่งปิดตัวเอง (ปิด Object ที่ Script นี้เกาะอยู่ หรือปิดทั้ง Canvas)
-        Time.timeScale = 1f;
-        gameObject.SetActive(false);
+        SetTutorialVisible(false);
+    }
 
-        // หรือถ้าอยากทำลาย Object ทิ้งไปเลยใช้:
-        // Destroy(gameObject);
+    private void SetTutorialVisible(bool isVisible)
+    {
+        if (tutorialPanelRoot == null)
+        {
+            return;
+        }
+
+        if (tutorialPanelRoot == gameObject)
+        {
+            if (tutorialCanvasGroup != null)
+            {
+                tutorialCanvasGroup.alpha = isVisible ? 1f : 0f;
+                tutorialCanvasGroup.interactable = isVisible;
+                tutorialCanvasGroup.blocksRaycasts = isVisible;
+            }
+
+            for (int i = 0; i < pages.Count; i++)
+            {
+                if (pages[i] != null)
+                {
+                    pages[i].SetActive(isVisible && i == currentIndex);
+                }
+            }
+
+            return;
+        }
+
+        tutorialPanelRoot.SetActive(isVisible);
     }
 }

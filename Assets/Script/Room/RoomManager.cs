@@ -22,6 +22,18 @@ public class RoomManager : MonoBehaviour
             return;
         }
         Instance = this;
+        if (allRooms == null || allRooms.Count == 0)
+        {
+            RefreshRoomsRuntime();
+        }
+    }
+
+    private void Start()
+    {
+        if (GameManager.Instance != null)
+        {
+            ApplyPersistentRoomUpgrades(GameManager.Instance);
+        }
     }
 
     #region Public API
@@ -57,6 +69,36 @@ public class RoomManager : MonoBehaviour
         return allRooms
             .Where(r => !r.RoomData.isUnAvailable)
             .ToList();
+    }
+
+    public List<Room> GetAllRooms()
+    {
+        if (allRooms == null || allRooms.Count == 0)
+        {
+            RefreshRoomsRuntime();
+        }
+
+        return allRooms;
+    }
+
+    public void ApplyPersistentRoomUpgrades(GameManager gameManager)
+    {
+        if (gameManager == null) return;
+
+        if (allRooms == null || allRooms.Count == 0)
+        {
+            RefreshRoomsRuntime();
+        }
+
+        for (int i = 0; i < allRooms.Count; i++)
+        {
+            Room room = allRooms[i];
+            if (room == null || room.RoomData == null) continue;
+
+            int roomId = room.RoomData.RoomID;
+            int tier = gameManager.GetRoomUpgradeLevel(roomId);
+            room.ApplyPersistentRoomLevel(tier);
+        }
     }
     public void OnInstacneLuggage()
     {
@@ -97,6 +139,11 @@ public class RoomManager : MonoBehaviour
     {
         allRooms = FindObjectsOfType<Room>(true).ToList();
 
+    }
+
+    private void RefreshRoomsRuntime()
+    {
+        allRooms = FindObjectsByType<Room>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
     }
 
     #endregion

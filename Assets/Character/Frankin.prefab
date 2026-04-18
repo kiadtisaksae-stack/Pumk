@@ -1787,7 +1787,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 4046997558583197614, guid: 112efb8de9bb89e47b924789961326b2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2337,6 +2337,7 @@ MonoBehaviour:
   characterVisual: {fileID: 8441452412806388195}
   guestPhase: 0
   guestColor: 0
+  guestSound: {fileID: 0}
   orangeMat: {fileID: 2100000, guid: 1992746ddd70c1a478976ff8f9ae552d, type: 2}
   blueMat: {fileID: 2100000, guid: 4dd3abd71717ad7479d498537efcf9c8, type: 2}
   yellowMat: {fileID: 2100000, guid: e4060e345f62bc847bc141c3c21299d9, type: 2}
@@ -2567,7 +2568,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 4046997558583197614, guid: 112efb8de9bb89e47b924789961326b2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

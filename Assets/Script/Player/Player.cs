@@ -12,13 +12,13 @@ public class Player : MoveHandleAI
     public int maxSlots = GameManager.BaseInventorySlots;
     public List<ItemSO> inventory = new List<ItemSO>();
 
+    [Header("Move")]
+    [SerializeField] private float baseMoveSpeed = 3.5f;
+
     [Header("Inventory UI")]
     public List<Image> inventorySlotImages = new List<Image>();
     public Sprite emptySlotSprite;
     public Sprite lockedSlotSprite;
-
-    [Header("Inventory Upgrade UI")]
-    public Button upgradeInventoryButton;
 
     public bool isbusy = false;
 
@@ -28,6 +28,11 @@ public class Player : MoveHandleAI
     {
         base.Awake();
         mainCamera = Camera.main;
+
+        if (agent != null)
+        {
+            baseMoveSpeed = agent.speed;
+        }
     }
 
     public override void Start()
@@ -35,10 +40,8 @@ public class Player : MoveHandleAI
         base.Start();
 
         SetupInventorySlotComponents();
-        SetupUpgradeButton();
-        SyncInventoryUpgradeFromGameManager();
+        ApplyGlobalUpgradesFromGameManager(GameManager.Instance, GameManager.Instance != null ? GameManager.Instance.GetPlayerSpeedMultiplier() : 1f);
         RefreshInventoryUI();
-        RefreshUpgradeButtonUI();
     }
 
     private void OnEnable()
@@ -50,12 +53,10 @@ public class Player : MoveHandleAI
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnStarChanged += RefreshUpgradeButtonUI;
-            GameManager.Instance.OnInventoryUpgradeChanged += OnInventoryUpgraded;
+            GameManager.Instance.OnUpgradeDataChanged += OnUpgradeDataChanged;
         }
 
         RefreshInventoryUI();
-        RefreshUpgradeButtonUI();
     }
 
     private void OnDisable()
@@ -67,57 +68,38 @@ public class Player : MoveHandleAI
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnStarChanged -= RefreshUpgradeButtonUI;
-            GameManager.Instance.OnInventoryUpgradeChanged -= OnInventoryUpgraded;
+            GameManager.Instance.OnUpgradeDataChanged -= OnUpgradeDataChanged;
         }
     }
 
-    private void OnInventoryUpgraded()
-    {
-        SyncInventoryUpgradeFromGameManager();
-        RefreshInventoryUI();
-        RefreshUpgradeButtonUI();
-    }
-
-    private void SetupUpgradeButton()
-    {
-        if (upgradeInventoryButton == null) return;
-
-        upgradeInventoryButton.onClick.RemoveListener(UpgradeInventoryByStar);
-        upgradeInventoryButton.onClick.AddListener(UpgradeInventoryByStar);
-    }
-
-    private void UpgradeInventoryByStar()
+    private void OnUpgradeDataChanged()
     {
         if (GameManager.Instance == null) return;
-
-        bool isUpgraded = GameManager.Instance.TryUpgradeInventoryWithStar();
-        if (!isUpgraded)
-        {
-            LevelUI levelUI = FindAnyObjectByType<LevelUI>();
-            if (levelUI != null)
-            {
-                levelUI.Notify("Not enough stars or already max inventory");
-            }
-
-            RefreshUpgradeButtonUI();
-            return;
-        }
-
-        LevelUI ui = FindAnyObjectByType<LevelUI>();
-        if (ui != null)
-        {
-            ui.UpdateStarUI();
-        }
+        ApplyGlobalUpgradesFromGameManager(GameManager.Instance, GameManager.Instance.GetPlayerSpeedMultiplier());
     }
 
-    private void SyncInventoryUpgradeFromGameManager()
+    public void ApplyGlobalUpgradesFromGameManager(GameManager gameManager, float playerSpeedMultiplier)
+    {
+        SyncInventoryUpgradeFromGameManager(gameManager);
+        ApplyMoveSpeedMultiplier(playerSpeedMultiplier);
+        RefreshInventoryUI();
+    }
+
+    public void ApplyMoveSpeedMultiplier(float multiplier)
+    {
+        if (agent == null) return;
+
+        float finalSpeed = Mathf.Max(0.1f, baseMoveSpeed * Mathf.Max(0.01f, multiplier));
+        agent.speed = finalSpeed;
+    }
+
+    private void SyncInventoryUpgradeFromGameManager(GameManager gameManager)
     {
         int targetSlots = GameManager.BaseInventorySlots;
 
-        if (GameManager.Instance != null)
+        if (gameManager != null)
         {
-            targetSlots = GameManager.Instance.InventoryUnlockedSlots;
+            targetSlots = gameManager.InventoryUnlockedSlots;
         }
 
         int maxAvailableSlots = inventorySlotImages.Count > 0
@@ -290,27 +272,5 @@ public class Player : MoveHandleAI
                 }
             }
         }
-    }
-
-    private void RefreshUpgradeButtonUI()
-    {
-        if (upgradeInventoryButton == null) return;
-
-        if (GameManager.Instance == null)
-        {
-            upgradeInventoryButton.interactable = false;
-            return;
-        }
-
-        if (!GameManager.Instance.CanUpgradeInventory)
-        {
-            upgradeInventoryButton.interactable = false;
-            return;
-        }
-
-        int cost = GameManager.Instance.GetInventoryUpgradeCost();
-        bool canPay = GameManager.Instance.Star >= cost;
-
-        upgradeInventoryButton.interactable = canPay;
     }
 }
