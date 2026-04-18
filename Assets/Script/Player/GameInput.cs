@@ -5,25 +5,21 @@ using UnityEngine.InputSystem;
 public class GameInput : MonoBehaviour
 {
     public Action<Vector2> OnClickPosition;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public Action<Vector2> OnDoubleClickPosition;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnClick(InputValue value)
     {
-        if (value.isPressed)
-        {
-            // เปลี่ยนจาก Mouse เป็น Pointer เพื่อให้รองรับทั้ง นิ้วสัมผัส (Touch) และ เมาส์ (Mouse)
-            Vector2 pointerPosition = Pointer.current.position.ReadValue();
+        if (!value.isPressed || Pointer.current == null) return;
 
-            OnClickPosition?.Invoke(pointerPosition);
-        }
+        Vector2 pointerPosition = Pointer.current.position.ReadValue();
+        OnClickPosition?.Invoke(pointerPosition);
+    }
+
+    private void OnDoubleClick(InputValue value)
+    {
+        if (!value.isPressed || Pointer.current == null) return;
+
+        Vector2 pointerPosition = Pointer.current.position.ReadValue();
+        OnDoubleClickPosition?.Invoke(pointerPosition);
     }
 }

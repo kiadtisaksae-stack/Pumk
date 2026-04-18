@@ -1989,6 +1989,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   Star: 0
+  inventoryUnlockedSlots: 3
+  defaultInventoryUpgradeCost: 1
+  inventoryUpgradeCosts: 02000000050000000c000000
 --- !u!4 &1625282570
 Transform:
   m_ObjectHideFlags: 0
