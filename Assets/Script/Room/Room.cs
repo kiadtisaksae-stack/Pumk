@@ -17,6 +17,9 @@ public class Room : CanInteractObj, IInteractable
     [SerializeField] private GuestAI guestInRoom;
     public GameObject unCleanObj;
     public GameObject dirtyIcon;
+    [Header("Dirty Room Laundry Pickup")]
+    public ItemSO laundryPickupItem;
+    [Min(1)] public int laundryPickupAmount = 1;
 
     [HideInInspector] public List<ItemSO> serviceQueue = new List<ItemSO>();
 
@@ -184,24 +187,27 @@ public class Room : CanInteractObj, IInteractable
 
     public bool TryCleanRoom(MoveHandleAI actor)
     {
-        List<ItemSO> inv = GetInventory(actor);
-        if (inv == null) return false;
-
-        foreach (ItemSO item in inv)
+        if (laundryPickupItem == null)
         {
-            if (item.requiredForService != ServiceRequestType.Laundry) continue;
-
-            RemoveFromInventory(actor, item);
-            guestInRoom = null;
-            roomState = RoomState.Available;
-            RoomData.isUnAvailable = false;
-            if (unCleanObj != null) unCleanObj.SetActive(false);
-            if (dirtyIcon != null) dirtyIcon.SetActive(false);
-            RoomData.currentServiceRequest = null;
-            return true;
+            Debug.LogWarning($"Room {name} has no laundryPickupItem assigned.");
+            return false;
         }
 
-        return false;
+        for (int i = 0; i < Mathf.Max(1, laundryPickupAmount); i++)
+        {
+            if (!TryAddItemToActor(actor, laundryPickupItem))
+            {
+                return false;
+            }
+        }
+
+        guestInRoom = null;
+        roomState = RoomState.Available;
+        RoomData.isUnAvailable = false;
+        if (unCleanObj != null) unCleanObj.SetActive(false);
+        if (dirtyIcon != null) dirtyIcon.SetActive(false);
+        RoomData.currentServiceRequest = null;
+        return true;
     }
 
     public void DirtyRoom()
@@ -250,6 +256,14 @@ public class Room : CanInteractObj, IInteractable
         {
             e.RemoveItem(item);
         }
+    }
+
+    private bool TryAddItemToActor(MoveHandleAI actor, ItemSO item)
+    {
+        if (item == null || actor == null) return false;
+        if (actor is Player p) return p.AddItem(item);
+        if (actor is Employee e) return e.AddItem(item);
+        return false;
     }
 
     private void Shuffle(List<ItemSO> list)

@@ -322,6 +322,14 @@ public class Player : MoveHandleAI
         if (slotIndex >= inventory.Count) return;
 
         ItemSO removed = inventory[slotIndex];
+        if (removed != null &&
+            (removed.requiredForService == ServiceRequestType.DeliveryLuggage ||
+             removed.requiredForService == ServiceRequestType.Laundry))
+        {
+            Debug.Log($"Cannot destroy protected item: {removed.itemName}");
+            return;
+        }
+
         inventory.RemoveAt(slotIndex);
         RefreshInventoryUI();
 

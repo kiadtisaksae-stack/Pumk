@@ -4147,6 +4147,7 @@ MonoBehaviour:
     itemData: {fileID: 0}
   objSFX: {fileID: 8300000, guid: 2b50f8dc09037c64bb03fd207aeb239b, type: 3}
   serviceItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
+  isLaundryDropOff: 0
 --- !u!61 &674320491
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4276,7 +4277,6 @@ MonoBehaviour:
   objSFX: {fileID: 8300000, guid: 44613ff3d5d6ee9438e5bf36e7780089, type: 3}
   roomState: 0
   roomColor: 0
-  upgradeRoomButton: {fileID: 0}
   serviceCooldown: 5
   isDelivered: 0
   deliveryCount: 0
@@ -4284,8 +4284,8 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
-  upgradeRoomCost: 100
-  roomServiceBonusCost: 100
+  laundryPickupItem: {fileID: 0}
+  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &679739016
 SpriteRenderer:
@@ -7334,6 +7334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorController
   maxCapacity: 4
   speed: 3
+  baseSpeed: 3
   currentFloor: 0
   distacneWaitslottolift: 3
   minFloor: 1
@@ -7498,6 +7499,10 @@ PrefabInstance:
       propertyPath: roomColor
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
+      propertyPath: laundryPickupItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 2
@@ -8620,6 +8625,10 @@ PrefabInstance:
       propertyPath: roomColor
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
+      propertyPath: laundryPickupItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 3
@@ -11699,6 +11708,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
+      propertyPath: laundryPickupItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
+    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 3
       objectReference: {fileID: 0}
@@ -12280,7 +12293,6 @@ MonoBehaviour:
   objSFX: {fileID: 8300000, guid: f110cc44ccf5f5c4cbc1f51af57a09d6, type: 3}
   roomState: 0
   roomColor: 0
-  upgradeRoomButton: {fileID: 0}
   serviceCooldown: 5
   isDelivered: 0
   deliveryCount: 0
@@ -12288,8 +12300,8 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
-  upgradeRoomCost: 100
-  roomServiceBonusCost: 100
+  laundryPickupItem: {fileID: 0}
+  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &2110018698
 SpriteRenderer:
@@ -12637,6 +12649,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: room43
       objectReference: {fileID: 0}
+    - target: {fileID: 1713717485585426529, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
+      propertyPath: laundryPickupItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 5684947960092481614, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.1604
@@ -12694,6 +12710,86 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3843155911551348378, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843155911551348378, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843155911551348378, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843155911551348378, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4720453676323808617, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4720453676323808617, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4720453676323808617, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4720453676323808617, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5604180647204649227, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5604180647204649227, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5604180647204649227, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5604180647204649227, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753269705744242804, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753269705744242804, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753269705744242804, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753269705744242804, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829352513626649211, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829352513626649211, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829352513626649211, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829352513626649211, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8580916718163929765, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.81
@@ -12732,6 +12828,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8580916718163929765, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9073497094635898865, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9073497094635898865, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9073497094635898865, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9073497094635898865, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -13107,6 +13219,10 @@ PrefabInstance:
       propertyPath: 'inLevelService.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: 6ce47619c54b4d34cb11a827afa37b51, type: 2}
+    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
+      propertyPath: 'inLevelService.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 4302216871941570437, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: m_Name
       value: LevelManager
@@ -13272,6 +13388,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
+      propertyPath: laundryPickupItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
