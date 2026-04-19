@@ -3907,26 +3907,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8613c4b6aafaee40b275ce88567be60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  Star: 2
+  Star: 50
   inventoryUnlockedSlots: 3
   defaultInventoryUpgradeCost: 1
   inventoryUpgradeCosts: 02000000050000000c000000
   playerSpeedUpgradeLevel: 0
   defaultPlayerSpeedUpgradeCost: 2
-  playerSpeedUpgradeCosts: 020000000300000004000000
+  playerSpeedUpgradeCosts: 02000000030000000400000007000000
   playerSpeedMultipliersByLevel:
-  - 1
-  - 1.15
-  - 1.3
-  - 1.45
+  - 2
+  - 4
+  - 6
+  - 8
   elevatorSpeedUpgradeLevel: 0
+  elevatorMaxUpgradeLevel: 5
   defaultElevatorSpeedUpgradeCost: 2
-  elevatorSpeedUpgradeCosts: 020000000300000004000000
+  elevatorSpeedUpgradeCosts: 020000000300000004000000060000000a000000
   elevatorSpeedMultipliersByLevel:
   - 1
-  - 1.2
-  - 1.35
-  - 1.5
+  - 3
+  - 5
+  - 7
+  - 8
+  - 10
   maxRoomUpgradeTier: 2
   defaultRoomUpgradeCost: 2
   roomUpgradeCostsByTier: 0200000003000000

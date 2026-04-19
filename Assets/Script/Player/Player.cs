@@ -14,6 +14,7 @@ public class Player : MoveHandleAI
 
     [Header("Move")]
     [SerializeField] private float baseMoveSpeed = 3.5f;
+    private float lastAppliedSpeedMultiplier = 1f;
 
     [Header("Inventory UI")]
     public List<Image> inventorySlotImages = new List<Image>();
@@ -34,16 +35,12 @@ public class Player : MoveHandleAI
     {
         base.Awake();
         mainCamera = Camera.main;
-
-        if (agent != null)
-        {
-            baseMoveSpeed = agent.speed;
-        }
     }
 
     public override void Start()
     {
         base.Start();
+        ApplyBaseSpeedToAgent();
 
         SetupInventorySlotComponents();
         ApplyGlobalUpgradesFromGameManager(GameManager.Instance, GameManager.Instance != null ? GameManager.Instance.GetPlayerSpeedMultiplier() : 1f);
@@ -95,8 +92,26 @@ public class Player : MoveHandleAI
     {
         if (agent == null) return;
 
-        float finalSpeed = Mathf.Max(0.1f, baseMoveSpeed * Mathf.Max(0.01f, multiplier));
+        float safeLastMultiplier = Mathf.Max(0.01f, lastAppliedSpeedMultiplier);
+        float derivedBaseSpeed = agent.speed / safeLastMultiplier;
+        if (derivedBaseSpeed > 0f)
+        {
+            baseMoveSpeed = derivedBaseSpeed;
+        }
+
+        float safeMultiplier = Mathf.Max(0.01f, multiplier);
+        float finalSpeed = Mathf.Max(0.1f, baseMoveSpeed * safeMultiplier);
         agent.speed = finalSpeed;
+        lastAppliedSpeedMultiplier = safeMultiplier;
+    }
+
+    private void ApplyBaseSpeedToAgent()
+    {
+        if (agent == null) return;
+
+        baseMoveSpeed = Mathf.Max(0.1f, baseMoveSpeed);
+        agent.speed = baseMoveSpeed;
+        lastAppliedSpeedMultiplier = 1f;
     }
 
     private void SyncInventoryUpgradeFromGameManager(GameManager gameManager)

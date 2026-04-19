@@ -90,6 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 2
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &484917296053637835
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,6 +266,7 @@ MonoBehaviour:
   assignedElevator: {fileID: 0}
   animator: {fileID: 6867628325331292268}
   characterVisual: {fileID: 1622151760343634303}
+  characterVisualList: []
   gameInput: {fileID: 5493368107408770838}
   mainCamera: {fileID: 0}
   maxSlots: 3
@@ -280,6 +282,11 @@ MonoBehaviour:
   emptySlotSprite: {fileID: 1485811730778733697, guid: 6d217f7565fc2274091c906ee9a92c88, type: 3}
   lockedSlotSprite: {fileID: -8349191183962973101, guid: 77c213a8ed4290a4bb2ac5d250fd104a, type: 3}
   isbusy: 0
+  interactionLayerMask:
+    serializedVersion: 2
+    m_Bits: 499
+  clickProbeRadius: 0.2
+  logInteractionDebug: 0
 --- !u!114 &2163832332070168875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,6 +497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 0
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &1614910905104324873
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,6 +588,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 3
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &1622151760343634303
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +841,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 5
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &3384854852376430250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,6 +1220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 4
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &5581263593099611081
 GameObject:
   m_ObjectHideFlags: 0
@@ -1391,6 +1402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   slotIndex: 1
   doubleClickInterval: 0.3
+  allowRightClickRemove: 1
 --- !u!1 &7119679961740758683
 GameObject:
   m_ObjectHideFlags: 0
