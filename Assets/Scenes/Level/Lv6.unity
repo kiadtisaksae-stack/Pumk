@@ -884,6 +884,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUI
       objectReference: {fileID: 0}
+    - target: {fileID: 7326126099675471312, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6241,8 +6245,8 @@ Transform:
   m_GameObject: {fileID: 1113418152}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.92, y: -2.55, z: 0}
-  m_LocalScale: {x: 0.22203594, y: 0.22203594, z: 0.22203594}
+  m_LocalPosition: {x: -3.2, y: -2.66, z: 0}
+  m_LocalScale: {x: 0.21093415, y: 0.22203594, z: 0.22203594}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1630412211}
@@ -10688,6 +10692,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1630412211}
     m_Modifications:
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.46661967
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.53646576
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.014
+      objectReference: {fileID: 0}
     - target: {fileID: 4842585237022195246, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
       propertyPath: m_Name
       value: ExitDoor
