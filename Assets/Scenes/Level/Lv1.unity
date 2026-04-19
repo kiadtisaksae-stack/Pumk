@@ -4356,7 +4356,6 @@ MonoBehaviour:
     itemData: {fileID: 0}
   objSFX: {fileID: 0}
   serviceItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
-  isLaundryDropOff: 0
 --- !u!61 &674320491
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4493,8 +4492,6 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
-  laundryPickupItem: {fileID: 0}
-  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &679739016
 SpriteRenderer:
@@ -6521,8 +6518,8 @@ Transform:
   m_GameObject: {fileID: 1113418152}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.12, y: -2.55, z: -0.01}
-  m_LocalScale: {x: 0.22203594, y: 0.22203594, z: 0.22203594}
+  m_LocalPosition: {x: -2.956, y: -2.596, z: 0.139}
+  m_LocalScale: {x: 0.22837825, y: 0.2703252, z: 0.31788242}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1630412211}
@@ -8084,10 +8081,6 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
-      propertyPath: laundryPickupItem
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
-    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 2
       objectReference: {fileID: 0}
@@ -8669,10 +8662,6 @@ PrefabInstance:
       propertyPath: roomColor
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
-      propertyPath: laundryPickupItem
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 3
@@ -11212,6 +11201,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1630412211}
     m_Modifications:
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.46661967
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.53646576
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399549219926623335, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.13
+      objectReference: {fileID: 0}
     - target: {fileID: 4842585237022195246, guid: 3ce6dbfbf3f53b340a218c1711e5a826, type: 3}
       propertyPath: m_Name
       value: ExitDoor
@@ -12264,8 +12269,6 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
-  laundryPickupItem: {fileID: 0}
-  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &2110018698
 SpriteRenderer:
@@ -12613,10 +12616,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: room43
       objectReference: {fileID: 0}
-    - target: {fileID: 1713717485585426529, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
-      propertyPath: laundryPickupItem
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 5684947960092481614, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.1604
@@ -12710,6 +12709,48 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2439041657840019181, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_text
+      value: '50
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439041657840019181, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_fontSize
+      value: 25.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457406057344251316, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 72.9314
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457406057344251316, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 30.582
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457406057344251316, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 94.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457406057344251316, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -213.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4666949834172864067, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -12717,6 +12758,48 @@ PrefabInstance:
     - target: {fileID: 4666949834172864067, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5725593251620546369, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_text
+      value: '90
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5725593251620546369, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_fontSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6068045294020907640, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6068045294020907640, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6068045294020907640, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6068045294020907640, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6616639349955894273, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 59.8027
+      objectReference: {fileID: 0}
+    - target: {fileID: 6616639349955894273, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 24.3272
+      objectReference: {fileID: 0}
+    - target: {fileID: 6616639349955894273, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 47.7999
+      objectReference: {fileID: 0}
+    - target: {fileID: 6616639349955894273, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -180.55244
       objectReference: {fileID: 0}
     - target: {fileID: 7326126099675471312, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_Name
@@ -12916,6 +12999,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ElevatorM
       objectReference: {fileID: 0}
+    - target: {fileID: 4853851074072659855, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5487605836759028893, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.781
@@ -13102,11 +13189,7 @@ PrefabInstance:
     - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
       propertyPath: serviceItem
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: isLaundryDropOff
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
       propertyPath: _interactObjData.floorNumber
       value: 1
@@ -13209,21 +13292,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: inLevelService.Array.size
+      propertyPath: infiniteGameTime
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: 'inLevelService.Array.data[1]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
-    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: 'inLevelService.Array.data[2]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
-    - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
-      propertyPath: 'inLevelService.Array.data[3]'
-      value: 
-      objectReference: {fileID: 11400000, guid: eac9c4fc987bd2f469cc2bb5c14ddab2, type: 2}
+      propertyPath: requireMoneyToNext
+      value: 720
+      objectReference: {fileID: 0}
     - target: {fileID: 4302216871941570437, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: m_Name
       value: LevelManager&Sound
@@ -13429,10 +13504,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
-      propertyPath: laundryPickupItem
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
     - target: {fileID: 8359127967270073581, guid: e0850ad62bf9ba74f9cd329023dc32b2, type: 3}
       propertyPath: _interactObjData.objCollider
       value: 
