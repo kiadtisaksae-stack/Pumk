@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public const int TotalUpgradeableRooms = 7;
 
     private const string InventoryUnlockedSlotsKey = "GameManager.InventoryUnlockedSlots";
+    private const string StarKey = "GameManager.Star";
     private const string PlayerSpeedUpgradeLevelKey = "GameManager.PlayerSpeedUpgradeLevel";
     private const string ElevatorSpeedUpgradeLevelKey = "GameManager.ElevatorSpeedUpgradeLevel";
     private const string RoomUpgradeLevelKeyPrefix = "GameManager.RoomUpgradeLevel_";
@@ -83,6 +84,18 @@ public class GameManager : MonoBehaviour
 
     private void LoadPersistentData()
     {
+        // Star: if no save exists yet, keep Inspector value as first-run start value and save it once.
+        if (PlayerPrefs.HasKey(StarKey))
+        {
+            Star = Mathf.Max(0, PlayerPrefs.GetInt(StarKey, 0));
+        }
+        else
+        {
+            Star = Mathf.Max(0, Star);
+            PlayerPrefs.SetInt(StarKey, Star);
+            PlayerPrefs.Save();
+        }
+
         int loadedSlots = PlayerPrefs.GetInt(InventoryUnlockedSlotsKey, BaseInventorySlots);
         inventoryUnlockedSlots = Mathf.Clamp(loadedSlots, BaseInventorySlots, MaxInventorySlots);
 
@@ -100,6 +113,7 @@ public class GameManager : MonoBehaviour
     private void SaveUpgradeData()
     {
         PlayerPrefs.SetInt(InventoryUnlockedSlotsKey, inventoryUnlockedSlots);
+        PlayerPrefs.SetInt(StarKey, Mathf.Max(0, Star));
         PlayerPrefs.SetInt(PlayerSpeedUpgradeLevelKey, playerSpeedUpgradeLevel);
         PlayerPrefs.SetInt(ElevatorSpeedUpgradeLevelKey, elevatorSpeedUpgradeLevel);
 
@@ -132,6 +146,8 @@ public class GameManager : MonoBehaviour
         if (amount <= 0) return;
 
         Star += amount;
+        PlayerPrefs.SetInt(StarKey, Mathf.Max(0, Star));
+        PlayerPrefs.Save();
         OnStarChanged?.Invoke();
     }
 
@@ -140,6 +156,8 @@ public class GameManager : MonoBehaviour
         if (amount <= 0) return;
 
         Star = Mathf.Max(0, Star - amount);
+        PlayerPrefs.SetInt(StarKey, Star);
+        PlayerPrefs.Save();
         OnStarChanged?.Invoke();
     }
 
