@@ -4152,6 +4152,7 @@ MonoBehaviour:
     itemData: {fileID: 0}
   objSFX: {fileID: 8300000, guid: 2b50f8dc09037c64bb03fd207aeb239b, type: 3}
   serviceItem: {fileID: 11400000, guid: dd8751cb11d60d24bad6bff3daec38f6, type: 2}
+  isLaundryDropOff: 0
 --- !u!61 &674320491
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4288,6 +4289,8 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
+  laundryPickupItem: {fileID: 0}
+  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &679739016
 SpriteRenderer:
@@ -12393,6 +12396,8 @@ MonoBehaviour:
   guestInRoom: {fileID: 0}
   unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
+  laundryPickupItem: {fileID: 0}
+  laundryPickupAmount: 1
   serviceQueue: []
 --- !u!212 &2110018698
 SpriteRenderer:
