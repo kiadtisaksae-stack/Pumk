@@ -55,7 +55,10 @@ public class LevelManager : MonoBehaviour
     [Header("Level Unlock Settings")]
     [Tooltip("Index ของปุ่มเลเวลถัดไปใน UIManager (เช่น ด่าน 2 คือ index 1)")]
     public int unlockNextLevelIndex;
-    
+
+    [Header("Sound")]
+    public AudioClip winSound;
+    public AudioClip loseSound;
 
     private RewardRank rank;
 
@@ -190,6 +193,7 @@ public class LevelManager : MonoBehaviour
         if (rank == RewardRank.Gold || rank == RewardRank.Silver)
         {
             isWin = true;
+            SoundManager.Instance.PlaySFX(winSound);
             PlayerPrefs.SetInt("UnlockedLevel_" + unlockNextLevelIndex, 1);
             PlayerPrefs.Save();
 
@@ -202,6 +206,7 @@ public class LevelManager : MonoBehaviour
         else
         {
             isWin = false;
+            SoundManager.Instance.PlaySFX(loseSound);
         }
         uiLevelManager.UpdateStarUI();
         uiLevelManager.ShowEndLevelScreen(isWin, guestServed , maxStreakCount , guestNotServed ,(moneyGetInLevel + bonusNet) , moneyGetInLevel, bonusNet);

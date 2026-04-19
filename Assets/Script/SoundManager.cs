@@ -33,6 +33,7 @@ public class SoundManager : MonoBehaviour
         PlayMusic(audioBG);
     }
 
+
     public void SetMasterVolume(float value)
     {
         // ใช้สูตร Log10 เพื่อให้เสียงเบา-ดังดูเป็นธรรมชาติ

@@ -71,6 +71,8 @@ MonoBehaviour:
   gameTime: 60
   infiniteGameTime: 0
   unlockNextLevelIndex: 1
+  winSound: {fileID: 8300000, guid: 6befa31447136804797f2a34d7431d99, type: 3}
+  loseSound: {fileID: 8300000, guid: 34dee2db264624c489986fb022906f17, type: 3}
 --- !u!114 &3877969316832559489
 MonoBehaviour:
   m_ObjectHideFlags: 0
