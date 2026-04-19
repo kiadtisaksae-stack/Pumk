@@ -3146,6 +3146,12 @@ MonoBehaviour:
   audioBG: {fileID: 8300000, guid: 67388b1c0a0cd2444b3f1f1dd1266384, type: 3}
   musicSource: {fileID: 864075170}
   sfxSource: {fileID: 1671521323}
+  enableGlobalClickSfx: 1
+  clickSfx: {fileID: 8300000, guid: f110cc44ccf5f5c4cbc1f51af57a09d6, type: 3}
+  clickSfxVolume: 1
+  clickStartOffsetSeconds: 0.4
+  clickMinIntervalSeconds: 0
+  clickSfxSource: {fileID: 0}
 --- !u!4 &1241836133
 Transform:
   m_ObjectHideFlags: 0
