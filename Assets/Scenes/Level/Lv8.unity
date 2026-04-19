@@ -7222,8 +7222,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElevatorController
   maxCapacity: 4
-  speed: 3
-  baseSpeed: 3
+  speed: 1
+  baseSpeed: 1
   currentFloor: 0
   distacneWaitslottolift: 3
   minFloor: 1
@@ -12436,6 +12436,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 3147762108070651128, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
+      propertyPath: interactionLayerMask.m_Bits
+      value: 499
+      objectReference: {fileID: 0}
     - target: {fileID: 3843155911551348378, guid: ced639ce8d2fe2545a274fd124f7a6a4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -12600,6 +12604,14 @@ PrefabInstance:
     - target: {fileID: 4324453372701631266, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
       propertyPath: m_Name
       value: ElevatorM
+      objectReference: {fileID: 0}
+    - target: {fileID: 4853851074072659855, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
+      propertyPath: speed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4853851074072659855, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
+      propertyPath: baseSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5487605836759028893, guid: 8f48d4879b917514eb18a37216f6f3ca, type: 3}
       propertyPath: m_LocalPosition.y

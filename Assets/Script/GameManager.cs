@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Elevator Speed Upgrade")]
     [SerializeField] private int elevatorSpeedUpgradeLevel;
+    [Tooltip("Max elevator upgrade level (Lv0 is base). Example: 3 means Lv0 -> Lv3.")]
+    [Min(0)]
+    [SerializeField] private int elevatorMaxUpgradeLevel = 3;
     [SerializeField] private int defaultElevatorSpeedUpgradeCost = 2;
     [SerializeField] private int[] elevatorSpeedUpgradeCosts = new[] { 2, 3, 4 };
     [SerializeField] private float[] elevatorSpeedMultipliersByLevel = new[] { 1f, 1.2f, 1.35f, 1.5f };
@@ -403,8 +406,15 @@ public class GameManager : MonoBehaviour
 
     private int GetMaxElevatorSpeedUpgradeLevel()
     {
-        if (elevatorSpeedMultipliersByLevel == null || elevatorSpeedMultipliersByLevel.Length == 0) return 0;
-        return elevatorSpeedMultipliersByLevel.Length - 1;
+        int configuredMax = Mathf.Max(0, elevatorMaxUpgradeLevel);
+        if (elevatorSpeedMultipliersByLevel == null || elevatorSpeedMultipliersByLevel.Length == 0)
+        {
+            return configuredMax;
+        }
+
+        // Clamp by available multiplier data to avoid "upgrade level increases but speed does not change".
+        int multiplierBasedMax = elevatorSpeedMultipliersByLevel.Length - 1;
+        return Mathf.Min(configuredMax, Mathf.Max(0, multiplierBasedMax));
     }
 
     private int GetUpgradeCost(int[] costs, int currentLevel, int defaultCost)
@@ -427,4 +437,5 @@ public class GameManager : MonoBehaviour
 
         return Mathf.Max(0.01f, fallback);
     }
+
 }

@@ -26,6 +26,8 @@ public class RoomManager : MonoBehaviour
         {
             RefreshRoomsRuntime();
         }
+
+        SyncRoomOrderToUpgradeIndex();
     }
 
     private void Start()
@@ -90,13 +92,14 @@ public class RoomManager : MonoBehaviour
             RefreshRoomsRuntime();
         }
 
+        SyncRoomOrderToUpgradeIndex();
+
         for (int i = 0; i < allRooms.Count; i++)
         {
             Room room = allRooms[i];
             if (room == null || room.RoomData == null) continue;
 
-            int roomId = room.RoomData.RoomID;
-            int tier = gameManager.GetRoomUpgradeLevel(roomId);
+            int tier = gameManager.GetRoomUpgradeLevel(i);
             room.ApplyPersistentRoomLevel(tier);
         }
     }
@@ -138,12 +141,26 @@ public class RoomManager : MonoBehaviour
     private void RefreshRooms()
     {
         allRooms = FindObjectsOfType<Room>(true).ToList();
+        SyncRoomOrderToUpgradeIndex();
 
     }
 
     private void RefreshRoomsRuntime()
     {
         allRooms = FindObjectsByType<Room>(FindObjectsInactive.Include, FindObjectsSortMode.None).ToList();
+        SyncRoomOrderToUpgradeIndex();
+    }
+
+    private void SyncRoomOrderToUpgradeIndex()
+    {
+        if (allRooms == null) return;
+
+        for (int i = 0; i < allRooms.Count; i++)
+        {
+            Room room = allRooms[i];
+            if (room == null || room.RoomData == null) continue;
+            room.RoomData.RoomID = i;
+        }
     }
 
     #endregion
