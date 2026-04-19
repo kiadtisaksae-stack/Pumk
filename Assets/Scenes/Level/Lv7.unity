@@ -3847,7 +3847,7 @@ Transform:
   m_GameObject: {fileID: 674320489}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.32, y: 2.499, z: 0}
+  m_LocalPosition: {x: 2.32, y: 2.499, z: -0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3926,7 +3926,6 @@ MonoBehaviour:
   deliveryCount: 0
   counter: {fileID: 0}
   guestInRoom: {fileID: 0}
-  unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
   laundryPickupItem: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
   laundryPickupAmount: 1
@@ -11856,7 +11855,6 @@ MonoBehaviour:
   deliveryCount: 0
   counter: {fileID: 0}
   guestInRoom: {fileID: 0}
-  unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
   laundryPickupItem: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
   laundryPickupAmount: 1

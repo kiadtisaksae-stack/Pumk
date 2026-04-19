@@ -3629,7 +3629,7 @@ Transform:
   m_GameObject: {fileID: 674320489}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.32, y: 2.494, z: 0}
+  m_LocalPosition: {x: 2.32, y: 2.494, z: -0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3798,7 +3798,6 @@ MonoBehaviour:
   deliveryCount: 0
   counter: {fileID: 0}
   guestInRoom: {fileID: 0}
-  unCleanObj: {fileID: 368009176}
   dirtyIcon: {fileID: 0}
   laundryPickupItem: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
   laundryPickupAmount: 1
@@ -11995,7 +11994,6 @@ MonoBehaviour:
   deliveryCount: 0
   counter: {fileID: 0}
   guestInRoom: {fileID: 0}
-  unCleanObj: {fileID: 536130409}
   dirtyIcon: {fileID: 276060605}
   laundryPickupItem: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
   laundryPickupAmount: 1
@@ -12865,7 +12863,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: requireMoneyToNext
-      value: 0
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 4066373790339125557, guid: be6f35e8eb8ee0744aaa70e379367b67, type: 3}
       propertyPath: unlockNextLevelIndex
