@@ -15,7 +15,6 @@ public class Room : CanInteractObj, IInteractable
     public Counter counter;
 
     [SerializeField] private GuestAI guestInRoom;
-    public GameObject unCleanObj;
     public GameObject dirtyIcon;
     [Header("Dirty Room Laundry Pickup")]
     public ItemSO laundryPickupItem;
@@ -33,7 +32,6 @@ public class Room : CanInteractObj, IInteractable
         base.Start();
         roomState = RoomState.Available;
 
-        if (unCleanObj != null) unCleanObj.SetActive(false);
         if (dirtyIcon != null) dirtyIcon.SetActive(false);
         if (counter == null) counter = FindAnyObjectByType<Counter>();
     }
@@ -204,7 +202,6 @@ public class Room : CanInteractObj, IInteractable
         guestInRoom = null;
         roomState = RoomState.Available;
         RoomData.isUnAvailable = false;
-        if (unCleanObj != null) unCleanObj.SetActive(false);
         if (dirtyIcon != null) dirtyIcon.SetActive(false);
         RoomData.currentServiceRequest = null;
         return true;
@@ -216,7 +213,6 @@ public class Room : CanInteractObj, IInteractable
         roomState = RoomState.Dirty;
         RoomData.isUnAvailable = true;
 
-        if (unCleanObj != null) unCleanObj.SetActive(true);
         if (dirtyIcon != null) dirtyIcon.SetActive(true);
 
         Debug.Log($"<color=orange>Room {name} is now dirty</color>");
