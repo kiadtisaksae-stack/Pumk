@@ -248,6 +248,7 @@ public class Player : MoveHandleAI
             }
 
             if (interactable == null) continue;
+            if (IsExitDoorTarget(interactable, collider)) continue;
 
             float score = ComputeInteractionScore(collider, worldPoint);
             if (score > bestScore)
@@ -258,6 +259,22 @@ public class Player : MoveHandleAI
         }
 
         return bestTarget;
+    }
+
+    private bool IsExitDoorTarget(IInteractable interactable, Collider2D sourceCollider)
+    {
+        if (sourceCollider != null && sourceCollider.GetComponentInParent<ExitDoor>() != null)
+        {
+            return true;
+        }
+
+        if (interactable is Component interactableComponent &&
+            interactableComponent.GetComponentInParent<ExitDoor>() != null)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private float ComputeInteractionScore(Collider2D collider, Vector2 worldPoint)

@@ -2947,7 +2947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   mainMixer: {fileID: 24100000, guid: bcd2ce6b1a0a1b946b4c79105e1a498c, type: 2}
-  audioBG: {fileID: 8300000, guid: a81331e5ff5e907439bbec8eab2777bb, type: 3}
+  audioBG: {fileID: 8300000, guid: 67388b1c0a0cd2444b3f1f1dd1266384, type: 3}
   musicSource: {fileID: 864075170}
   sfxSource: {fileID: 1671521323}
 --- !u!4 &1241836133
@@ -3539,7 +3539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532899ad5a58a9745b3ef2add537d8e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneMusicSetter
-  sceneMusic: {fileID: 8300000, guid: a81331e5ff5e907439bbec8eab2777bb, type: 3}
+  sceneMusic: {fileID: 8300000, guid: 67388b1c0a0cd2444b3f1f1dd1266384, type: 3}
   loop: 1
   onlyIfDifferentClip: 1
   waitForSoundManagerIfMissing: 1
@@ -3907,7 +3907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8613c4b6aafaee40b275ce88567be60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  Star: 50
+  Star: 2
   inventoryUnlockedSlots: 3
   defaultInventoryUpgradeCost: 1
   inventoryUpgradeCosts: 02000000050000000c000000

@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4547456924464610228, guid: 34521b5a9b85130489b4224ef089a98a, type: 3}
+  m_Sprite: {fileID: 7861971022690904932, guid: 596ee8316671899499f7197868b9fde5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -259,8 +259,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 62.4, y: -179.4}
-  m_SizeDelta: {x: 59.8027, y: 21.3002}
+  m_AnchoredPosition: {x: 47.7999, y: -180.55244}
+  m_SizeDelta: {x: 59.8027, y: 24.3272}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3678067577828336424
 CanvasRenderer:
@@ -290,7 +290,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Page 3
+  m_text: '90
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66810e131b6a6d0428b4b641e50fb4f8, type: 2}
   m_sharedMaterial: {fileID: 6457728529568654546, guid: 66810e131b6a6d0428b4b641e50fb4f8, type: 2}
@@ -317,7 +319,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 20
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1569,8 +1571,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 147.9, y: -216.1}
-  m_SizeDelta: {x: 86.0482, y: 34.6669}
+  m_AnchoredPosition: {x: 94.5, y: -213.4}
+  m_SizeDelta: {x: 72.9314, y: 30.582}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7864314183598839362
 CanvasRenderer:
@@ -1600,7 +1602,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'tell how to play 3
+  m_text: '50
 
 '
   m_isRightToLeft: 0
@@ -1629,7 +1631,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.05
+  m_fontSize: 25.15
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
