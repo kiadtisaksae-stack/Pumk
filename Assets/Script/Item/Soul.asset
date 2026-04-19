@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Soul
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: -6255303641989091738, guid: 10795f4056458f647bfe150a780bdc96, type: 3}
+  itemIcon: {fileID: 5695570307645838171, guid: cb60b0acb7441f049803ad3568169be0, type: 3}
   requiredForService: 2
   pickupTime: 1
   deliverTime: 20

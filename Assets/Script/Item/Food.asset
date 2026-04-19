@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Food
   description: 
   prefabItem: {fileID: 0}
-  itemIcon: {fileID: 7552801071948933954, guid: c99a12ec799806a44b55817becd64c4d, type: 3}
+  itemIcon: {fileID: -2346458947309146013, guid: fc0a24cdba0a3dd4bbfc2c1ff7e26568, type: 3}
   requiredForService: 2
   pickupTime: 1
   deliverTime: 20
