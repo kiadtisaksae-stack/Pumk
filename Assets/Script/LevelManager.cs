@@ -148,7 +148,7 @@ public class LevelManager : MonoBehaviour
         {
             rank = RewardRank.Gold;
         }
-        else if (ratio >= 0.5f)
+        else if (ratio >= 0.8f)
         {
             rank = RewardRank.Silver;
         }

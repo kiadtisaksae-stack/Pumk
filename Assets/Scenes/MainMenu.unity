@@ -4500,10 +4500,10 @@ MonoBehaviour:
   defaultElevatorSpeedUpgradeCost: 2
   elevatorSpeedUpgradeCosts: 020000000300000004000000
   elevatorSpeedMultipliersByLevel:
-  - 1
+  - 2.5
   - 3
   - 5
-  - 7
+  - 8
   maxRoomUpgradeTier: 2
   defaultRoomUpgradeCost: 2
   roomUpgradeCostsByTier: 0200000003000000

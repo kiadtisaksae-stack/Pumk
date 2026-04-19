@@ -142,11 +142,22 @@ public class LevelUI : MonoBehaviour
         SceneManager.LoadScene(currentSceneIndex);
     }
 
+
     public void ClicktoNextLevel()
     {
         Time.timeScale = 1f;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1);
+    }
+
+    public void Skip()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddStar(2);
+        }
+        Debug.Log("Skip!!!");
+        ClicktoNextLevel();
     }
 
     public void ClickGoToHome()
