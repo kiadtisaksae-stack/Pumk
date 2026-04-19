@@ -13103,26 +13103,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 88732815425147805, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1765184657584148198, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: m_SortingOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: objSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 44613ff3d5d6ee9438e5bf36e7780089, type: 3}
-    - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: serviceItem
-      value: 
-      objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
-    - target: {fileID: 2787297820352404778, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
-      propertyPath: _interactObjData.floorNumber
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5608294094831617770, guid: e33222df70436c740bffd30ca6e12f0f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.6
