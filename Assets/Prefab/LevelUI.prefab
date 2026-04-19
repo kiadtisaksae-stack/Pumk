@@ -526,14 +526,14 @@ RectTransform:
   m_GameObject: {fileID: 742820335618493440}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7609603, y: 0.42871186, z: 0.8656519}
+  m_LocalScale: {x: 0.58279634, y: 0.32833737, z: 0.6629765}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6167116267870025957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.3357615, y: 338.23175}
+  m_AnchoredPosition: {x: 6.3357615, y: 313.00003}
   m_SizeDelta: {x: 578.7164, y: 337.0144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2873652332321001826
@@ -2018,10 +2018,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
-  m_fontSizeBase: 24
+  m_fontSize: 54.3
+  m_fontSizeBase: 54.3
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -2327,10 +2327,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
-  m_fontSizeBase: 24
+  m_fontSize: 54.3
+  m_fontSizeBase: 54.3
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -2756,14 +2756,14 @@ RectTransform:
   m_GameObject: {fileID: 8243575536518023071}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7609582, y: 0.42871052, z: 0.86565}
+  m_LocalScale: {x: 0.5827947, y: 0.32833636, z: 0.662975}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1618818057738822417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 11.335895, y: 339.23172}
+  m_AnchoredPosition: {x: 11.335895, y: 314}
   m_SizeDelta: {x: 578.7164, y: 337.0144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &997964950125619406
@@ -3481,15 +3481,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5276583466690755375, guid: d98ad0e8b36f0024ca256faafd7927a4, type: 3}
       propertyPath: m_Name
-      value: InGameUI
+      value: InGameUI H
+      objectReference: {fileID: 0}
+    - target: {fileID: 5276583466690755375, guid: d98ad0e8b36f0024ca256faafd7927a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7959659118761346967, guid: d98ad0e8b36f0024ca256faafd7927a4, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7959659118761346967, guid: d98ad0e8b36f0024ca256faafd7927a4, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4501,11 +4505,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5070414626988311405, guid: 4a31b083709846840890100db1341f6a, type: 3}
       propertyPath: m_Name
-      value: Pause UI
+      value: Pause UI H
       objectReference: {fileID: 0}
     - target: {fileID: 5070414626988311405, guid: 4a31b083709846840890100db1341f6a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8751230820679200393, guid: 4a31b083709846840890100db1341f6a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
