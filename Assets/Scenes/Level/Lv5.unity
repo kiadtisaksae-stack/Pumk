@@ -970,6 +970,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 157263894777568916, guid: 5ce6096a980f28846bf8c6f5b5f50e51, type: 3}
+    - target: {fileID: 7460218671127079675, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_Name
+      value: 'InGameUI '
+      objectReference: {fileID: 0}
+    - target: {fileID: 7460218671127079675, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7033269130757286513, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}

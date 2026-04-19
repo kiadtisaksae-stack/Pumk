@@ -6179,6 +6179,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2818655690236379045, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4572802232857719847, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6232,6 +6236,14 @@ PrefabInstance:
       value: LevelUI
       objectReference: {fileID: 0}
     - target: {fileID: 7326126099675471312, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7460218671127079675, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
+      propertyPath: m_Name
+      value: 'InGameUI '
+      objectReference: {fileID: 0}
+    - target: {fileID: 7460218671127079675, guid: 0216fbdf15396b048a8a1d92d582017c, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
