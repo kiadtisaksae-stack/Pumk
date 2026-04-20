@@ -2335,7 +2335,8 @@ MonoBehaviour:
   assignedElevator: {fileID: 0}
   animator: {fileID: 4882759228132633983}
   characterVisual: {fileID: 8441452412806388195}
-  characterVisualList: []
+  characterVisualList:
+  - {fileID: 8441452412806388195}
   guestPhase: 0
   guestColor: 0
   guestSound: {fileID: 8300000, guid: 5db38115ae965b140aa4f1ee3b262fb9, type: 3}
@@ -2360,7 +2361,7 @@ MonoBehaviour:
   guestUI: {fileID: 0}
   room: {fileID: 0}
   heartLossPerSecond: 0.3
-  maxExtraDelay: 5
+  maxExtraDelay: 7
   sleepwalkPoints: []
 --- !u!114 &4724521190712258897
 MonoBehaviour:
