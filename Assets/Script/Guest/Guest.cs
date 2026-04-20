@@ -234,7 +234,7 @@ public class GuestAI : MoveHandleAI
     public virtual void OnServiceFail(ItemSO service , Room room)
     {
         servicePayment--;
-        
+        CleanupFailedService(service);
     }
 
     public virtual void OnAllServicesComplete(Counter counter)
@@ -279,12 +279,61 @@ public class GuestAI : MoveHandleAI
         if (isExit) return;
         guestPhase = Guestphase.CheckingOut;
         isExit = true;
+        CleanupFailedService(currentService);
         OnCheckOut(isAnger: true);
         guestUI?.OnCheckOut();
         AnimateExitRoom();
         if (room != null) room.DirtyRoom();
         StopAllCoroutines();
         StartTravel(exit);
+    }
+
+    protected void CleanupFailedService(ItemSO failedService)
+    {
+        if (failedService == null) return;
+
+        if (failedService.requiredForService != ServiceRequestType.DeliveryLuggage) return;
+
+        RoomManager.Instance?.DeleteLuggage();
+
+        if (TryRemoveLuggageFromPlayers(1)) return;
+        TryRemoveLuggageFromEmployees(1);
+    }
+
+    private bool TryRemoveLuggageFromPlayers(int amount)
+    {
+        int remaining = Mathf.Max(0, amount);
+        if (remaining == 0) return false;
+
+        Player[] players = FindObjectsByType<Player>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < players.Length && remaining > 0; i++)
+        {
+            Player player = players[i];
+            if (player == null) continue;
+
+            int removed = player.RemoveItemsByServiceType(ServiceRequestType.DeliveryLuggage, remaining);
+            remaining -= removed;
+        }
+
+        return remaining <= 0;
+    }
+
+    private bool TryRemoveLuggageFromEmployees(int amount)
+    {
+        int remaining = Mathf.Max(0, amount);
+        if (remaining == 0) return false;
+
+        Employee[] employees = FindObjectsByType<Employee>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < employees.Length && remaining > 0; i++)
+        {
+            Employee employee = employees[i];
+            if (employee == null) continue;
+
+            int removed = employee.RemoveItemsByServiceType(ServiceRequestType.DeliveryLuggage, remaining);
+            remaining -= removed;
+        }
+
+        return remaining <= 0;
     }
 
     public void CheckOut(InteractObjData targetObj)

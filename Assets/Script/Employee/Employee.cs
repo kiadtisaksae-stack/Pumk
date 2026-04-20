@@ -7,44 +7,48 @@ public class Employee : MoveHandleAI
     public int maxSlots = 3;
     public List<ItemSO> inventory = new List<ItemSO>();
 
-    /// <summary>
-    /// เพิ่มไอเทมเข้ากระเป๋าของพนักงาน
-    /// </summary>
-    /// <param name="newItem">ไอเทมที่ต้องการเพิ่ม</param>
-    /// <returns>True หากเพิ่มสำเร็จ, False หากกระเป๋าเต็ม</returns>
     public bool AddItem(ItemSO newItem)
     {
-        // 1. ตรวจสอบว่ากระเป๋าเต็มหรือยัง?
         if (inventory.Count >= maxSlots)
         {
             Debug.Log($"<color=red>กระเป๋าเต็มแล้ว! (มีครบ {maxSlots} ชิ้นแล้ว)</color>");
-            return false; // เพิ่มไม่สำเร็จ
+            return false;
         }
 
-        // 2. ถ้ายังไม่เต็ม ให้เพิ่มเข้า List
         inventory.Add(newItem);
-
-
-        // (Optional) เรียกอัปเดต UI ตรงนี้
-        // UpdateUI(); 
-
-        return true; // เพิ่มสำเร็จ
+        return true;
     }
 
-    /// <summary>
-    /// ลบไอเทมออกจากกระเป๋า
-    /// </summary>
-    /// <param name="itemToRemove">ไอเทมที่ต้องการลบ</param>
     public void RemoveItem(ItemSO itemToRemove)
     {
         if (inventory.Contains(itemToRemove))
         {
             inventory.Remove(itemToRemove);
-
         }
         else
         {
-            Debug.LogWarning($"ไม่พบไอเทม {itemToRemove.itemName} ในกระเป๋า");
+            Debug.LogWarning($"ไม่พบไอเท็ม {itemToRemove.itemName} ในกระเป๋า");
         }
+    }
+
+    public int RemoveItemsByServiceType(ServiceRequestType serviceType, int maxToRemove = int.MaxValue)
+    {
+        if (inventory == null || inventory.Count == 0) return 0;
+
+        int removedCount = 0;
+        int limit = Mathf.Max(0, maxToRemove);
+        if (limit == 0) return 0;
+
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            ItemSO item = inventory[i];
+            if (item == null || item.requiredForService != serviceType) continue;
+
+            inventory.RemoveAt(i);
+            removedCount++;
+            if (removedCount >= limit) break;
+        }
+
+        return removedCount;
     }
 }

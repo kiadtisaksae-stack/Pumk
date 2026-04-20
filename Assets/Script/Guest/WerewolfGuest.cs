@@ -2,13 +2,9 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// Werewolf — The Furious Customer
-/// - 2 items (Luggage fixed + 1 random: Food/Drink/Soul)  ← spec: 2 items
-/// - Heart: 5, decays -1.0 every 3s
-/// - EVENT: Anger Stack — 3 bars, drains 1 bar every 2.5s per request
-///   Stack resets at each new request
-///   Full stack loss = ClearItem() on Player inventory
-/// servicePool ใน Inspector: Food, Drink, Soul
+/// Werewolf
+/// - 2 services (luggage + 1 random)
+/// - Anger stack drains over time; when empty, punish player inventory.
 /// </summary>
 public class WerewolfGuest : GuestAI
 {
@@ -24,19 +20,17 @@ public class WerewolfGuest : GuestAI
     public override void Start()
     {
         base.Start();
-        serviceCount = 2;       // Luggage + 1 random = 2 items
+        serviceCount = 2;
         decaysHit = 1.0f;
         _player = FindAnyObjectByType<Player>();
     }
 
-    // ── เริ่ม Anger Stack ใหม่ทุก request ──
     public override void OnServiceStart(ItemSO service)
     {
         StopAngerStack();
         CurrentAngerBars = maxAngerBars;
         _angerCoroutine = StartCoroutine(AngerStackRoutine());
         guestUI?.OnAngerStart();
-
     }
 
     public override void OnServiceSuccess(ItemSO service)
@@ -45,17 +39,16 @@ public class WerewolfGuest : GuestAI
         StopAngerStack();
     }
 
-    public override void OnServiceFail(ItemSO service,Room room)
+    public override void OnServiceFail(ItemSO service, Room room)
     {
-        base.OnServiceFail(service,room);
+        base.OnServiceFail(service, room);
         StopAngerStack();
     }
 
-    public override void OnCheckOut(bool isAnger) => StopAngerStack();
-
-    // ─────────────────────────────────────────────
-    //  Anger internals
-    // ─────────────────────────────────────────────
+    public override void OnCheckOut(bool isAnger)
+    {
+        StopAngerStack();
+    }
 
     private IEnumerator AngerStackRoutine()
     {
@@ -64,19 +57,19 @@ public class WerewolfGuest : GuestAI
             yield return new WaitForSeconds(barDrainInterval);
             CurrentAngerBars--;
 
-
             if (CurrentAngerBars <= 0)
+            {
                 TriggerAngerPunish();
+            }
         }
     }
 
     private void TriggerAngerPunish()
     {
-        if (_player != null)
-        {
-            _player.ClearItem();
-            Debug.Log("<color=orange>Werewolf โกรธ! ล้าง inventory ของ Player</color>");
-        }
+        if (_player == null) return;
+
+        _player.ClearNonProtectedItems();
+        Debug.Log("<color=orange>Werewolf โกรธ! ล้างเฉพาะไอเท็มทั่วไป (ไม่ลบ Luggage/Laundry)</color>");
     }
 
     private void StopAngerStack()
@@ -86,6 +79,7 @@ public class WerewolfGuest : GuestAI
             StopCoroutine(_angerCoroutine);
             _angerCoroutine = null;
         }
+
         CurrentAngerBars = 0;
         guestUI?.OnAngerEnd();
     }

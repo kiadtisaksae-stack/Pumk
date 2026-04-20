@@ -377,6 +377,57 @@ public class Player : MoveHandleAI
         RefreshInventoryUI();
     }
 
+    public void ClearNonProtectedItems()
+    {
+        if (inventory == null || inventory.Count == 0) return;
+
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            ItemSO item = inventory[i];
+            if (item == null)
+            {
+                inventory.RemoveAt(i);
+                continue;
+            }
+
+            if (item.requiredForService == ServiceRequestType.DeliveryLuggage ||
+                item.requiredForService == ServiceRequestType.Laundry)
+            {
+                continue;
+            }
+
+            inventory.RemoveAt(i);
+        }
+
+        RefreshInventoryUI();
+    }
+
+    public int RemoveItemsByServiceType(ServiceRequestType serviceType, int maxToRemove = int.MaxValue)
+    {
+        if (inventory == null || inventory.Count == 0) return 0;
+
+        int removedCount = 0;
+        int limit = Mathf.Max(0, maxToRemove);
+        if (limit == 0) return 0;
+
+        for (int i = inventory.Count - 1; i >= 0; i--)
+        {
+            ItemSO item = inventory[i];
+            if (item == null || item.requiredForService != serviceType) continue;
+
+            inventory.RemoveAt(i);
+            removedCount++;
+            if (removedCount >= limit) break;
+        }
+
+        if (removedCount > 0)
+        {
+            RefreshInventoryUI();
+        }
+
+        return removedCount;
+    }
+
     public void RefreshInventoryUI()
     {
         for (int i = 0; i < inventorySlotImages.Count; i++)
