@@ -28,7 +28,7 @@ public class FrankenGuest : GuestAI
         decaysHit = 0.5f;
 
         sleepwalkPoints.Clear();
-        foreach (var sw in Object.FindObjectsByType<FFSleepwalk>(FindObjectsSortMode.None))
+        foreach (var sw in Object.FindObjectsByType<FFSleepwalk>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             sleepwalkPoints.Add(sw);
             sw.gameObject.SetActive(false);
@@ -58,6 +58,19 @@ public class FrankenGuest : GuestAI
     {
         IsSleepwalking = true;
 
+        if (sleepwalkPoints == null || sleepwalkPoints.Count == 0)
+        {
+            // Re-scan including inactive points for multi-spawn scenarios.
+            sleepwalkPoints = new List<FFSleepwalk>(Object.FindObjectsByType<FFSleepwalk>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+        }
+
+        if (sleepwalkPoints == null || sleepwalkPoints.Count == 0)
+        {
+            Debug.LogWarning($"{name}: No FFSleepwalk points found, skip sleepwalk.");
+            IsSleepwalking = false;
+            yield break;
+        }
+
         // Restore visuals before walking out (they may be hidden after room-entry animation).
         List<GameObject> visuals = GetCharacterVisuals();
         if (visuals.Count > 0)
@@ -82,13 +95,26 @@ public class FrankenGuest : GuestAI
 
         _savedRoomTarget = targetIObj;
 
-        if (sleepwalkPoints.Count > 0)
+        List<FFSleepwalk> availablePoints = new List<FFSleepwalk>();
+        for (int i = 0; i < sleepwalkPoints.Count; i++)
         {
-            _activePoint = sleepwalkPoints[Random.Range(0, sleepwalkPoints.Count)];
-            _activePoint.owner = this;
-            _activePoint.gameObject.SetActive(true);
-            StartTravel(_activePoint.interactObjData);
+            FFSleepwalk point = sleepwalkPoints[i];
+            if (point == null) continue;
+            if (point.owner != null) continue;
+            availablePoints.Add(point);
         }
+
+        if (availablePoints.Count == 0)
+        {
+            Debug.LogWarning($"{name}: No available FFSleepwalk points (all busy), skip sleepwalk.");
+            IsSleepwalking = false;
+            yield break;
+        }
+
+        _activePoint = availablePoints[Random.Range(0, availablePoints.Count)];
+        _activePoint.owner = this;
+        _activePoint.gameObject.SetActive(true);
+        StartTravel(_activePoint.interactObjData);
 
         _sleepwalkDamageCoroutine = StartCoroutine(SleepwalkDamageRoutine());
 
