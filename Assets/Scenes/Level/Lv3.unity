@@ -12300,13 +12300,17 @@ PrefabInstance:
       propertyPath: laundryPickupItem
       value: 
       objectReference: {fileID: 11400000, guid: 982cf2d002aba9d478b12b0c4c4d4876, type: 2}
+    - target: {fileID: 1713717485585426529, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
+      propertyPath: _interactObjData.roomData.roomLevel
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5684947960092481614, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.1604
+      value: -3.17
       objectReference: {fileID: 0}
     - target: {fileID: 5684947960092481614, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.442
+      value: 2.23
       objectReference: {fileID: 0}
     - target: {fileID: 5684947960092481614, guid: a876f38f310dabb41a2def58be3e722b, type: 3}
       propertyPath: m_LocalPosition.z
